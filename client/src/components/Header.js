@@ -21,9 +21,9 @@ const Header = () => {
                 </section>
             </section>
             <section className="header__header__section">
-                <figure className="header__logo">
+                <a className="header__logo" href="/">
                     <img className="header__logo__img" src={logo} alt="hideisland-logo" />
-                </figure>
+                </a>
             </section>
             <section className="header__header__section">
                 <button className="header__header__section__btn">
