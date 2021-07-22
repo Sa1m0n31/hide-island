@@ -20,9 +20,11 @@ const PanelShippingContent = () => {
             .then(res => {
                 if(res.data.result) {
                     const result = res.data.result[0];
-                    setAddress(result.address);
-                    setAddressEn(result.address_en);
-                    setPersonal(result.is_on);
+                    if(result) {
+                        setAddress(result.address);
+                        setAddressEn(result.address_en);
+                        setPersonal(result.is_on);
+                    }
                 }
             })
     }, []);
@@ -51,7 +53,7 @@ const PanelShippingContent = () => {
     return <main className="panelContent">
         <header className="panelContent__header">
             <h1 className="panelContent__header__h">
-                Odbiór osobisty
+                Metody wysyłki
             </h1>
         </header>
         <section className="panelContent__frame">
@@ -64,34 +66,8 @@ const PanelShippingContent = () => {
                                          onSubmit={(e) => { handleSubmit(e) }}
                 >
                     <section className="d-flex">
-                        <label className="jodit--label">
-                            <span>Adres do odbioru osobistego (polski)</span>
-                            <JoditEditor
-                                name="address"
-                                value={address}
-                                tabIndex={1} // tabIndex of textarea
-                                onBlur={newContent => {}} // preferred to use only this option to update the content for performance reasons
-                                onChange={newContent => { setAddress(newContent) }}
-                            />
-                        </label>
-                        <label className="jodit--label">
-                            <span>Adres do odbioru osobistego (angielski)</span>
-                            <JoditEditor
-                                name="address_en"
-                                value={addressEn}
-                                tabIndex={1} // tabIndex of textarea
-                                onBlur={newContent => {}} // preferred to use only this option to update the content for performance reasons
-                                onChange={newContent => { setAddressEn(newContent) }}
-                            />
-                        </label>
-                    </section>
 
-                    <label className="panelContent__filters__btnWrapper marginBottom40">
-                        <button className="panelContent__filters__btn panelContent__filters__btn--options" onClick={(e) => { e.preventDefault(); setPersonal(!personal); }}>
-                            <span className={personal ? "panelContent__filters__btn--active" : "d-none"} />
-                        </button>
-                        Włącz opcję odbioru osobistego
-                    </label>
+                    </section>
 
                     <button className="addProduct__btn btn--maxWidth" type="submit">
                         Aktualizuj

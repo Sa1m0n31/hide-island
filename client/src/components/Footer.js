@@ -1,7 +1,54 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import logo from '../static/img/logo.png'
+import {getAllCategories} from "../helpers/categoryFunctions";
+import axios from "axios";
+import settings from "../helpers/settings";
 
 const Footer = () => {
+    const [categories, setCategories] = useState([]);
+    const [email, setEmail] = useState("");
+    const [newsletterResponse, setNewsletterResponse] = useState(0);
+
+    useEffect(() => {
+        getAllCategories()
+            .then(res => {
+                if(res?.data?.result) {
+                    setCategories(res.data.result);
+                }
+            })
+    }, []);
+
+    const isEmail = (email) => {
+        const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(email).toLowerCase());
+    }
+
+    const addToNewsletter = () => {
+        if(isEmail(email)) {
+            axios.post(`${settings.API_URL}/newsletter/add`, { email })
+                .then(res => {
+                    if(res.data.result === 1) {
+                        setNewsletterResponse(1);
+                        setEmail("");
+                    }
+                    else {
+                        setNewsletterResponse(-1);
+                    }
+                });
+        }
+        else {
+            setNewsletterResponse(2);
+        }
+    }
+
+    useEffect(() => {
+        if(newsletterResponse !== 0) {
+            setTimeout(() => {
+                setNewsletterResponse(0);
+            }, 3000);
+        }
+    }, [newsletterResponse]);
+
     return <footer className="footer">
         <section className="footer__row d-flex justify-content-between align-items-center align-items-md-start">
             <section className="footer__menu">
@@ -32,26 +79,15 @@ const Footer = () => {
                     Kategorie
                 </h4>
                 <ul className="footer__menu__list">
-                    <li className="footer__menu__item">
-                        <a className="footer__menu__link">
-                            Dla niej
-                        </a>
-                    </li>
-                    <li className="footer__menu__item">
-                        <a className="footer__menu__link">
-                            Dla niego
-                        </a>
-                    </li>
-                    <li className="footer__menu__item">
-                        <a className="footer__menu__link">
-                            Spodnie
-                        </a>
-                    </li>
-                    <li className="footer__menu__item">
-                        <a className="footer__menu__link">
-                            Koszulki
-                        </a>
-                    </li>
+                    {categories?.map((item, index) => {
+                        if(index < 4) {
+                            return <li className="footer__menu__item" key={index}>
+                                <a className="footer__menu__link" href={`/kategoria/${item.permalink}`}>
+                                    {item.name}
+                                </a>
+                            </li>
+                        }
+                    })}
                 </ul>
             </section>
 
@@ -81,15 +117,21 @@ const Footer = () => {
                     Nie pozwól, by Cię coś ominęło! <b>Zapisz się do newslettera!</b>
                 </h3>
                 <section className="footer__newsletter__form">
-                    <label className="footer__label">
-                        <input className="footer__input"
-                               name="email"
-                               type="email"
-                               placeholder="Tu wpisz swój e-mail" />
-                    </label>
-                    <button className="footer__btn">
-                        Zapisz się
-                    </button>
+                    {!newsletterResponse ? <>
+                        <label className="footer__label">
+                            <input className="footer__input"
+                                   name="email"
+                                   type="email"
+                                   value={email}
+                                   onChange={(e) => { setEmail(e.target.value); }}
+                                   placeholder="Tu wpisz swój e-mail" />
+                        </label>
+                        <button className="footer__btn" onClick={() => { addToNewsletter() }}>
+                            Zapisz się
+                        </button>
+                    </> : <h4 className="newsletterResponse">
+                        {newsletterResponse === 2 ? "Proszę podać poprawny adres e-mail" : newsletterResponse === 1 ? "Dziękujemy za zapisanie się do naszego newslettera" : "Podany adres e-mail jest już zapisany do naszego newslettera"}
+                    </h4> }
                 </section>
             </section>
 

@@ -32,12 +32,14 @@ const PanelOthersContent = () => {
                 .then(res => {
                     if(res.data.result) {
                         const result = res.data.result[0];
-                        setTerms(result.terms_of_service);
-                        setTermsEn(result.terms_of_service_en);
-                        setPolicy(result.privacy_policy);
-                        setPolicyEn(result.privacy_policy_en);
-                        setContact(result.contact);
-                        setContactEn(result.contact_en);
+                        if(result) {
+                            setTerms(result.terms_of_service);
+                            setTermsEn(result.terms_of_service_en);
+                            setPolicy(result.privacy_policy);
+                            setPolicyEn(result.privacy_policy_en);
+                            setContact(result.contact);
+                            setContactEn(result.contact_en);
+                        }
                     }
                 })
         }, []);
@@ -77,28 +79,6 @@ const PanelOthersContent = () => {
                             onChange={newContent => { setTerms(newContent) }}
                         />
                     </label>
-
-                    <label className="jodit--label">
-                        <span>Regulamin (angielski)</span>
-                        <JoditEditor
-                            name="termsOfServiceEn"
-                            value={termsEn}
-                            tabIndex={1} // tabIndex of textarea
-                            onBlur={newContent => {}} // preferred to use only this option to update the content for performance reasons
-                            onChange={newContent => { setTermsEn(newContent) }}
-                        />
-                    </label>
-
-                    <label className="jodit--label">
-                        <span>Kontakt</span>
-                        <JoditEditor
-                            name="contact"
-                            value={contact}
-                            tabIndex={1} // tabIndex of textarea
-                            onBlur={newContent => {}} // preferred to use only this option to update the content for performance reasons
-                            onChange={newContent => { setContact(newContent) }}
-                        />
-                    </label>
                 </section>
 
                 <section className="panelContent__othersSection">
@@ -110,28 +90,6 @@ const PanelOthersContent = () => {
                             tabIndex={1} // tabIndex of textarea
                             onBlur={newContent => {}} // preferred to use only this option to update the content for performance reasons
                             onChange={newContent => { setPolicy(newContent) }}
-                        />
-                    </label>
-
-                    <label className="jodit--label">
-                        <span>Polityka prywatności (angielski)</span>
-                        <JoditEditor
-                            name="privacyPolicyEn"
-                            value={policyEn}
-                            tabIndex={1} // tabIndex of textarea
-                            onBlur={newContent => {}} // preferred to use only this option to update the content for performance reasons
-                            onChange={newContent => { setPolicyEn(newContent) }}
-                        />
-                    </label>
-
-                    <label className="jodit--label">
-                        <span>Kontakt (angielski)</span>
-                        <JoditEditor
-                            name="contactEn"
-                            value={contactEn}
-                            tabIndex={1} // tabIndex of textarea
-                            onBlur={newContent => {}} // preferred to use only this option to update the content for performance reasons
-                            onChange={newContent => { setContactEn(newContent) }}
                         />
                     </label>
                 </section>

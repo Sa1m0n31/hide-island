@@ -25,7 +25,7 @@ const PanelOrdersContent = () => {
         getAllOrders()
             .then(res => {
                 const result = res.data.result;
-                setOrders(result.reverse());
+                setOrders(result?.reverse());
                 sessionStorage.setItem('skylo-e-commerce-orders', JSON.stringify(result));
             });
     }, [deleteMsg]);
@@ -141,7 +141,7 @@ const PanelOrdersContent = () => {
             </header>
 
             <main className="panelContent__content">
-                {orders.map((item, index) => {
+                {orders?.map((item, index) => {
                     if(((filterOplacone)&&(filterNieoplacone))||((filterOplacone)&&(item.payment_status.toLowerCase() === "opłacone"))||((filterNieoplacone)&&(item.payment_status.toLowerCase() === "nieopłacone"))) {
                         return <section className="panelContent__item orderItem">
                             <section className="panelContent__column">

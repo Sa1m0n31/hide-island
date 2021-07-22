@@ -8,6 +8,7 @@ import settings from "../helpers/settings";
 import Modal from 'react-modal'
 import closeImg from "../static/img/close.png";
 import {useLocation} from "react-router";
+import convertToURL from "../../helpers/convertToURL";
 
 const PanelCategoriesContent = () => {
     const [categories, setCategories] = useState([]);
@@ -146,13 +147,16 @@ const PanelCategoriesContent = () => {
 
                 {addedMsg === "" ? <form className="panelContent__frame__form categoriesForm"
                                          method="POST"
-                                         action={update ? "http://brunchbox.skylo-test3.pl/category/update" : "http://brunchbox.skylo-test3.pl/category/add"}
+                                         action={update ? "http://localhost:5000/category/update" : "http://localhost:5000/category/add"}
                                          onSubmit={(e) => { handleSubmit(e) }}
-                                         encType="multipart/form-data"
                 >
                     <input className="invisibleInput"
                            name="id"
                            value={id} />
+
+                    <input className="invisibleInput"
+                           name="permalink"
+                           value={convertToURL(name)} />
 
                     <input className="invisibleInput"
                            name="hidden"
@@ -166,49 +170,6 @@ const PanelCategoriesContent = () => {
                                type="text"
                                placeholder="Nazwa kategorii" />
                     </label>
-                    <label className="addProduct__label addProduct__label--frame">
-                        <input className="addProduct__input"
-                               name="header"
-                               value={header}
-                               onChange={(e) => { setHeader(e.target.value) }}
-                               type="text"
-                               placeholder="Nagłówek kategorii" />
-                    </label>
-                    <label className="addProduct__label addProduct__label--frame">
-                        <input className="addProduct__input"
-                               name="subheader"
-                               value={subheader}
-                               onChange={(e) => { setSubheader(e.target.value) }}
-                               type="text"
-                               placeholder="Czas dostawy" />
-                    </label>
-
-                    <label className="addProduct__label addProduct__label--frame">
-                        <input className="addProduct__input"
-                               name="nameEn"
-                               value={nameEn}
-                               onChange={(e) => { setNameEn(e.target.value) }}
-                               type="text"
-                               placeholder="Nazwa kategorii (angielski)" />
-                    </label>
-                    <label className="addProduct__label addProduct__label--frame">
-                        <input className="addProduct__input"
-                               name="headerEn"
-                               value={headerEn}
-                               onChange={(e) => { setHeaderEn(e.target.value) }}
-                               type="text"
-                               placeholder="Nagłówek kategorii (angielski)" />
-                    </label>
-                    <label className="addProduct__label addProduct__label--frame">
-                        <input className="addProduct__input"
-                               name="subheaderEn"
-                               value={subheaderEn}
-                               onChange={(e) => { setSubheaderEn(e.target.value) }}
-                               type="text"
-                               placeholder="Czas dostawy (angielski)" />
-                    </label>
-
-
 
                     <select className="addProduct__categorySelect"
                             name="parentId"
@@ -216,16 +177,10 @@ const PanelCategoriesContent = () => {
                             onChange={(e) => { setParentId(e.target.value); }}
                     >
                         <option value={0}>Brak rodzica</option>
-                        {categories.map((item, index) => (
+                        {categories?.map((item, index) => (
                             <option value={item.id} key={index}>{item.name}</option>
                         ))}
                     </select>
-
-                    <label className="addProduct__label addProduct__label--frame">
-                        Zdjęcie kategorii
-                        <input type="file"
-                               name="categoryImage" />
-                    </label>
 
                     <label className="panelContent__filters__label__label panelContent__filters__label__label--category">
                         <button className="panelContent__filters__btn" onClick={(e) => { e.preventDefault(); setHidden(!hidden); }}>
@@ -250,12 +205,8 @@ const PanelCategoriesContent = () => {
                 </h1>
 
                 <main className="panelContent__content">
-                    {categories.map((item, index) => (
+                    {categories?.map((item, index) => (
                         <section className="panelContent__item productItem">
-                            <section className="panelContent__column">
-                                {item.img_path ? <img className="panelContent__productImg" src={settings.API_URL + "/image?url=/media/" + item.img_path} alt="zdjecie-kategorii" /> : ""}
-                            </section>
-
                             <section className="panelContent__column">
                                 <h4 className="panelContent__column__label">
                                     Nazwa

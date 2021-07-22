@@ -5,19 +5,22 @@ const con = require("../databaseConnection");
 con.connect(err => {
    /* GET ALL ORDERS */
    router.get("/get-orders", (request, response) => {
-      const query = 'SELECT o1.id as id, u.first_name, u.last_name, u.email, pm.name, o2.payment_status, o2.order_status, o2.date ' +
-          'FROM (SELECT o.id, SUM(s.quantity * p.price_m_meat) price FROM orders o ' +
-          'JOIN sells s ON o.id = s.order_id ' +
-          'JOIN products p ON p.id = s.product_id GROUP BY o.id) o1 ' +
-          'JOIN orders o2 USING(id) JOIN users u ON u.id = o2.user ' +
-          'LEFT OUTER JOIN payment_methods pm ON o2.payment_method = pm.id';
-      con.query(query, (err, res) => {
-          console.log(res);
-          console.log(err);
-        response.send({
-            result: res
-        });
-      });
+      // const query = 'SELECT o1.id as id, u.first_name, u.last_name, u.email, pm.name, o2.payment_status, o2.order_status, o2.date ' +
+      //     'FROM (SELECT o.id, price FROM orders o ' +
+      //     'JOIN sells s ON o.id = s.order_id ' +
+      //     'JOIN products p ON p.id = s.product_id GROUP BY o.id) o1 ' +
+      //     'JOIN orders o2 USING(id) JOIN users u ON u.id = o2.user ' +
+      //     'LEFT OUTER JOIN payment_methods pm ON o2.payment_method = pm.id';
+      // con.query(query, (err, res) => {
+      //     console.log(res);
+      //     console.log(err);
+      //   response.send({
+      //       result: res
+      //   });
+
+       response.send({
+           result: []
+       });
    });
 
    /* ADD SELL */

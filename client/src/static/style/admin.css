@@ -210,7 +210,7 @@ ul {
 .panelContent {
     background: var(--black-primary);
     width: 80%;
-    min-height: 100vh;
+    min-height: 105vh;
     margin-left: 20%;
     padding: 60px 40px;
 }
@@ -732,9 +732,9 @@ input[type=file] {
 }
 
 /* Modal on delete */
-.panel .ReactModal__Overlay {
+.panelModal .ReactModal__Overlay {
     background: rgba(0, 0, 0, .6) !important;
-    display: flex !important;
+    display: flex;
     justify-content: center;
     align-items: center;
 }
@@ -746,6 +746,11 @@ input[type=file] {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    background: var(--black-primary) !important;
+    position: absolute;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%);
 }
 
 .modalClose {
@@ -757,6 +762,7 @@ input[type=file] {
     height: auto;
     border: none;
     cursor: pointer;
+    filter: brightness(0) invert(1);
 }
 
 .modalClose__img {
@@ -772,8 +778,8 @@ input[type=file] {
 
 .modalQuestion__btn {
     margin: 0 20px;
-    background: #fff;
-    border: 2px solid #000;
+    background: var(--black-secondary);
+    color: #fff;
     padding: 10px 20px;
     cursor: pointer;
     transition: .4s all ease-in-out;
@@ -962,12 +968,6 @@ input[type=file] {
     margin-bottom: 50px !important;
 }
 
-.text-center {
-    text-align: center;
-    padding: 30px 0 15px;
-    font-size: 13px;
-}
-
 .allergiesChecked {
     opacity: 1;
 }
@@ -1137,4 +1137,13 @@ label {
     font-size: 15px;
     font-style: italic;
     font-weight: 400;
+}
+
+.jodit, .jodit *, .jodit-container, .jodit-container * {
+    color: #000 !important;
+}
+
+select {
+    background: var(--black-secondary);
+    color: #fff;
 }

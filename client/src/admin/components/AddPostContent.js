@@ -64,7 +64,7 @@ const AddPostContent = () => {
             {addMsg === "" ? <form className="addProduct__form addProduct__form--addPost"
                                    encType="multipart/form-data"
                                    onSubmit={(e) => { handleSubmit(e) }}
-                                   action={update ? "http://brunchbox.skylo-test3.pl/blog/update" : "http://brunchbox.skylo-test3.pl/blog/add"}
+                                   action={update ? "http://localhost:5000/blog/update" : "http://localhost:5000/blog/add"}
                                    method="POST"
             >
                 <input className="invisibleInput"

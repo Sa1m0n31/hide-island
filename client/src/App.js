@@ -73,6 +73,9 @@ function App() {
           <Route path="/kategoria">
               <Category />
           </Route>
+          <Route path="/sklep">
+              <Category />
+          </Route>
           <Route path="/koszyk">
               <Cart />
           </Route>

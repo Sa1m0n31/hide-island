@@ -478,6 +478,15 @@ button, a {
     transition: .4s all;
 }
 
+.footer__btn:hover {
+    background: #333333;
+}
+
+.newsletterResponse {
+    font-size: 15px;
+    font-weight: 400;
+}
+
 /* Single product */
 .singleProductInfo {
     padding: var(--paddingExtra);
@@ -653,6 +662,7 @@ input[type=number] {
 /* Category */
 .category {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: flex-start;
     background: var(--black-primary);
@@ -666,6 +676,13 @@ input[type=number] {
 .category * {
     z-index: 2;
     position: relative;
+}
+
+.category__content__header {
+    text-align: center;
+    font-size: 28px;
+    width: 100%;
+    margin-bottom: 40px;
 }
 
 .category::after {
@@ -723,6 +740,11 @@ input[type=number] {
 
 .category__list__link:hover {
     letter-spacing: 2px;
+}
+
+.category__list__link--current {
+    letter-spacing: 2px;
+    font-weight: 700;
 }
 
 .category .singleProductInfo__sizes__btn {
@@ -927,4 +949,76 @@ input[type=number] {
 .page__content, .page__content * {
     color: #fff;
     padding: 30px 0 50px;
+}
+
+/* React modal - animation */
+.smallModal {
+    transition: .4s all;
+}
+
+.smallModal .ReactModal__Overlay {
+    opacity: 0;
+    z-index: 10;
+    background: rgba(0, 0, 0, .7) !important;
+    transform: translateX(-100vw);
+    transition: all 500ms ease-in-out;
+}
+
+.smallModal .ReactModal__Content {
+    transform: scale(0) translate(-50%, -50%);
+    transition: all 500ms ease-in-out;
+    transform-origin: center !important;
+    transition-delay: 500ms !important;
+    position: absolute;
+    top: 50% !important;
+    left: 50% !important;
+    background: var(--black-primary) !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.smallModal .ReactModal__Overlay--after-open {
+    opacity: 1;
+    transform: translateX(0px);
+    transition: all 500ms ease-in-out;
+}
+
+.smallModal .ReactModal__Overlay--before-close {
+    opacity: 0;
+    transform: translateX(-100px);
+    transition: all 500ms ease-in-out;
+}
+
+.smallModal .ReactModal__Content--after-open {
+    transform: scale(1) translate(-50%, -50%);
+    transition: all 500ms ease-in-out;
+}
+
+.modalTick {
+    filter: brightness(0) invert(1);
+    transform: scale(.9);
+}
+
+.modalHeader {
+    margin: 30px 0;
+}
+
+.modal__buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 80%;
+    max-width: 400px;
+}
+
+.modal__btn {
+    background: #787878;
+    color: #fff;
+    padding: 10px 20px;
+}
+
+.modal__btn:hover {
+    background: var(--black-secondary);
 }

@@ -28,9 +28,9 @@ const PanelPaymentContent = () => {
 
     const formik = useFormik({
         initialValues: {
-            marchantId: data.marchant_id,
-            crc: data.crc,
-            apiKey: data.api_key
+            marchantId: data?.marchant_id,
+            crc: data?.crc,
+            apiKey: data?.api_key
         },
         enableReinitialize: true,
         onSubmit: values => {

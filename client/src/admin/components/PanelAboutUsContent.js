@@ -135,7 +135,7 @@ const PanelAboutUsContent = () => {
 
                 {addedMsg === "" ? <form className="panelContent__frame__form categoriesForm"
                                          method="POST"
-                                         action={update ? "http://brunchbox.skylo-test3.pl/about-us/update" : "http://brunchbox.skylo-test3.pl/about-us/add"}
+                                         action={update ? "http://localhost:5000/about-us/update" : "http://localhost:5000/about-us/add"}
                                          onSubmit={(e) => { handleSubmit(e) }}
                                          encType="multipart/form-data"
                 >

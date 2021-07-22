@@ -27,11 +27,6 @@ import ReactTooltip from "react-tooltip";
 const AddProductContent = () => {
     const editorR = useRef(null);
 
-    const allergensImg = [gluten, grzyby, jajka, kukurydza, lubin, mieczaki, mleko, musztarda, orzechy, orzechyZiemne, ryba, seler,
-        sezam, siarka, skorupiaki, soja];
-    const allergensNames = ['gluten', 'grzyby', 'jajka', 'kukurydza', 'łubin', 'mięczaki', 'mleko', 'musztarda', 'orzechy', 'brokół', 'ryba', 'seler',
-        'sezam', 'siarka', 'skorupiaki', 'soja'];
-
     const [update, setUpdate] = useState(false);
     const [name, setName] = useState("");
     const [bracket, setBracket] = useState("");
@@ -44,31 +39,16 @@ const AddProductContent = () => {
     const [hidden, setHidden] = useState(false);
 
     /* Prices */
-    const [priceMMeat, setPriceMMeat] = useState("");
-    const [priceLMeat, setPriceLMeat] = useState("");
-    const [priceMWege, setPriceMWege] = useState(null);
-    const [priceLWege, setPriceLWege] = useState(null);
+    const [price, setPrice] = useState(0);
 
     /* Descriptions */
     const [shortDescription, setShortDescription] = useState("");
-    const [longDescription, setLongDescription] = useState("");
-    const [meatDescription, setMeatDescription] = useState("");
-    const [vegeDescription, setVegeDescription] = useState("");
 
     /* Options */
-    const [optionMeat, setOptionMeat] = useState(true);
-    const [optionWege, setOptionWege] = useState(false);
     const [sizeM, setSizeM] = useState(true);
     const [sizeL, setSizeL] = useState(false);
 
     const [addMsg, setAddMsg] = useState("");
-
-    const allergensList = ["gluten/gluten", "grzyby/mushrooms", "jajka/eggs",
-        "kukurydza/corn", "łubin/lupin", "mięczaki/mollusca",
-        "mleko/milk", "musztarda/mustard", "orzechy/nuts",
-        "brokuł/broccoli", "ryba/fish",
-        "seler/celery", "sezam/sesame", "siarka/sulphur",
-        "skorupiaki/shellfish", "soja/soya"];
 
     const location = useLocation();
 
@@ -81,7 +61,6 @@ const AddProductContent = () => {
                 /* Add allergens */
                 addAllergens(parseInt(localStorage.getItem('sec-product-id')), JSON.parse(localStorage.getItem('sec-allergens-to-add')))
                     .then(res => {
-                        console.log(res.data.result);
                         localStorage.removeItem('sec-product-id');
                         localStorage.removeItem('sec-allergens-to-add');
                     });
@@ -107,8 +86,6 @@ const AddProductContent = () => {
                 .then(async res => {
                     await setProduct(res.data.result[0]);
                     await setInitialValues(res.data.result[0]);
-                    setInitialAllergens(res.data.result);
-                    console.log(res.data.result);
                 });
         }
         else {
@@ -119,71 +96,21 @@ const AddProductContent = () => {
         }
     }, []);
 
-    const setInitialAllergens = (allergensData) => {
-        let newAllergies = allergies;
-        allergensList.forEach((nameItem, nameIndex) => {
-            allergensData.forEach((dataItem) => {
-                if(nameItem === dataItem.allergen) {
-                    newAllergies = newAllergies.map((item, index) => {
-                        if(index === nameIndex) return 1;
-                        else return item;
-                    });
-                    setAllergies(newAllergies);
-                }
-            });
-        })
-    }
-
     const setInitialValues = (productData) => {
         setName(productData.name);
-        setBracket(productData.bracket_name);
 
-        setOptionMeat(productData.meat);
-        setOptionWege(productData.vege);
         setSizeL(productData.l);
         setSizeM(productData.m);
-
-        setPriceMMeat(productData.price_m_meat);
-        setPriceLMeat(productData.price_l_meat);
-        setPriceMWege(productData.price_m_vege);
-        setPriceLWege(productData.price_l_vege);
 
         setCategoryId(productData.category_id);
         setHidden(productData.hidden);
 
         setShortDescription(productData.short_description);
-        setLongDescription(productData.long_description);
-        setMeatDescription(productData.meat_description);
-        setVegeDescription(productData.vege_description);
     }
 
     const handleSubmit = (e) => {
-        /* Add allergens to local storage */
-        const allergensToAdd = allergensList.filter((item, index) => {
-            return allergies[index];
-        });
-        localStorage.setItem('sec-allergens-to-add', JSON.stringify(allergensToAdd));
-        localStorage.setItem('sec-product-id', id.toString());
+        /* Add allergens to local storage - DELETED */
     }
-
-    const toggleAllergies = (e, i) => {
-        e.preventDefault();
-        const newAllergies = allergies.map((item, index) => {
-           if(index === i) {
-               if (item === 0) return 1;
-               else return 0;
-           }
-           else return item;
-        });
-        setAllergies(newAllergies);
-    }
-
-    useEffect(() => {
-        if(categoryId !== 3) setSizeM(true);
-        else {
-            setSizeL(true);
-        }
-    }, [categoryId]);
 
     return <main className="panelContent addProduct">
         <header className="addProduct__header">
@@ -194,7 +121,7 @@ const AddProductContent = () => {
         {addMsg === "" ? <form className="addProduct__form addProduct__form--addProduct"
                                encType="multipart/form-data"
                                onSubmit={(e) => { handleSubmit(e) }}
-                               action={update ? "http://brunchbox.skylo-test3.pl/product/update-product" : "http://brunchbox.skylo-test3.pl/product/add-product"}
+                               action={update ? "http://localhost:5000/product/update-product" : "http://localhost:5000/product/add-product"}
                                method="POST"
         >
             <section className="addProduct__form__section">
@@ -218,64 +145,16 @@ const AddProductContent = () => {
                 </label>
 
                 {/* PRICES */}
-                {categoryId === 1 || categoryId === 2 ? <>
-                    <label className={sizeM && optionMeat ? "addProduct__label" : "addProduct__input--invisible"}>
-                        <input className={sizeM && optionMeat ? "addProduct__input" : "addProduct__input--invisible"}
-                               name="priceM_meat"
-                               type="number"
-                               step={0.01}
-                               value={priceMMeat}
-                               onChange={(e) => { setPriceMMeat(e.target.value) }}
-                               placeholder="Cena dla rozmiaru M - opcja mięsna (domyślna)" />
-                    </label>
-                    <label className={sizeL && optionMeat ? "addProduct__label" : "addProduct__input--invisible"}>
-                        <input className={sizeL && optionMeat ? "addProduct__input" : "addProduct__input--invisible"}
-                               name="priceL_meat"
-                               type="number"
-                               step={0.01}
-                               value={priceLMeat}
-                               onChange={(e) => { setPriceLMeat(e.target.value) }}
-                               placeholder="Cena dla rozmiaru L - opcja mięsna (domyślna)" />
-                    </label>
+                <label className="addProduct__label">
+                    <input className="addProduct__input"
+                           name="price"
+                           type="number"
+                           step={0.01}
+                           value={price}
+                           onChange={(e) => { setPrice(e.target.value) }}
+                           placeholder="Cena" />
+                </label>
 
-                    <label className={sizeM && optionWege ? "addProduct__label" : "addProduct__input--invisible"}>
-                        <input className={sizeM && optionWege ? "addProduct__input" : "addProduct__input--invisible"}
-                               name="priceM_vege"
-                               type="number"
-                               step={0.01}
-                               value={priceMWege}
-                               onChange={(e) => { setPriceMWege(e.target.value) }}
-                               placeholder="Cena dla rozmiaru M - opcja wege" />
-                    </label>
-                    <label className={sizeL && optionWege ? "addProduct__label" : "addProduct__input--invisible"}>
-                        <input className={sizeL && optionWege ? "addProduct__input" : "addProduct__input--invisible"}
-                               name="priceL_vege"
-                               type="number"
-                               step={0.01}
-                               value={priceLWege}
-                               onChange={(e) => { setPriceLWege(e.target.value) }}
-                               placeholder="Cena dla rozmiaru L - opcja wege" />
-                    </label>
-                </> : <>
-                    <label className={sizeM && optionMeat ? "addProduct__label" : "addProduct__input--invisible"}>
-                        <input className={sizeM && optionMeat ? "addProduct__input" : "addProduct__input--invisible"}
-                               name="priceM_meat"
-                               type="number"
-                               step={0.01}
-                               value={priceMMeat}
-                               onChange={(e) => { setPriceMMeat(e.target.value) }}
-                               placeholder="Cena dla 25 sztuk" />
-                    </label>
-                    <label className={sizeL && optionMeat ? "addProduct__label" : "addProduct__input--invisible"}>
-                        <input className={sizeL && optionMeat ? "addProduct__input" : "addProduct__input--invisible"}
-                               name="priceL_meat"
-                               type="number"
-                               step={0.01}
-                               value={priceLMeat}
-                               onChange={(e) => { setPriceLMeat(e.target.value) }}
-                               placeholder="Cena dla 50 sztuk" />
-                    </label>
-                </>}
 
                 <select className="addProduct__categorySelect"
                         name="categoryId"
@@ -283,7 +162,7 @@ const AddProductContent = () => {
                         onChange={(e) => {
                             setCategoryId(parseInt(e.target.value));
                         }}>
-                    {categories.map((item, index) => {
+                    {categories?.map((item, index) => {
                         return <option key={index} value={index+1}>{item.name}</option>
                     })}
                 </select>
@@ -302,30 +181,16 @@ const AddProductContent = () => {
                 </label>
 
                 <label className="fileInputLabel">
-                    <span>Zdjęcie produktu {categoryId === 1 ? "(opcja mięsna M)" : ""}</span>
+                    <span>Zdjęcie produktu</span>
                     <input type="file"
                            className="product__fileInput"
                            name="mainImage" />
                 </label>
                 <label className="fileInputLabel">
-                    <span>Galeria - 1 {categoryId === 1 ? "(opcja mięsna L)" : ""}</span>
+                    <span>Galeria zdjęć</span>
                     <input type="file"
                            className="product__fileInput"
                            name="gallery1" />
-                </label>
-
-                <label className="fileInputLabel">
-                    <span>Galeria - 2 {categoryId === 1 ? "(opcja wege M)" : ""}</span>
-                    <input type="file"
-                           className="product__fileInput"
-                           name="gallery2" />
-                </label>
-
-                <label className="fileInputLabel">
-                    <span>Galeria - 3 {categoryId === 1 ? "(opcja wege L)" : ""}</span>
-                    <input type="file"
-                           className="product__fileInput"
-                           name="gallery3" />
                 </label>
             </section>
 
@@ -354,12 +219,6 @@ const AddProductContent = () => {
 
 
                 {/* Hidden inputs */}
-                <input className="input--hidden"
-                       name="meat"
-                       value={optionMeat} />
-                <input className="input--hidden"
-                       name="vegan"
-                       value={optionWege} />
                 <input className="input--hidden"
                        name="m"
                        value={sizeM} />

@@ -5,15 +5,20 @@ import logo from '../static/img/logo.png'
 import cartIcon from '../static/img/shop-bag.svg'
 import loginIcon from '../static/img/user.svg'
 import {CartContext} from "../App";
+import {getAllCategories} from "../helpers/categoryFunctions";
 
 const Header = () => {
-    const [menu, setMenu] = useState([1, 2, 3, 4, 5, 6, 7, 8]);
+    const [menu, setMenu] = useState([]);
 
     const { cartContent } = useContext(CartContext);
 
-
     useEffect(() => {
-        console.log(cartContent);
+        getAllCategories()
+            .then((res) => {
+                if(res?.data?.result) {
+                    setMenu(res.data.result);
+                }
+            });
     }, []);
 
     return <header className="header">
@@ -47,12 +52,19 @@ const Header = () => {
 
                 <menu className="header__menu">
                     <ul className="header__menu__list d-flex justify-content-between align-items-start">
+                        <li className="header__menu__list__item">
+                            <a className="header__menu__list__link" href="/">
+                                Strona główna
+                            </a>
+                        </li>
                         {menu.map((item, index) => {
-                            return <li className="header__menu__list__item" key={index}>
-                                <a className="header__menu__list__link">
-                                    Koszule
-                                </a>
-                            </li>
+                            if(!item.hidden) {
+                                return <li className="header__menu__list__item" key={index}>
+                                    <a className="header__menu__list__link" href={`/kategoria/${item.permalink}`}>
+                                        {item.name}
+                                    </a>
+                                </li>
+                            }
                         })}
                     </ul>
                 </menu>

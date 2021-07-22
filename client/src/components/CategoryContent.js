@@ -1,22 +1,67 @@
-import React, { useEffect, useState } from 'react'
+import React, {useContext, useEffect, useState} from 'react'
+
+import { useLocation } from "react-router";
 
 import test2 from '../static/img/test2.png'
 import arrowLong from "../static/img/arrow-long.svg";
+import closeImg from '../static/img/close.png'
+import tickImg from '../static/img/tick-sign.svg'
+import Modal from 'react-modal'
+import {getAllCategories} from "../helpers/categoryFunctions";
+import {CartContext} from "../App";
+import {getAllProducts} from "../helpers/productFunctions";
+import settings from "../admin/helpers/settings";
+import axios from "axios";
 
 const CategoryContent = () => {
     const filters = [
-        'do 100 zł', 'do 200 zł', 'do 300 zł', 'do 500 zł'
+        'do 100 zł', 'do 200 zł', 'do 300 zł', 'do 500 zł', 'bez ograniczeń'
     ];
 
+    const location = useLocation();
+
+    const { cartContent, addToCart } = useContext(CartContext);
+
     const [products, setProducts] = useState([1, 2, 3, 4, 5, 6]);
-    const [categories, setCategories] = useState(['Koszulki', 'Spodnie', 'Bluzy']);
+    const [categories, setCategories] = useState([]);
     const [sizes, setSizes] = useState([
         { size: "S", selected: false },
         { size: "M", selected: false },
         { size: "L", selected: false },
         { size: "XL", selected: false }
     ]);
-    const [price, setPrice] = useState(-1);
+    const [price, setPrice] = useState(4);
+    const [modal, setModal] = useState(false);
+    const [currentCategory, setCurrentCategory] = useState("");
+
+    useEffect(() => {
+        /* Get categories */
+        getAllCategories()
+            .then(res => {
+                if(res?.data?.result) {
+                    setCategories(res.data.result);
+                }
+            });
+
+        /* Get products */
+        getAllProducts()
+            .then(res => {
+               if(res?.data?.result) {
+                   setProducts(res.data.result);
+               }
+            });
+
+        /* Get current category */
+        const urlPathArray = window.location.pathname.split("/");
+        const categorySlug = urlPathArray[urlPathArray.length-1];
+
+        axios.post(`${settings.API_URL}/category/get-category-by-slug`, { slug: categorySlug })
+            .then(res => {
+                if(res.data.result) {
+                    setCurrentCategory(res.data.result[0]?.name);
+                }
+            });
+    }, []);
 
     const handleSizeFilter = (size) => {
         setSizes(sizes.map((item) => {
@@ -40,16 +85,50 @@ const CategoryContent = () => {
     }
 
     return <section className="page category">
+        <Modal
+            isOpen={modal}
+            portalClassName="smallModal"
+            onRequestClose={() => { setModal(false) }}
+        >
+
+            <button className="modalClose" onClick={() => { setModal(false) }}>
+                <img className="modalClose__img" src={closeImg} alt="zamknij" />
+            </button>
+
+            <img className="modalTick" src={tickImg} alt="dodano-do-koszyka" />
+            <h2 className="modalHeader">
+               Produkt został dodany do koszuka
+            </h2>
+            <section className="modal__buttons">
+                <button className="modal__btn" onClick={() => { setModal(false) }}>
+                    Kontynuuj zakupy
+                </button>
+                <button className="modal__btn" onClick={() => { window.location = "/koszyk" }}>
+                    Przejdź do kasy
+                </button>
+            </section>
+        </Modal>
+
+
+        <h1 className="category__content__header">
+            {currentCategory ? currentCategory : "Wszystkie produkty"}
+        </h1>
+
         <aside className="category__filters d-none d-md-block">
             <section className="category__filters__item">
                 <h3 className="category__filters__item__header">
                     Kategorie
                 </h3>
                 <ul className="category__filters__item__list">
+                    <li className="category__list__item">
+                        <a className={!currentCategory ? "category__list__link category__list__link--current" : "category__list__link"} href="/sklep">
+                            Wszystkie produkty
+                        </a>
+                    </li>
                     {categories.map((item, index) => {
-                        return <li className="category__list__item">
-                            <a className="category__list__link" href="#">
-                                {item}
+                        return <li className="category__list__item" key={index}>
+                            <a className={item.name === currentCategory ? "category__list__link category__list__link--current" : "category__list__link"} href={`/kategoria/${item.permalink}`}>
+                                {item.name}
                             </a>
                         </li>
                     })}
@@ -114,7 +193,7 @@ const CategoryContent = () => {
                 </section>
             </section>
         </aside>
-        <main className="category__content">
+            <main className="category__content">
             {products.map((item, index) => {
                 return <a className="recom__item" key={index}>
                     <figure className="recom__item__imgWrapper overflow-hidden">
@@ -126,13 +205,18 @@ const CategoryContent = () => {
                     <h4 className="recom__item__price recom__item__price--category text-center">
                         99 PLN
                     </h4>
-                    <button className="addToCartBtn addToCartBtn--category">
+                    <button className="addToCartBtn addToCartBtn--category"
+                            onClick={() => {
+                                setModal(true);
+                                addToCart();
+                            }}
+                    >
                         Dodaj do koszyka
                         <img className="addToCartBtn__img" src={arrowLong} alt="dodaj" />
                     </button>
                 </a>
             })}
-        </main>
+            </main>
     </section>
 }
 
