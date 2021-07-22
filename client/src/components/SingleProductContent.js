@@ -23,7 +23,7 @@ const SingleProductContent = () => {
         setCrossSells(crossSellsExample);
     }, []);
 
-    return <main className="page">
+    return <main>
         <SingleProductInfo
             title={product.title}
             description={product.description}

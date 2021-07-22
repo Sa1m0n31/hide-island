@@ -1,6 +1,22 @@
+@media(max-width: 1600px) {
+    .category__content {
+        grid-template-columns: repeat(3, 30%);
+    }
+
+    .addToCartBtn--category {
+        padding: 10px;
+        width: 100%;
+        justify-content: center;
+    }
+}
+
 @media(max-width: 1400px) {
     .recom__item {
         flex-basis: 30%;
+    }
+
+    .addToCartBtn--category {
+        font-size: 13px;
     }
 }
 
@@ -29,6 +45,11 @@
 
     .singleProductInfo__price {
         font-size: 18px;
+    }
+
+    .category .singleProductInfo__sizes__buttons {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
@@ -68,6 +89,15 @@
 
     .addToCartBtn {
         padding: 12px 20px;
+    }
+
+    .category__filters {
+        width: 30%;
+    }
+
+    .category__content {
+        width: 65%;
+        grid-template-columns: repeat(2, 48%);
     }
 }
 
@@ -156,6 +186,43 @@
         flex-direction: column;
         align-items: flex-start;
     }
+
+    .category__content {
+        width: 100%;
+    }
+
+    .cart__item {
+        grid-template-columns: repeat(2, 1fr);
+        height: auto;
+    }
+
+    .cart__item__imgWrapper {
+        width: 100%;
+        height: auto;
+        grid-column: 1;
+        grid-row: 1 / span 3;
+    }
+
+    .cart__item__img {
+        width: 100%;
+        height: auto;
+    }
+
+    .cart__item__title {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    .cart__item__amount,
+    .cart__item__title,
+    .cart__item__title .cart__item__key
+    {
+        text-align: right !important;
+    }
+
+    .removeFromCartBtn {
+        opacity: 1;
+    }
 }
 
 @media(max-width: 576px) {
@@ -174,5 +241,32 @@
 
     .aboutUs__content__text {
         font-size: 14px;
+    }
+
+    .category__content {
+        grid-template-columns: 100%;
+    }
+
+    .cart__header {
+        font-size: 17px;
+    }
+
+    .emptyCart__btn {
+        width: 250px;
+        height: 40px;
+        font-size: 14px;
+    }
+
+    .cart__item__title {
+        font-size: 14px;
+    }
+
+    .cart__item__input {
+        width: 28px;
+        height: 28px;
+    }
+
+    .cart__item__value {
+        font-size: 15px;
     }
 }

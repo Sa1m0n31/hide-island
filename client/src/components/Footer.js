@@ -10,17 +10,17 @@ const Footer = () => {
                 </h4>
                 <ul className="footer__menu__list">
                     <li className="footer__menu__item">
-                        <a className="footer__menu__link">
+                        <a className="footer__menu__link" href="/regulamin">
                             Regulamin
                         </a>
                     </li>
                     <li className="footer__menu__item">
-                        <a className="footer__menu__link">
+                        <a className="footer__menu__link" href="/polityka-prywatnosci">
                             Polityka prywatności
                         </a>
                     </li>
                     <li className="footer__menu__item">
-                        <a className="footer__menu__link">
+                        <a className="footer__menu__link" href="/zwroty-i-reklamacje">
                             Reklamacje i zwroty
                         </a>
                     </li>

@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 
 import arrowWhite from '../static/img/arrow-white.svg'
 import arrowLong from '../static/img/arrow-long.svg'
+import {CartContext} from "../App";
 
 const SingleProductInfo = ({title, description, img, price, sizes}) => {
     const [size, setSize] = useState(null);
     const [amount, setAmount] = useState(1);
+
+    const { cartContent, addToCart } = useContext(CartContext);
 
     const isSizeAvailable = (s) => {
         return sizes?.findIndex((item) => {
@@ -98,7 +101,7 @@ const SingleProductInfo = ({title, description, img, price, sizes}) => {
                     </aside>
                 </section>
 
-                <button className="addToCartBtn">
+                <button className="addToCartBtn" onClick={() => { addToCart(1, title, amount, img, size, price) }}>
                     Dodaj do koszyka
                     <img className="addToCartBtn__img" src={arrowLong} alt="dodaj" />
                 </button>
