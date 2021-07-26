@@ -58,10 +58,7 @@ const productSearch = (str) => {
             /* Search by first name */
             if(item.product_name.search(re) !== -1) return true;
 
-            /* Search by last name */
-            if(item.bracket_name.search(re) !== -1) return true;
-
-            /* Search by email */
+            /* Search by category name */
             if(item.category_name.search(re) !== -1) return true;
 
             return false;
@@ -71,21 +68,4 @@ const productSearch = (str) => {
     return filteredProducts;
 }
 
-const postSearch = (str) => {
-    const allPosts = JSON.parse(sessionStorage.getItem('sec-posts'));
-
-    let filteredPosts;
-    if(allPosts) {
-        filteredPosts = allPosts.filter((item, index) => {
-            const re = new RegExp(`.*${str}.*`, 'gi');
-
-            /* Search by title */
-            return item.title.search(re) !== -1;
-
-        });
-    }
-
-    return filteredPosts;
-}
-
-export { orderSearch, sortByDate, productSearch, postSearch };
+export { orderSearch, sortByDate, productSearch };

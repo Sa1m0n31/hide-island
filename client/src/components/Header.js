@@ -39,10 +39,10 @@ const Header = () => {
                         </a>
                     </section>
                     <section className="header__header__section">
-                        <button className="header__header__section__btn">
+                        <a className="header__header__section__btn" href="/zaloguj-sie">
                             <img className="header__header__section__btn__img" src={loginIcon} alt="login" />
                             Zaloguj się
-                        </button>
+                        </a>
                         <a className="header__header__section__btn" href="/koszyk">
                             <img className="header__header__section__btn__img" src={cartIcon} alt="koszyk" />
                             Twój koszyk ({cartContent.length})

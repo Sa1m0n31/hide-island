@@ -8,7 +8,7 @@ const getAllProducts = () => {
 }
 
 const getProductDetails = (id) => {
-    return axios.post(`${API_URL}/product/product-data`, { id });
+    return axios.post(`${API_URL}/product/single-product`, { id });
 }
 
 const deleteProductById = (id) => {

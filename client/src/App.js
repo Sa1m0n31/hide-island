@@ -28,6 +28,8 @@ import PanelOthers from "./admin/pages/PanelOthers";
 import AddProductPage from "./admin/pages/AddProductPage";
 import AddPostPage from "./admin/pages/AddPostPage";
 import OrderDetails from "./admin/pages/OrderDetails";
+import RegisterPage from "./pages/RegisterPage";
+import LoginPageClient from "./pages/LoginPageClient";
 
 /* Context */
 const CartContext = React.createContext(null);
@@ -94,6 +96,13 @@ function App() {
                     title="Zwroty i reklamacje"
                     content="regulamin" />
             </Route>
+
+          <Route path="/zaloguj-sie">
+              <LoginPageClient />
+          </Route>
+          <Route path="/zarejestruj-sie">
+              <RegisterPage />
+          </Route>
 
             {/* Admin routes */}
             <Route exact path='/admin'>

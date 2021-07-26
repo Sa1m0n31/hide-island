@@ -1147,3 +1147,8 @@ select {
     background: var(--black-secondary);
     color: #fff;
 }
+
+/* Modifications */
+.d-flex > .addProduct__input {
+    width: 47%;
+}

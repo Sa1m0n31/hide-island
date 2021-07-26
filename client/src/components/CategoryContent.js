@@ -9,9 +9,10 @@ import tickImg from '../static/img/tick-sign.svg'
 import Modal from 'react-modal'
 import {getAllCategories} from "../helpers/categoryFunctions";
 import {CartContext} from "../App";
-import {getAllProducts} from "../helpers/productFunctions";
+import {getAllProducts, getProductsByCategory} from "../helpers/productFunctions";
 import settings from "../admin/helpers/settings";
 import axios from "axios";
+import convertToURL from "../helpers/convertToURL";
 
 const CategoryContent = () => {
     const filters = [
@@ -23,6 +24,7 @@ const CategoryContent = () => {
     const { cartContent, addToCart } = useContext(CartContext);
 
     const [products, setProducts] = useState([1, 2, 3, 4, 5, 6]);
+    const [productsFiltered, setProductsFiltered] = useState([]);
     const [categories, setCategories] = useState([]);
     const [sizes, setSizes] = useState([
         { size: "S", selected: false },
@@ -33,6 +35,7 @@ const CategoryContent = () => {
     const [price, setPrice] = useState(4);
     const [modal, setModal] = useState(false);
     const [currentCategory, setCurrentCategory] = useState("");
+    const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
         /* Get categories */
@@ -43,22 +46,34 @@ const CategoryContent = () => {
                 }
             });
 
-        /* Get products */
-        getAllProducts()
-            .then(res => {
-               if(res?.data?.result) {
-                   setProducts(res.data.result);
-               }
-            });
-
         /* Get current category */
         const urlPathArray = window.location.pathname.split("/");
         const categorySlug = urlPathArray[urlPathArray.length-1];
 
         axios.post(`${settings.API_URL}/category/get-category-by-slug`, { slug: categorySlug })
             .then(res => {
-                if(res.data.result) {
+                if(res.data.result[0]) {
+                    /* Category page => Get products of current category */
                     setCurrentCategory(res.data.result[0]?.name);
+                    getProductsByCategory(res.data.result[0]?.id)
+                        .then(res => {
+                           if(res?.data?.result) {
+                               setProducts(res.data.result);
+                               setProductsFiltered(res.data.result);
+                               setLoaded(true);
+                           }
+                        });
+                }
+                else {
+                    /* Shop page => Get all products */
+                    getAllProducts()
+                        .then(res => {
+                            if(res?.data?.result) {
+                                setProducts(res.data.result);
+                                setProductsFiltered(res.data.result);
+                                setLoaded(true);
+                            }
+                        });
                 }
             });
     }, []);
@@ -74,6 +89,36 @@ const CategoryContent = () => {
             else return item;
         }));
     }
+
+    useEffect(() => {
+        /* Handle price filter */
+        const pricesToFilter = [100, 200, 300, 500];
+        switch(price) {
+            case 0:
+                setProductsFiltered(products.filter((item) => {
+                    return item.price < pricesToFilter[0];
+                }));
+                break;
+            case 1:
+                setProductsFiltered(products.filter((item) => {
+                    return item.price < pricesToFilter[1];
+                }));
+                break;
+            case 2:
+                setProductsFiltered(products.filter((item) => {
+                    return item.price < pricesToFilter[2];
+                }));
+                break;
+            case 3:
+                setProductsFiltered(products.filter((item) => {
+                    return item.price < pricesToFilter[3];
+                }));
+                break;
+            default:
+                setProductsFiltered(products);
+                break;
+        }
+    }, [price]);
 
     const isSizeSelected = (size) => {
         return sizes.filter((item) => {
@@ -194,27 +239,24 @@ const CategoryContent = () => {
             </section>
         </aside>
             <main className="category__content">
-            {products.map((item, index) => {
-                return <a className="recom__item" key={index}>
-                    <figure className="recom__item__imgWrapper overflow-hidden">
-                        <img className="recom__item__img" src={test2} />
-                    </figure>
-                    <h3 className="recom__item__title recom__item__title--category text-center mt-3">
-                        Kurtka oversize czarna
-                    </h3>
-                    <h4 className="recom__item__price recom__item__price--category text-center">
-                        99 PLN
-                    </h4>
-                    <button className="addToCartBtn addToCartBtn--category"
-                            onClick={() => {
-                                setModal(true);
-                                addToCart();
-                            }}
-                    >
-                        Dodaj do koszyka
-                        <img className="addToCartBtn__img" src={arrowLong} alt="dodaj" />
-                    </button>
-                </a>
+            {productsFiltered.map((item, index) => {
+                if((!item.hidden)&&(loaded)) {
+                    return <a className="recom__item" key={index} href={`http://localhost:3000/produkt/${convertToURL(item.name)}`}>
+                        <figure className="recom__item__imgWrapper overflow-hidden">
+                            <img className="recom__item__img" src={test2} />
+                        </figure>
+                        <h3 className="recom__item__title recom__item__title--category text-center mt-3">
+                            {item.name}
+                        </h3>
+                        <h4 className="recom__item__price recom__item__price--category text-center">
+                            {item.price} PLN
+                        </h4>
+                        <button className="addToCartBtn addToCartBtn--category">
+                            Zobacz więcej
+                            <img className="addToCartBtn__img" src={arrowLong} alt="dodaj" />
+                        </button>
+                    </a>
+                }
             })}
             </main>
     </section>

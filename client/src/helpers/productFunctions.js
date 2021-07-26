@@ -19,12 +19,12 @@ const getProductByName = (name) => {
     return axios.post(`${API_URL}/product/get-product-by-name`, { name });
 }
 
-const getProductAllergens = (id) => {
-    return axios.post(`${API_URL}/product/single-allergens`, { id });
+const getProductsByCategory = (id) => {
+    return axios.post(`${API_URL}/product/get-products-by-category`, { id });
 }
 
 const getImageById = (id) => {
     return axios.post(`${API_URL}/product/get-image`, { id });
 }
 
-export { getAllProducts, getSingleProduct, getProductByName, getProductAllergens, getImageById, getProductById };
+export { getAllProducts, getSingleProduct, getProductByName, getProductsByCategory, getImageById, getProductById };

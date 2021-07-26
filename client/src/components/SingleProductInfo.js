@@ -3,10 +3,14 @@ import React, { useEffect, useState, useContext } from 'react';
 import arrowWhite from '../static/img/arrow-white.svg'
 import arrowLong from '../static/img/arrow-long.svg'
 import {CartContext} from "../App";
+import closeImg from "../static/img/close.png";
+import tickImg from "../static/img/tick-sign.svg";
+import Modal from "react-modal";
 
-const SingleProductInfo = ({title, description, img, price, sizes}) => {
-    const [size, setSize] = useState(null);
+const SingleProductInfo = ({id, title, description, img, price, sizes}) => {
+    const [size, setSize] = useState(0);
     const [amount, setAmount] = useState(1);
+    const [modal, setModal] = useState(false);
 
     const { cartContent, addToCart } = useContext(CartContext);
 
@@ -23,6 +27,30 @@ const SingleProductInfo = ({title, description, img, price, sizes}) => {
     }, [amount]);
 
     return <main className="singleProductInfo d-flex flex-column flex-lg-row justify-content-center justify-content-md-between align-items-center align-items-md-start">
+        <Modal
+            isOpen={modal}
+            portalClassName="smallModal"
+            onRequestClose={() => { setModal(false) }}
+        >
+
+            <button className="modalClose" onClick={() => { setModal(false) }}>
+                <img className="modalClose__img" src={closeImg} alt="zamknij" />
+            </button>
+
+            <img className="modalTick" src={tickImg} alt="dodano-do-koszyka" />
+            <h2 className="modalHeader">
+                Produkt został dodany do koszuka
+            </h2>
+            <section className="modal__buttons">
+                <button className="modal__btn" onClick={() => { setModal(false) }}>
+                    Kontynuuj zakupy
+                </button>
+                <button className="modal__btn" onClick={() => { window.location = "/koszyk" }}>
+                    Przejdź do kasy
+                </button>
+            </section>
+        </Modal>
+
         <figure className="singleProductInfo__section singleProductInfo__section--figure">
             <img className="singleProductInfo__img" src={img} alt={title} />
         </figure>
@@ -43,38 +71,20 @@ const SingleProductInfo = ({title, description, img, price, sizes}) => {
                         Wybierz rozmiar:
                     </h3>
                     <section className="singleProductInfo__sizes__buttons">
-                        <button className="singleProductInfo__sizes__btn"
-                                value="S"
-                                disabled={!isSizeAvailable("S")}
-                                onClick={() => { setSize("S"); }}
-                                id={size === "S" ? "sizeSelected" : ""}
-                        >
-                            S
-                        </button>
-                        <button className="singleProductInfo__sizes__btn"
-                                value="S"
-                                disabled={!isSizeAvailable("M")}
-                                onClick={() => { setSize("M"); }}
-                                id={size === "M" ? "sizeSelected" : ""}
-                        >
-                            M
-                        </button>
-                        <button className="singleProductInfo__sizes__btn"
-                                value="S"
-                                disabled={!isSizeAvailable("L")}
-                                onClick={() => { setSize("L"); }}
-                                id={size === "L" ? "sizeSelected" : ""}
-                        >
-                            L
-                        </button>
-                        <button className="singleProductInfo__sizes__btn"
-                                value="S"
-                                disabled={!isSizeAvailable("XL")}
-                                onClick={() => { setSize("XL"); }}
-                                id={size === "XL" ? "sizeSelected" : ""}
-                        >
-                            XL
-                        </button>
+
+                        {sizes?.map((item, index) => {
+                            if(item.name) {
+                                return <button className="singleProductInfo__sizes__btn"
+                                               key={index}
+                                               value={item.name}
+                                               disabled={item.stock <= 0}
+                                               onClick={() => { setSize(item.name); }}
+                                               id={size === item.name ? "sizeSelected" : ""}
+                                >
+                                    {item.name}
+                                </button>
+                            }
+                        })}
                     </section>
                 </section>
 
@@ -101,7 +111,7 @@ const SingleProductInfo = ({title, description, img, price, sizes}) => {
                     </aside>
                 </section>
 
-                <button className="addToCartBtn" onClick={() => { addToCart(1, title, amount, img, size, price) }}>
+                <button className="addToCartBtn" onClick={() => { addToCart(id, title, amount, img, size, price); setModal(true); }}>
                     Dodaj do koszyka
                     <img className="addToCartBtn__img" src={arrowLong} alt="dodaj" />
                 </button>
@@ -112,8 +122,8 @@ const SingleProductInfo = ({title, description, img, price, sizes}) => {
                 <h3 className="singleProductInfo__description__header">
                     Opis produktu
                 </h3>
-                <p className="singleProductInfo__description__content">
-                    {description}
+                <p className="singleProductInfo__description__content" dangerouslySetInnerHTML={{__html: description}}>
+
                 </p>
             </section>
         </section>

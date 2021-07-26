@@ -269,4 +269,16 @@
     .cart__item__value {
         font-size: 15px;
     }
+
+    .clientForm {
+        padding: 40px 15px;
+    }
+
+    .registerPage {
+        padding: 20px 0 0;
+    }
+
+    .registerPage .clientForm {
+        width: 100%;
+    }
 }

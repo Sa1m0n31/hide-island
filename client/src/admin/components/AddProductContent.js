@@ -4,39 +4,32 @@ import {addAllergens, getNewId, getProductDetails} from "../helpers/productFunct
 import { useLocation } from "react-router";
 import {getAllCategories} from "../helpers/categoriesFunctions";
 
-import gluten from '../static/img/allergens/gluten.png'
-import grzyby from '../static/img/allergens/grzyby.png'
-import jajka from '../static/img/allergens/jajka.png'
-import kukurydza from '../static/img/allergens/kukurydza.png'
-import lubin from '../static/img/allergens/lubin.png'
-import mieczaki from '../static/img/allergens/mieczaki.png'
-import mleko from '../static/img/allergens/mleko.png'
-import musztarda from '../static/img/allergens/musztarda.png'
-import orzechy from '../static/img/allergens/orzechy.png'
-import orzechyZiemne from '../static/img/allergens/orzechy-ziemne.png'
-import ryba from '../static/img/allergens/ryba.png'
-import seler from '../static/img/allergens/seler.png'
-import sezam from '../static/img/allergens/sezam.png'
-import siarka from '../static/img/allergens/siarka.png'
-import skorupiaki from '../static/img/allergens/skorupiaki.png'
-import soja from '../static/img/allergens/soja.png'
-
 import JoditEditor from 'jodit-react';
-import ReactTooltip from "react-tooltip";
 
 const AddProductContent = () => {
     const editorR = useRef(null);
 
     const [update, setUpdate] = useState(false);
     const [name, setName] = useState("");
-    const [bracket, setBracket] = useState("");
     const [id, setId] = useState(0);
     const [categoryId, setCategoryId] = useState(1); // 1 - Oferta indywidualna, 2 - Menu grupowe, 3 - Menu bankietowe
-    const [currentCat, setCurrentCat] = useState(0);
     const [product, setProduct] = useState([]);
     const [categories, setCategories] = useState([]);
-    const [allergies, setAllergies] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
     const [hidden, setHidden] = useState(false);
+    const [recommendation, setRecommendation] = useState(false);
+
+    /* Sizes and stocks */
+    const [size1, setSize1] = useState("");
+    const [size2, setSize2] = useState("");
+    const [size3, setSize3] = useState("");
+    const [size4, setSize4] = useState("");
+    const [size5, setSize5] = useState("");
+
+    const [stock1, setStock1] = useState(0);
+    const [stock2, setStock2] = useState(0);
+    const [stock3, setStock3] = useState(0);
+    const [stock4, setStock4] = useState(0);
+    const [stock5, setStock5] = useState(0);
 
     /* Prices */
     const [price, setPrice] = useState(0);
@@ -99,17 +92,24 @@ const AddProductContent = () => {
     const setInitialValues = (productData) => {
         setName(productData.name);
 
-        setSizeL(productData.l);
-        setSizeM(productData.m);
+        setPrice(productData.price);
+
+        setSize1(productData.size_1_name);
+        setSize2(productData.size_2_name);
+        setSize3(productData.size_3_name);
+        setSize4(productData.size_4_name);
+        setSize5(productData.size_5_name);
+        setStock1(productData.size_1_stock);
+        setStock2(productData.size_2_stock);
+        setStock3(productData.size_3_stock);
+        setStock4(productData.size_4_stock);
+        setStock5(productData.size_5_stock);
 
         setCategoryId(productData.category_id);
         setHidden(productData.hidden);
+        setRecommendation(productData.recommendation);
 
-        setShortDescription(productData.short_description);
-    }
-
-    const handleSubmit = (e) => {
-        /* Add allergens to local storage - DELETED */
+        setShortDescription(productData.description);
     }
 
     return <main className="panelContent addProduct">
@@ -119,8 +119,6 @@ const AddProductContent = () => {
             </h1>
         </header>
         {addMsg === "" ? <form className="addProduct__form addProduct__form--addProduct"
-                               encType="multipart/form-data"
-                               onSubmit={(e) => { handleSubmit(e) }}
                                action={update ? "http://localhost:5000/product/update-product" : "http://localhost:5000/product/add-product"}
                                method="POST"
         >
@@ -135,13 +133,6 @@ const AddProductContent = () => {
                            value={name}
                            onChange={(e) => { setName(e.target.value) }}
                            placeholder="Nazwa produktu" />
-                </label>
-                <label className="addProduct__label">
-                    <input className="addProduct__input"
-                           name="bracketName"
-                           value={bracket}
-                           onChange={(e) => { setBracket(e.target.value) }}
-                           placeholder="Nazwa w nawiasie" />
                 </label>
 
                 {/* PRICES */}
@@ -163,7 +154,7 @@ const AddProductContent = () => {
                             setCategoryId(parseInt(e.target.value));
                         }}>
                     {categories?.map((item, index) => {
-                        return <option key={index} value={index+1}>{item.name}</option>
+                        return <option key={index} value={item.id}>{item.name}</option>
                     })}
                 </select>
 
@@ -189,31 +180,87 @@ const AddProductContent = () => {
                 <label className="fileInputLabel">
                     <span>Galeria zdjęć</span>
                     <input type="file"
+                           multiple={true}
                            className="product__fileInput"
-                           name="gallery1" />
+                           name="gallery" />
                 </label>
             </section>
 
             <section className="addProduct__form__section">
-
                 <section className="addProduct__form__subsection addProduct__form__subsection--marginLeft marginTop30">
+                    {/* Sizes and stocks */}
                     <h4 className="addProduct__form__subsection__header">
                         Dostępne rozmiary
                     </h4>
-                    <label className="panelContent__filters__btnWrapper panelContent__filters__btn--options">
-                        <button className="panelContent__filters__btn panelContent__filters__btn--options" onClick={(e) => {
-                            e.preventDefault();
-                            if(categoryId === 3) setSizeM(!sizeM);
-                        }}>
-                            <span className={sizeM ? "panelContent__filters__btn--active" : "d-none"} />
-                        </button>
-                        {categoryId === 3 ? "25 szt." : "M (domyślna)"}
+                    <label className="addProduct__label d-flex justify-content-between align-items-center">
+                        <input className="addProduct__input"
+                               name="size1"
+                               type="text"
+                               value={size1}
+                               onChange={(e) => { setSize1(e.target.value) }}
+                               placeholder="Pierwszy rozmiar" />
+                        <input className="addProduct__input"
+                               name="size1Stock"
+                               type="number"
+                               value={stock1}
+                               onChange={(e) => { setStock1(e.target.value) }}
+                               placeholder="Na stanie" />
                     </label>
-                    <label className="panelContent__filters__btnWrapper panelContent__filters__btn--options">
-                        <button className="panelContent__filters__btn panelContent__filters__btn--options" onClick={(e) => { e.preventDefault(); setSizeL(!sizeL); }}>
-                            <span className={sizeL ? "panelContent__filters__btn--active" : "d-none"} />
-                        </button>
-                        {categoryId === 3 ? "50 szt." : "L"}
+                    <label className="addProduct__label d-flex justify-content-between align-items-center">
+                        <input className="addProduct__input"
+                               name="size2"
+                               type="text"
+                               value={size2}
+                               onChange={(e) => { setSize2(e.target.value) }}
+                               placeholder="Drugi rozmiar" />
+                        <input className="addProduct__input"
+                               name="size2Stock"
+                               type="number"
+                               value={stock2}
+                               onChange={(e) => { setStock2(e.target.value) }}
+                               placeholder="Na stanie" />
+                    </label>
+                    <label className="addProduct__label d-flex justify-content-between align-items-center">
+                        <input className="addProduct__input"
+                               name="size3"
+                               type="text"
+                               value={size3}
+                               onChange={(e) => { setSize3(e.target.value) }}
+                               placeholder="Trzeci rozmiar" />
+                        <input className="addProduct__input"
+                               name="size3Stock"
+                               type="number"
+                               value={stock3}
+                               onChange={(e) => { setStock3(e.target.value) }}
+                               placeholder="Na stanie" />
+                    </label>
+                    <label className="addProduct__label d-flex justify-content-between align-items-center">
+                        <input className="addProduct__input"
+                               name="size4"
+                               type="text"
+                               value={size4}
+                               onChange={(e) => { setSize4(e.target.value) }}
+                               placeholder="Czwarty rozmiar" />
+                        <input className="addProduct__input"
+                               name="size4Stock"
+                               type="number"
+                               value={stock4}
+                               onChange={(e) => { setStock4(e.target.value) }}
+                               placeholder="Na stanie" />
+                    </label>
+                    <label className="addProduct__label d-flex justify-content-between align-items-center">
+                        <input className="addProduct__input"
+                               name="size5"
+                               type="text"
+                               value={size5}
+                               onChange={(e) => { setSize5(e.target.value) }}
+                               placeholder="Piąty rozmiar" />
+                        <input className="addProduct__input"
+                               name="size5Stock"
+                               type="number"
+                               value={stock5}
+                               onChange={(e) => { setStock5(e.target.value) }}
+                               placeholder="Na stanie" />
                     </label>
                 </section>
 
@@ -232,10 +279,19 @@ const AddProductContent = () => {
                     </button>
                     Ukryj produkt
                 </label>
+                <label className="panelContent__filters__label__label panelContent__filters__label__label--category">
+                    <button className="panelContent__filters__btn" onClick={(e) => { e.preventDefault(); setRecommendation(!recommendation); }}>
+                        <span className={recommendation ? "panelContent__filters__btn--active" : "d-none"} />
+                    </button>
+                    Pokaż produkt w polecanych
+                </label>
 
                 <input className="invisibleInput"
                        value={hidden ? "hidden" : ""}
                        name="hidden" />
+                <input className="invisibleInput"
+                       value={recommendation ? "true" : ""}
+                       name="recommendation" />
             </section>
 
             <section className="addProduct__btnWrapper">

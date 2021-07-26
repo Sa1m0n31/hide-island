@@ -3,8 +3,6 @@ const router = express.Router();
 const multer = require("multer");
 const con = require("../databaseConnection");
 const path = require("path");
-const crypto = require("crypto");
-const fs = require("fs");
 
 const upload = multer({ dest: 'uploads/' });
 
@@ -70,220 +68,114 @@ con.connect(err => {
    /* ADD PRODUCT */
    router.post("/add-product", (request, response) => {
       let filenames = [];
-      let filesId = [];
+      let filesId = [null];
 
-      /* Add images */
-      const storage = multer.diskStorage({
-         destination: "media/products/",
-         filename: function(req, file, cb){
-            const fName = file.fieldname + Date.now() + path.extname(file.originalname);
-            filenames.push(fName);
-            cb(null, fName);
-         }
-      });
+      /* Add product to database */
+      console.log("HERE:");
+      console.log(request.body);
+      let { id, name, categoryId, price, shortDescription, recommendation, hidden, size1, size2, size3, size4, size5, size1Stock, size2Stock, size3Stock, size4Stock, size5Stock } = request.body;
 
-      const upload = multer({
-         storage: storage
-      }).fields([{name: "mainImage"}, {name: "gallery1"}, {name: "gallery2"}, {name: "gallery3"}]);
+      hidden = hidden === "hidden";
+      recommendation = recommendation === "true";
 
-      upload(request, response, (err, res) => {
-         if (err) throw err;
+      console.log(id, name, price, shortDescription, filesId[0], categoryId, recommendation, hidden);
+      categoryId = parseInt(categoryId);
 
-         filenames.sort().reverse(); // First image - main image
-         /* Add images to database */
-         if(!filenames.length) addProduct();
-         else {
-            filenames.forEach((item, index, array) => {
-               const values = ["products/" + item];
-               const query = 'INSERT INTO images VALUES (NULL, ?)';
-               con.query(query, values, (err, res) => {
-                  filesId.push(res.insertId);
-                  if(index === array.length-1) addProduct();
+         /* Modify PRODUCTS table */
+         const values = [id, name, price, shortDescription, filesId[0], categoryId, recommendation, hidden];
+         const query = 'INSERT INTO products VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?)';
+         con.query(query, values, (err, res) => {
+            console.log("First error");
+            console.log(err);
+
+
+            if(res) {
+               const productId = res.insertId;
+
+               /* Modify IMAGES table */
+               const storage = multer.diskStorage({
+                  destination: "media/products/",
+                  filename: function(req, file, cb){
+                     const fName = file.fieldname + Date.now() + path.extname(file.originalname);
+                     filenames.push(fName);
+                     cb(null, fName);
+                  }
                });
-            });
-         }
-      });
 
-      /* Add product */
-      const addProduct = () => {
-         /* Fill images array */
-         const len = filesId.length;
-         for(let i=len; i<4; i++) filesId.push(null);
+               const upload = multer({
+                  storage: storage
+               }).fields([{name: "mainImage"}]);
 
-         /* Add product to database */
-         let { id, name, bracketName, categoryId, shortDescription, longDescription, meatDescription, vegeDescription, priceM_meat, priceL_meat, priceM_vege, priceL_vege, m, l, vegan, meat, hidden } = request.body;
-         if(priceL_meat !== '') priceL_meat = parseFloat(priceL_meat);
-         else priceL_meat = null;
-         if(priceM_meat !== '') priceM_meat = parseFloat(priceM_meat);
-         else priceM_meat = null;
-         if(priceL_vege !== '') priceL_vege = parseFloat(priceL_vege);
-         else priceL_vege = null;
-         if(priceM_vege !== '') priceM_vege = parseFloat(priceM_vege);
-         else priceM_vege = null;
+               upload(request, response, (err, res) => {
+                  if (err) throw err;
 
-         m = m === 'true' || m == 1;
-         l = l === 'true' || l == 1;
-         vegan = vegan === 'true' || vegan == 1;
-         meat = meat === 'true' || meat == 1;
-         hidden = hidden === "hidden";
+                  filenames.sort().reverse(); // First image - main image
+                  /* Add images to database */
+                  if(!filenames.length) console.log("length=0");
+                  else {
+                     filenames.forEach((item, index, array) => {
+                        const values = ["products/" + item, productId];
+                        const query = 'INSERT INTO images VALUES (NULL, ?, ?)';
+                        con.query(query, values, (err, res) => {
+                           filesId.push(res.insertId);
+                        });
+                     });
+                  }
+               });
 
-         categoryId = parseInt(categoryId);
+               /* Modify PRODUCTS_STOCKS table */
+               const values2 = [productId, size1, parseInt(size1Stock), size2, parseInt(size2Stock), size3, parseInt(size3Stock), size4, parseInt(size4Stock), size5, parseInt(size5Stock)];
+               const query2 = 'INSERT INTO products_stock VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
-         if(isNaN(priceM_vege)) priceM_vege = null;
-         if(isNaN(priceL_vege)) priceL_vege = null;
-         if(isNaN(priceM_meat)) priceM_meat = null;
-         if(isNaN(priceL_meat)) priceL_meat = null;
-
-            /* Add image to database */
-            const values = [id, name, priceM_meat, priceL_meat, priceM_vege, priceL_vege,
-               shortDescription, longDescription, meatDescription, vegeDescription,
-               filesId[0], categoryId, bracketName, vegan, meat, m, l, filesId[1], filesId[2], filesId[3], hidden];
-            const query = 'INSERT INTO products VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-            con.query(query, values, (err, res) => {
-               console.log("Error?");
-               console.log(err);
-               if(res) response.redirect("http://localhost:5000/panel/dodaj-produkt?add=1");
-               else response.redirect("http://localhost:5000/panel/dodaj-produkt?add=0");
-            });
-      }
+               con.query(query2, values2, (err, res) => {
+                  console.log("Second error");
+                  console.log(err);
+                  if(res) response.redirect("http://localhost:3000/panel/dodaj-produkt?add=1");
+                  else response.redirect("http://localhost:3000/panel/dodaj-produkt?add=0");
+               });
+            }
+            else {
+               response.redirect("http://localhost:3000/panel/dodaj-produkt?add=0");
+            }
+         });
    });
 
    /* UPDATE PRODUCT */
    router.post("/update-product", (request, response) => {
-      /* Add images */
-      let filenames = [];
-      let filesId = [];
+      let { id, name, categoryId, shortDescription, price, recommendation, size1, size2, size3, size4, size5, size1Stock, size2Stock, size3Stock, size4Stock, size5Stock, hidden } = request.body;
 
-      /* Add images */
-      const storage = multer.diskStorage({
-         destination: "media/products/",
-         filename: function(req, file, cb){
-            const fName = file.fieldname + Date.now() + path.extname(file.originalname);
-            filenames.push(fName);
-            cb(null, fName);
-         }
-      });
+      hidden = hidden === "hidden";
+      recommendation = recommendation === "true";
 
-      const upload = multer({
-         storage: storage
-      }).fields([{name: "mainImage"}, {name: "gallery1"}, {name: "gallery2"}, {name: "gallery3"}]);
+      categoryId = parseInt(categoryId);
 
-      upload(request, response, (err, res) => {
-         if(err) throw err;
+      /* Add product without main image */
+      const values = [name, price, shortDescription, categoryId, recommendation, hidden, id];
+      const query = 'UPDATE products SET name = ?, price = ?, ' +
+          'description = ?, category_id = ?, ' +
+          'recommendation = ?, hidden = ? ' +
+          'WHERE id = ?';
+      con.query(query, values, (err, res) => {
+         console.log("1 error");
+         console.log(err);
+         /* Update sizes and stock info */
+         const valuesSizes = [size1, size2, size3, size4, size5, size1Stock, size2Stock, size3Stock, size4Stock, size5Stock, id];
+         const querySizes = 'UPDATE products_stock SET size_1_name = ?, size_2_name = ?, size_3_name = ?, size_4_name = ?, size_5_name = ?, ' +
+             'size_1_stock = ?, size_2_stock = ?, size_3_stock = ?, size_4_stock = ?, size_5_stock = ? WHERE product_id = ?';
 
-         filenames.sort().reverse(); // First image - main image
-         /* Add images to database */
-         if(!filenames.length) updateProduct();
-         else {
-            filenames.forEach((item, index, array) => {
-               const values = ["products/" + item];
-               const query = 'INSERT INTO images VALUES (NULL, ?)';
-               con.query(query, values, (err, res) => {
-                  filesId.push(res.insertId);
-                  if(index === array.length-1) updateProduct();
-               });
-            });
-         }
-      });
-
-      const updateProduct = () => {
-         let { id, name, bracketName, categoryId, shortDescription, longDescription, meatDescription, vegeDescription, priceM_meat, priceL_meat, priceM_vege, priceL_vege, m, l, vegan, meat, hidden } = request.body;
-         if(priceL_meat !== '') priceL_meat = parseFloat(priceL_meat);
-         else priceL_meat = null;
-         if(priceM_meat !== '') priceM_meat = parseFloat(priceM_meat);
-         else priceM_meat = null;
-         if(priceL_vege !== '') priceL_vege = parseFloat(priceL_vege);
-         else priceL_vege = null;
-         if(priceM_vege !== '') priceM_vege = parseFloat(priceM_vege);
-         else priceM_vege = null;
-
-         m = m === 'true' || m == 1;
-         l = l === 'true' || l == 1;
-         vegan = vegan === 'true' || vegan == 1;
-         meat = meat === 'true' || meat == 1;
-         hidden = hidden === "hidden";
-
-         if(isNaN(priceM_vege)) priceM_vege = null;
-         if(isNaN(priceL_vege)) priceL_vege = null;
-         if(isNaN(priceM_meat)) priceM_meat = null;
-         if(isNaN(priceL_meat)) priceL_meat = null;
-
-         categoryId = parseInt(categoryId);
-
-         /* Add product without main image */
-         const values = [name, priceM_meat, priceL_meat, priceM_vege, priceL_vege,
-            shortDescription, longDescription, meatDescription, vegeDescription,
-            categoryId, bracketName, vegan, meat, m, l, hidden, id];
-         const query = 'UPDATE products SET name = ?, price_m_meat = ?, price_l_meat = ?, price_m_vege = ?, price_l_vege = ?, ' +
-             'short_description = ?, long_description = ?, meat_description = ?, vege_description = ?, category_id = ?, bracket_name = ?, ' +
-             'vege = ?, meat = ?, m = ?, l = ?, hidden = ? ' +
-             'WHERE id = ?';
-         con.query(query, values, (err, res) => {
-            /* Update images id in product row */
-            const mainImageIndex = filenames.findIndex((item) => {
-               if(item) {
-                  return item.search(/mainImage.*/g, "i") !== -1
-               }
-               else return false;
-            });
-            if(mainImageIndex !== -1) {
-               const values = [filesId[mainImageIndex], id];
-               const query = 'UPDATE products SET main_image = ? WHERE id = ?';
-               con.query(query, values);
-            }
-
-            const gallery1Index = filenames.findIndex((item) => {
-               if(item) {
-                  return item.search(/gallery1.*/g, "i") !== -1
-               }
-               else return false;
-            });
-            if(gallery1Index !== -1) {
-               const values = [filesId[gallery1Index], id];
-               const query = 'UPDATE products SET gallery_1 = ? WHERE id = ?';
-               con.query(query, values);
-            }
-
-            const gallery2Index = filenames.findIndex((item) => {
-               if(item) {
-                  return item.search(/gallery2.*/g, "i") !== -1
-               }
-               else return false;
-            });
-            if(gallery2Index !== -1) {
-               console.log("Gallery 2 idnex:");
-               console.log(gallery2Index);
-               const values = [filesId[gallery2Index], id];
-               const query = 'UPDATE products SET gallery_2 = ? WHERE id = ?';
-               con.query(query, values);
-            }
-
-            const gallery3Index = filenames.findIndex((item) => {
-               if(item) {
-                  return item.search(/gallery3.*/g, "i") !== -1
-               }
-               else return false;
-            });
-            if(gallery3Index !== -1) {
-               console.log("Gallery 3 idnex:");
-               console.log(gallery3Index);
-               const values = [filesId[gallery3Index], id];
-               const query = 'UPDATE products SET gallery_3 = ? WHERE id = ?';
-               con.query(query, values);
-            }
-
-            if(res) response.redirect("http://localhost:5000/panel/dodaj-produkt?add=1");
-            else response.redirect("http://localhost:5000/panel/dodaj-produkt?add=0");
+         con.query(querySizes, valuesSizes, (err, res) => {
+            console.log("2 error");
+            console.log(err);
+            if(res) response.redirect("http://localhost:3000/panel/dodaj-produkt?add=1");
+            else response.redirect("http://localhost:3000/panel/dodaj-produkt?add=0");
          });
-      }
+      });
    });
 
    /* REMOVE PRODUCT */
    router.post("/delete", (request, response) => {
       const { id } = request.body;
       const values = [id];
-
-      console.log(values);
 
       const query = 'DELETE FROM products WHERE id = ?';
       con.query(query, values, (err, res) => {
@@ -305,7 +197,7 @@ con.connect(err => {
 
    /* GET ALL PRODUCTS */
    router.get("/get-all-products", (request, response) => {
-      const query = 'SELECT p.id, p.name as product_name, p.bracket_name, i.file_path as image, p.price_m_meat, p.price_l_meat, p.price_m_vege, p.price_l_vege, p.date, COALESCE(c.name, "Brak") as category_name, p.hidden FROM products p ' +
+      const query = 'SELECT p.id, p.name, i.file_path as image, p.price, p.date, COALESCE(c.name, "Brak") as category_name, p.hidden FROM products p ' +
       'LEFT OUTER JOIN categories c ON p.category_id = c.id ' +
       'LEFT OUTER JOIN images i ON p.main_image = i.id ORDER BY p.date DESC';
 
@@ -321,30 +213,6 @@ con.connect(err => {
             });
          }
       });
-   });
-
-   /* GET ALL BANQUET PRODUCTS */
-   router.get("/get-banquet-products", (request, response) => {
-      const query = 'SELECT p.id, p.name, p.short_description, p.price_m_meat as price_25, p.price_l_meat as price_50, ' +
-          'i.file_path as main_image, i1.file_path as gallery_1, i2.file_path as gallery_2, i3.file_path as gallery_3 ' +
-          'FROM products p ' +
-          'LEFT OUTER JOIN images i ON p.main_image = i.id ' +
-          'LEFT OUTER JOIN images i1 ON p.gallery_1 = i1.id ' +
-          'LEFT OUTER JOIN images i2 ON p.gallery_2 = i2.id ' +
-          'LEFT OUTER JOIN images i3 ON p.gallery_3 = i3.id ' +
-          'WHERE p.category_id = 3';
-      con.query(query, (err, res) => {
-         if(res) {
-            response.send({
-               result: res
-            });
-         }
-         else {
-            response.send({
-               result: 0
-            });
-         }
-      })
    });
 
    /* GET SINGLE PRODUCT BY ID */
@@ -370,10 +238,15 @@ con.connect(err => {
    router.post("/get-product-by-name", (request, response) => {
       const { name } = request.body;
       const values = [name];
+      console.log(name);
       /* Query uses custom MySQL function - SPLIT_STR */
-      const query = 'SELECT p.id as id, p.name, p.bracket_name, p.price_m_meat, p.price_l_meat, p.price_m_vege, p.price_l_vege, ' +
-          'p.short_description, p.long_description, p.meat_description, p.vege_description, p.category_id, p.date, p.vege, p.meat, p.m, p.l, i.file_path as file_path ' +
-          'FROM products p JOIN images i ON i.id = p.main_image WHERE LOWER(SPLIT_STR(p.name, "/", 1)) = ?';
+      const query = 'SELECT p.id as id, p.name, p.price, ' +
+          'p.description, p.category_id, p.date, i.file_path as file_path, ' +
+          's.size_1_name, s.size_2_name, s.size_3_name, s.size_4_name, s.size_5_name, ' +
+          's.size_1_stock, s.size_2_stock, s.size_3_stock, s.size_4_stock, s.size_5_stock ' +
+          'FROM products p LEFT OUTER JOIN images i ON i.id = p.main_image ' +
+          'LEFT OUTER JOIN products_stock s ON p.id = s.product_id ' +
+          'WHERE LOWER(SPLIT_STR(p.name, "/", 1)) = ?';
       con.query(query, values, (err, res) => {
          console.log(err);
          response.send({
@@ -399,17 +272,20 @@ con.connect(err => {
             });
          }
       });
-   })
+   });
 
    /* GET SINGLE PRODUCT DETAILS (CLIENT) */
    router.post("/single-product", (request, response) => {
       const { id } = request.body;
       console.log(request.body);
       const values = [id];
-      const query = 'SELECT p.id as id, p.name, p.bracket_name, p.price_m_meat, p.price_l_meat, p.price_m_vege, p.price_l_vege, ' +
-          'p.short_description, p.long_description, p.meat_description, p.vege_description, p.category_id, p.date, p.vege, p.meat, ' +
-          'p.m, p.l, i.file_path as file_path, p.gallery_1, p.gallery_2, p.gallery_3 ' +
-          'FROM products p JOIN images i ON i.id = p.main_image WHERE p.id = ?';
+      const query = 'SELECT p.id as id, p.name, p.price, ' +
+          'p.description, p.category_id, p.date, p.recommendation, ' +
+          'i.file_path as file_path, s.size_1_name, s.size_1_stock, s.size_2_name, s.size_2_stock, s.size_3_name, s.size_3_stock, s.size_4_name, s.size_4_stock, s.size_5_name, s.size_5_stock ' +
+          'FROM products p ' +
+          'LEFT OUTER JOIN images i ON i.id = p.main_image ' +
+          'LEFT OUTER JOIN products_stock s ON p.id = s.product_id ' +
+          'WHERE p.id = ?';
       con.query(query, values, (err, res) => {
          if(res) {
             console.log(res);
@@ -427,31 +303,11 @@ con.connect(err => {
       });
    });
 
-   /* GET SINGLE PRODUCT ALLERGENS */
-   router.post("/single-allergens", (request, response) => {
-      const { id } = request.body;
-      const values = [id];
-      const query = 'SELECT a.allergen FROM products p JOIN allergens a ON p.id = a.product_id WHERE p.id = ?'
-      con.query(query, values, (err, res) => {
-         if(!err) {
-            response.send({
-               result: res
-            });
-         }
-         else {
-            response.send({
-               result: 0
-            });
-         }
-      });
-   });
-
    /* GET PRODUCT DETAILS */
    router.post("/product-data", (request, response) => {
       const { id } = request.body;
       const values = [id];
-      console.log("CHECKING FOR ID = " + id);
-      const query = 'SELECT * FROM products p LEFT OUTER JOIN allergens a ON p.id = a.product_id WHERE p.id = ?';
+      const query = 'SELECT * FROM products WHERE id = ?';
       con.query(query, values, (err, res) => {
          if(res) {
             response.send({
@@ -466,19 +322,24 @@ con.connect(err => {
       });
    });
 
-   /* DECREMENT PRODUCT STOCK */
-   router.post("/decrement-stock", (request, response) => {
+   /* GET PRODUCTS BY CATEGORY */
+   router.post("/get-products-by-category", (request, response) => {
       const { id } = request.body;
       const values = [id];
-      const query = 'UPDATE products SET stock = stock - 1';
+      const query = 'SELECT * FROM products WHERE category_id = ?';
       con.query(query, values, (err, res) => {
-         let result = 0;
-         if(res) result = 1;
-         response.send({
-            result
-         });
+         if(res) {
+            response.send({
+               result: res
+            });
+         }
+         else {
+            response.send({
+               result: 0
+            });
+         }
       });
-   });
+   })
 });
 
 module.exports = router;

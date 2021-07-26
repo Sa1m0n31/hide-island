@@ -20,6 +20,7 @@ const PanelProductsContent = () => {
     useEffect(() => {
         getAllProducts()
             .then(res => {
+                console.log(res.data);
                const result = res.data.result;
                setProducts(result);
                sessionStorage.setItem('skylo-e-commerce-products', JSON.stringify(result));

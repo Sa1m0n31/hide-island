@@ -34,7 +34,7 @@ const CartContent = () => {
                     return <section className="cart__item d-grid d-md-flex justify-content-between align-items-center">
                         <section className="d-flex cart__item__imgWrapper position-relative">
                             <button className="removeFromCartBtn"
-                                    onClick={() => { removeFromCart(1); }}
+                                    onClick={() => { removeFromCart(item.id); }}
                             >
                                 &times;
                             </button>
