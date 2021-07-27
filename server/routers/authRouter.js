@@ -22,18 +22,33 @@ con.connect(function(err) {
 
     /* ADD USER */
     router.post("/add-user", (request, response) => {
-       const { firstName, lastName, email, phoneNumber } = request.body;
-       const randomUser = uuidv4();
+       const { firstName, lastName, email, phoneNumber, password, postalCode, city, street, building, flat } = request.body;
 
-       const values = [firstName, lastName, email, randomUser, phoneNumber];
-       const query = 'INSERT INTO users VALUES (NULL, ?, ?, ?, ?, "abc", NULL, NULL, NULL, NULL, NULL, ?)'
+       let hash = null;
+       if(password) hash = crypto.createHash('md5').update(password).digest('hex');
+
+       const values = [firstName, lastName, email, hash, city, street, building, flat, postalCode, phoneNumber];
+       const query = 'INSERT INTO users VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
        con.query(query, values, (err, res) => {
-          let result = 0;
-          console.log(err);
-          if(res) result = res.insertId;
-          response.send({
-              result
-          });
+          if(err) {
+              console.log(err);
+              if(err.errno === 1062) {
+                  /* User already exists */
+                  response.send({
+                      result: -1
+                  });
+              }
+              else {
+                  response.send({
+                      result: 0
+                  });
+              }
+          }
+          else {
+              response.send({
+                  result: 1
+              });
+          }
        });
     });
 
@@ -103,7 +118,7 @@ con.connect(function(err) {
         const hash = crypto.createHash('md5').update(password).digest('hex');
 
         const values = [username, hash];
-        const query = 'SELECT id FROM users WHERE username = ? AND password = ?';
+        const query = 'SELECT id FROM users WHERE email = ? AND password = ?';
         let sessionKey;
 
         con.query(query, values, (err, res) => {

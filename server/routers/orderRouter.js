@@ -25,9 +25,10 @@ con.connect(err => {
 
    /* ADD SELL */
     router.post("/add-sell", (request, response) => {
-       let { productId, orderId, quantity, option, size } = request.body;
-       const values = [orderId, productId, quantity, option, size];
-       const query = 'INSERT INTO sells VALUES (NULL, ?, ?, ?, ?, ?)';
+       console.log("/add-sell");
+        let { productId, orderId, quantity, size } = request.body;
+       const values = [orderId, productId, quantity, size];
+       const query = 'INSERT INTO sells VALUES (NULL, ?, ?, ?, ?)';
        con.query(query, values, (err, res) => {
           if(res) {
               response.send({
@@ -35,6 +36,7 @@ con.connect(err => {
               });
           }
           else {
+              console.log(err);
               response.send({
                   result: null
               });
@@ -64,13 +66,21 @@ con.connect(err => {
 
    /* ADD ORDER */
    router.post("/add", (request, response) => {
-       let { paymentMethod, shippingMethod, city, street, building, flat, postalCode, sessionId, user, comment, delivery } = request.body;
+       let { paymentMethod, shippingMethod, city, street, building, flat, postalCode, sessionId, user, comment, companyName, nip } = request.body;
        if(flat === "") flat = null;
+       console.log("/add-order");
        building = parseInt(building) || 0;
-       const values = [paymentMethod, shippingMethod, city, street, building, flat, postalCode, user, comment, delivery, sessionId];
-       const query = 'INSERT INTO orders VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, "nieopłacone", "przyjęte do realizacji", CURRENT_TIMESTAMP, ?, ?, ?)';
+       let values = [paymentMethod, shippingMethod, city, street, building, flat, postalCode, user, comment, sessionId, companyName, nip];
+       const query = 'INSERT INTO orders VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, "nieopłacone", "przyjęte do realizacji", CURRENT_TIMESTAMP, ?, ?, ?, ?)';
+
+       values = values.map((item) => {
+           if(item === "") return null;
+           else return item;
+       });
+
        con.query(query, values, (err, res) => {
           let result = 0;
+          console.log(err);
           if(res) {
               if(res.insertId) result = res.insertId;
           }

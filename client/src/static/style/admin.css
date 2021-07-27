@@ -1120,10 +1120,6 @@ input[type=file] {
     margin: 20px auto;
 }
 
-label {
-    font-style: italic;
-}
-
 .marginTop20 {
     margin-top: 20px;
     display: block;

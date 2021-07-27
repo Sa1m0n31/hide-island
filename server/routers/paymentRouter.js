@@ -44,6 +44,7 @@ con.connect(err => {
     /* PAYMENT */
     router.post("/payment", cors(), async (request, response) => {
         /* Add order to database */
+        console.log("/payment");
         const { sessionId } = request.body;
 
         /* Generate SHA-384 checksum */
@@ -64,12 +65,12 @@ con.connect(err => {
                 merchantId: marchantId,
                 amount: parseFloat(request.body.amount) * 100,
                 currency: "PLN",
-                description: "Platnosc za zakupy w sklepie BrunchBox",
+                description: "Platnosc za zakupy w sklepie HideIsland",
                 email: request.body.email,
                 country: "PL",
                 language: "pl",
-                urlReturn: "https://localhost:5000/dziekujemy",
-                urlStatus: "https://localhost:5000/payment/verify",
+                urlReturn: "http://localhost:3000/",
+                urlStatus: "http://localhost:5000/payment/verify",
                 sign: gen_hash
             };
 
@@ -115,10 +116,14 @@ con.connect(err => {
         let currency = request.body.currency;
         let orderId = request.body.orderId;
 
+        console.log("VERTIFY!");
+
         /* Get data */
         const query = 'SELECT * FROM przelewy24 WHERE id = 1';
         con.query(query, (err, res) => {
             let crc = res[0].crc;
+
+            console.log(err);
 
             /* Calculate SHA384 checksum */
             let hash, data, gen_hash;

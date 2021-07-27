@@ -30,6 +30,8 @@ import AddPostPage from "./admin/pages/AddPostPage";
 import OrderDetails from "./admin/pages/OrderDetails";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPageClient from "./pages/LoginPageClient";
+import AfterRegister from "./pages/AfterRegister";
+import MyAccount from "./pages/MyAccount";
 
 /* Context */
 const CartContext = React.createContext(null);
@@ -102,6 +104,12 @@ function App() {
           </Route>
           <Route path="/zarejestruj-sie">
               <RegisterPage />
+          </Route>
+          <Route path="/konto-zalozone">
+              <AfterRegister />
+          </Route>
+          <Route path="/moje-konto">
+              <MyAccount />
           </Route>
 
             {/* Admin routes */}

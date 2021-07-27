@@ -14,7 +14,7 @@ const getOrderDetails = (id) => {
 const calculateCartSum = (cart) => {
     let sum = 0;
     cart.forEach(item => {
-        const quantity = item.quantity;
+        const quantity = item.amount;
         const price = item.price;
         sum += quantity * price;
     });

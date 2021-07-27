@@ -5,7 +5,7 @@ const EmptyCart = () => {
         <h2 className="cart__header">
             Twój koszyk jest pusty
         </h2>
-        <a className="emptyCart__btn" href="/">
+        <a className="emptyCart__btn" href="/sklep">
             Wróć do sklepu
         </a>
     </main>

@@ -51,6 +51,10 @@
         display: grid !important;
         grid-template-columns: repeat(2, 1fr);
     }
+
+    .myAccount, .myAccount__buttons {
+        width: 100%;
+    }
 }
 
 @media(max-width: 992px) {
@@ -98,6 +102,14 @@
     .category__content {
         width: 65%;
         grid-template-columns: repeat(2, 48%);
+    }
+
+    .shippingForm__form {
+        flex-direction: column;
+    }
+
+    .shippingForm__section {
+        width: 100%;
     }
 }
 
@@ -280,5 +292,39 @@
 
     .registerPage .clientForm {
         width: 100%;
+    }
+
+    .clientForm__input {
+        min-width: 100px;
+    }
+
+    .myAccount__orders__item {
+        border-bottom: 1px solid #6A6A6A;
+        padding: 15px 0;
+    }
+
+    .myAccount__orders__item__value,
+    .myAccount__orders__item__status {
+        width: 45%;
+        font-size: 14px;
+    }
+
+    .myAccount__orders__item__value:nth-of-type(2),
+    .myAccount__orders__item__status
+    {
+        text-align: right;
+        margin-right: 0;
+    }
+
+    .myAccount__orders__item__status {
+        width: auto;
+    }
+
+    .shippingForm__form {
+        padding: 15px;
+    }
+
+    .button--payment {
+        font-size: 14px;
     }
 }

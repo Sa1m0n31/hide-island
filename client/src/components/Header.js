@@ -6,9 +6,11 @@ import cartIcon from '../static/img/shop-bag.svg'
 import loginIcon from '../static/img/user.svg'
 import {CartContext} from "../App";
 import {getAllCategories} from "../helpers/categoryFunctions";
+import auth from "../admin/helpers/auth";
 
 const Header = () => {
     const [menu, setMenu] = useState([]);
+    const [isAuth, setIsAuth] = useState(false);
 
     const { cartContent } = useContext(CartContext);
 
@@ -18,6 +20,13 @@ const Header = () => {
                 if(res?.data?.result) {
                     setMenu(res.data.result);
                 }
+            });
+
+        /* Authorization */
+        auth(localStorage.getItem('sec-sessionKey'))
+            .then(res => {
+                if(res.data?.result) setIsAuth(true);
+                else setIsAuth(false);
             });
     }, []);
 
@@ -39,9 +48,9 @@ const Header = () => {
                         </a>
                     </section>
                     <section className="header__header__section">
-                        <a className="header__header__section__btn" href="/zaloguj-sie">
+                        <a className="header__header__section__btn" href={isAuth ? "/moje-konto" : "/zaloguj-sie"}>
                             <img className="header__header__section__btn__img" src={loginIcon} alt="login" />
-                            Zaloguj się
+                            {isAuth ? "Moje konto" : "Zaloguj się"}
                         </a>
                         <a className="header__header__section__btn" href="/koszyk">
                             <img className="header__header__section__btn__img" src={cartIcon} alt="koszyk" />

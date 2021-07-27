@@ -1069,12 +1069,13 @@ input[type=number] {
     background: var(--black-primary);
     border: 1px solid #6A6A6A;
     margin-bottom: 20px;
-    width: clamp(100px, 350px, 100%);
+    width: clamp(100px, 400px, 80vw);
     height: 45px;
+    position: relative;
 }
 
 .clientForm__icon {
-    margin-right: 25px;
+    margin: 0 10px 0 25px;
 }
 
 .clientForm__input {
@@ -1083,7 +1084,7 @@ input[type=number] {
     background: transparent;
     border: none;
     outline: none;
-    min-width: 250px;
+    min-width: 350px;
 }
 
 .registerHintBtn {
@@ -1169,4 +1170,241 @@ input[type=number] {
 
 .w-25 {
     width: 25% !important;
+}
+
+.input--error {
+    animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+    animation-delay: .5s;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+    border-color: red;
+    margin-bottom: 55px;
+}
+
+.d-flex .input--error,
+.myAccount .input--error,
+.shippingForm .input--error
+{
+    margin-bottom: 20px;
+}
+
+@keyframes shake {
+    10%, 90% {
+        transform: translate3d(-1px, 0, 0);
+    }
+
+    20%, 80% {
+        transform: translate3d(2px, 0, 0);
+    }
+
+    30%, 50%, 70% {
+        transform: translate3d(-4px, 0, 0);
+    }
+
+    40%, 60% {
+        transform: translate3d(4px, 0, 0);
+    }
+}
+
+.error {
+    color: red;
+    font-size: 12px;
+    text-align: center;
+    display: block;
+    margin: -10px auto 10px auto;
+    position: absolute;
+    bottom: -100%;
+    left: 0;
+    width: 100%;
+}
+
+.d-flex .error {
+    margin-top: 0;;
+}
+
+.error--login {
+    position: relative;
+    top: 0;
+    bottom: 0;
+    margin: auto
+}
+
+/* After register page */
+.page--thankYou {
+    padding-top: 50px;
+    padding-bottom: 150px;
+}
+
+.infoHeader {
+    text-align: center;
+    padding: 40px 0 30px;
+    font-size: 24px;
+}
+
+.button--backToHomepage {
+    max-width: 400px;
+    color: #fff !important;
+    margin: auto;
+}
+
+/* My account */
+.page--myAccount {
+    padding-top: 50px;
+    padding-bottom: 80px;
+}
+
+.myAccount {
+    width: 900px;
+    margin: auto;
+}
+
+.myAccount .clientForm__input,
+.myAccount .button--login
+{
+    width: 100%;
+    max-width: 400px;
+}
+
+.myAccount .button--login:hover .addToCartBtn__img {
+    transform: rotate(360deg);
+}
+
+.myAccount__form {
+    margin: 0 auto 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.myAccount__orders {
+    margin-bottom: 40px;
+}
+
+.myAccount__orders__item__value {
+    font-size: 17px;
+    font-weight: 400;
+    margin-right: 20px;
+}
+
+.myAccount__orders__item__status {
+    background: #3CBB9B;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 400;
+    padding: 5px 10px;
+    text-transform: uppercase;
+}
+
+.success {
+    font-size: 12px;
+    color: #fff;
+    text-align: center;
+}
+
+.button--transparent {
+    color: #fff !important;
+    background: transparent;
+    font-size: 14px;
+    transition: .3s all;
+}
+
+.myAccount__buttons {
+    width: 900px;
+    margin: 0 auto 8px;
+}
+
+.button--transparent:hover {
+    letter-spacing: 2px;
+}
+
+/* Shipping form */
+.shippingForm__form {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    background: var(--black-secondary);
+    width: 100%;
+    margin: 30px auto;
+    padding: 40px;
+}
+
+.shippingForm .clientForm__subheader {
+    margin: 20px 0;
+}
+
+.shippingForm__section {
+    width: 45%;
+}
+
+.shippingForm .clientForm__row,
+.shippingForm .clientForm__label,
+.shippingForm .clientForm__input
+{
+    width: 100%;
+}
+
+.shippingForm .clientForm__row:first-of-type .clientForm__label {
+    width: 49%;
+}
+
+.label--button {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    cursor: pointer;
+}
+
+.formBtn {
+    width: 20px;
+    height: 20px;
+    background: transparent;
+    border: 1px solid #6A6A6A;
+    margin-right: 15px;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    padding: 3px;
+}
+
+.formBtn--checked {
+    background: #fff;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.clientForm__shippingHeader {
+    font-size: 18px;
+    margin: 15px 0;
+    font-weight: 400;
+}
+
+.label--button {
+    font-size: 14px;
+}
+
+.button--payment {
+    width: 100%;
+    height: 55px;
+}
+
+.textarea {
+    background: var(--black-primary);
+    resize: none;
+    width: 100%;
+    height: 220px;
+    padding: 15px;
+    outline: none !important;
+    color: #fff;
+}
+
+.clientForm__label--textArea {
+    height: auto;
+}
+
+.newLine {
+    display: block;
+    text-align: center;
 }
