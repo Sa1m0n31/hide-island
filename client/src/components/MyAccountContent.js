@@ -13,6 +13,8 @@ const MyAccountContent = () => {
     const [passwordSuccess, setPasswordSuccess] = useState("");
     const [dataChanged, setDataChanged] = useState("");
 
+    const [orders, setOrders] = useState([]);
+
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
@@ -39,7 +41,18 @@ const MyAccountContent = () => {
                     setBuilding(result.building);
                     setFlat(result.flat);
                 }
-            })
+            });
+
+        /* Get user orders */
+        axios.post(`${settings.API_URL}/user/get-user-orders`, {
+            id: parseInt(localStorage.getItem('sec-user-id'))
+        })
+            .then(res => {
+               const result = res.data?.result;
+               if(result) {
+                   setOrders(result);
+               }
+            });
     }, []);
 
 
@@ -233,20 +246,22 @@ const MyAccountContent = () => {
                 Historia zamówień
             </h3>
             <section className="myAccount__orders">
-                <section className="myAccount__orders__item d-flex flex-wrap justify-content-between align-items-center">
-                    <h3 className="myAccount__orders__item__value">
-                        #2jkfd92
-                    </h3>
-                    <h3 className="myAccount__orders__item__value">
-                        28 lipca 2021
-                    </h3>
-                    <h3 className="myAccount__orders__item__value">
-                        1459 PLN
-                    </h3>
-                    <h3 className="myAccount__orders__item__status">
-                        W realizacji
-                    </h3>
-                </section>
+                {orders.map((item, index) => {
+                    return <section key={index} className="myAccount__orders__item d-flex flex-wrap justify-content-between align-items-center">
+                        <h3 className="myAccount__orders__item__value">
+                            #{item.id}
+                        </h3>
+                        <h3 className="myAccount__orders__item__value">
+                            {item.date.substr(0, 10)}
+                        </h3>
+                        <h3 className="myAccount__orders__item__value">
+                            {item.order_price} PLN
+                        </h3>
+                        <h3 className="myAccount__orders__item__status">
+                            {item.order_status}
+                        </h3>
+                    </section>
+                })}
             </section>
 
             {/* Change password */}

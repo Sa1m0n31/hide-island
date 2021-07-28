@@ -40,5 +40,4 @@ const numberToMonth = (n) => {
     return months[n];
 }
 
-
 export { getNextDays };

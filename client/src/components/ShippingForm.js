@@ -6,6 +6,11 @@ import {calculateCartSum} from "../admin/helpers/orderFunctions";
 import settings from "../helpers/settings";
 import axios from "axios";
 import { v4 as uuidv4 } from 'uuid';
+import auth from "../admin/helpers/auth";
+import GeolocationWidget from "./GeolocationWidget";
+import Modal from "react-modal";
+import closeImg from "../static/img/close.png";
+import tickImg from "../static/img/tick-sign.svg";
 
 const ShippingForm = () => {
     const [vat, setVat] = useState(false);
@@ -13,8 +18,64 @@ const ShippingForm = () => {
     const [paymentMethod, setPaymentMethod] = useState(-1);
     const [shippingCost, setShippingCost] = useState(0);
     const [amount, setAmount] = useState(calculateCartSum(JSON.parse(localStorage.getItem('hideisland-cart'))) + shippingCost);
+    const [isAuth, setIsAuth] = useState(false);
+    const [shippingMethods, setShippingMethods] = useState([]);
+    const [inPostModal, setInPostModal] = useState(false);
+    const [email, setEmail] = useState("");
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [city, setCity] = useState("");
+    const [postalCode, setPostalCode] = useState("");
+    const [street, setStreet] = useState("");
+    const [building, setBuilding] = useState("");
+    const [flat, setFlat] = useState("");
 
-    const shippingMethods = [1, 2, 3];
+    const [inPostAddress, setInPostAddress] = useState("");
+    const [inPostCode, setInPostCode] = useState("");
+    const [inPostCity, setInPostCity] = useState("");
+
+    useEffect(() => {
+        /* Check if login - then set form data */
+        auth(localStorage.getItem('sec-sessionKey'))
+            .then(res => {
+                if(res.data?.result) {
+                    axios.post(`${settings.API_URL}/user/get-user`, {
+                        id: parseInt(localStorage.getItem('sec-user-id'))
+                    })
+                        .then(res => {
+                            const result = res.data?.result;
+                            if(result) {
+                                setIsAuth(true);
+                                setEmail(result.email);
+                                setFirstName(result.first_name);
+                                setLastName(result.last_name);
+                                setPhoneNumber(result.phone_number);
+                                setCity(result.city);
+                                setPostalCode(result.postal_code);
+                                setStreet(result.street);
+                                setBuilding(result.building);
+                                setFlat(result.flat);
+                            }
+                        });
+                }
+            });
+
+        /* Check shipping methods */
+        axios.get(`${settings.API_URL}/shipping/get-info`)
+            .then(res => {
+               if(res.data?.result) {
+                   setShippingMethods(res.data.result);
+               }
+            });
+
+        /* Listener */
+        document.addEventListener("click", () => {
+            setInPostAddress(sessionStorage.getItem('paczkomat-adres'));
+            setInPostCode(sessionStorage.getItem('paczkomat-kod'));
+            setInPostCity(sessionStorage.getItem('paczkomat-miasto'));
+        })
+    }, []);
 
     useEffect(() => {
         setAmount(calculateCartSum(JSON.parse(localStorage.getItem('hideisland-cart'))) + shippingCost);
@@ -44,83 +105,115 @@ const ShippingForm = () => {
 
     const formik = useFormik({
         initialValues: {
-            email: "",
-            firstName: "",
-            lastName: "",
-            phoneNumber: "",
-            postalCode: "",
-            city: "",
-            street: "",
-            building: "",
-            flat: "",
+            email: email,
+            firstName: firstName,
+            lastName: lastName,
+            phoneNumber: phoneNumber,
+            postalCode: postalCode,
+            city: city,
+            street: street,
+            building: building,
+            flat: flat,
             companyName: "",
             nip: ""
         },
         validationSchema,
+        enableReinitialize: true,
         onSubmit: (values) => {
-            const sessionId = uuidv4();
+            if((shippingMethod !== -1)&&(paymentMethod !== -1)) {
+                const sessionId = uuidv4();
 
-            /* Add user */
-            axios.post(`${settings.API_URL}/auth/add-user`, {
-                firstName: formik.values.firstName,
-                lastName: formik.values.lastName,
-                email: formik.values.email,
-                phoneNumber: formik.values.phoneNumber
-            })
-                .then(res => {
-                    let insertedUserId = res.data.result;
-
-                    /* Add order */
-                    axios.post(`${settings.API_URL}/order/add`, {
-                        paymentMethod: paymentMethod+1,
-                        shippingMethod: shippingMethod+1,
-                        city: formik.values.city,
-                        street: formik.values.street,
-                        building: formik.values.building,
-                        flat: formik.values.flat,
-                        postalCode: formik.values.postalCode,
-                        user: insertedUserId !== -1 ? insertedUserId : null,
-                        comment: formik.values.comment,
-                        sessionId,
-                        companyName: formik.values.companyName,
-                        nip: formik.values.nip
+                /* Add user */
+                if(!isAuth) {
+                    axios.post(`${settings.API_URL}/auth/add-user`, {
+                        firstName: formik.values.firstName,
+                        lastName: formik.values.lastName,
+                        email: formik.values.email,
+                        phoneNumber: formik.values.phoneNumber
                     })
                         .then(res => {
-                            const orderId = res.data.result;
-
-                            /* Add sells */
-                            const cart = JSON.parse(localStorage.getItem('hideisland-cart'));
-                            cart?.forEach((item, cartIndex) => {
-                                /* Add sells */
-                                axios.post(`${settings.API_URL}/order/add-sell`, {
-                                    orderId,
-                                    productId: item.id,
-                                    size: item.size,
-                                    quantity: item.amount
-                                })
-                                    .then(res => { console.log(res.data) })
-                            });
-
-                            /* PAYMENT PROCESS */
-                            let paymentUri = "https://sandbox.przelewy24.pl/trnRequest/";
-
-                            axios.post(`${settings.API_URL}/payment/payment`, {
-                                sessionId,
-                                email: formik.values.email,
-                                amount
-                            })
-                                .then(res => {
-                                    /* Remove cart from local storage */
-                                    localStorage.removeItem('hideisland-cart');
-
-                                    const token = res.data.result;
-                                    window.location.href = `${paymentUri}${token}`;
-                                });
+                            addOrder(res, sessionId);
                         });
-        });
+                }
+                else {
+                    addOrder(null, sessionId);
+                }
+            }
     }});
 
+    const addOrder = (res, sessionId) => {
+        let insertedUserId = null;
+
+        if(res) insertedUserId = res.data.result;
+
+        /* Add order */
+        axios.post(`${settings.API_URL}/order/add`, {
+            paymentMethod: paymentMethod+1,
+            shippingMethod: shippingMethod,
+            city: formik.values.city,
+            street: formik.values.street,
+            building: formik.values.building,
+            flat: formik.values.flat,
+            postalCode: formik.values.postalCode,
+            user: insertedUserId !== -1 && insertedUserId !== null ? insertedUserId : parseInt(localStorage.getItem('sec-user-id')),
+            comment: formik.values.comment,
+            sessionId,
+            companyName: formik.values.companyName,
+            nip: formik.values.nip,
+            amount: amount,
+            inPostAddress: sessionStorage.getItem('paczkomat-adres'),
+            inPostCode: sessionStorage.getItem('paczkomat-kod'),
+            inPostCity: sessionStorage.getItem('paczkomat-miasto')
+        })
+            .then(res => {
+                const orderId = res.data.result;
+
+                /* Add sells */
+                const cart = JSON.parse(localStorage.getItem('hideisland-cart'));
+                cart?.forEach((item, cartIndex) => {
+                    /* Add sells */
+                    axios.post(`${settings.API_URL}/order/add-sell`, {
+                        orderId,
+                        productId: item.id,
+                        size: item.size,
+                        quantity: item.amount
+                    })
+                        .then(res => { console.log(res.data) })
+                });
+
+                /* PAYMENT PROCESS */
+                let paymentUri = "https://sandbox.przelewy24.pl/trnRequest/";
+
+                axios.post(`${settings.API_URL}/payment/payment`, {
+                    sessionId,
+                    email: formik.values.email,
+                    amount
+                })
+                    .then(res => {
+                        /* Remove cart from local storage */
+                        localStorage.removeItem('hideisland-cart');
+
+                        const token = res.data.result;
+                        window.location.href = `${paymentUri}${token}`;
+                    });
+            });
+    }
+
     return <section className="shippingForm">
+
+        <Modal
+            isOpen={inPostModal}
+            portalClassName="smallModal bigModal"
+            onRequestClose={() => { setInPostModal(false) }}
+        >
+
+            <button className="modalClose" onClick={() => { setInPostModal(false) }}>
+                <img className="modalClose__img" src={closeImg} alt="zamknij" />
+            </button>
+
+            <GeolocationWidget />
+        </Modal>
+
         <h2 className="cart__header">
             Uzupełnij dane do wysyłki
         </h2>
@@ -265,15 +358,27 @@ const ShippingForm = () => {
                 </h4>
                 <section className="shippingMethods">
                     {shippingMethods.map((item, index) => {
-                        return <label className="label--button mb-3">
+                        return <><label className="label--button mb-3">
                             <button className="formBtn" onClick={(e) => { e.preventDefault();
-                            setShippingMethod(index);
-                            setShippingCost(2);
+                            setShippingMethod(item.id);
+                            setShippingCost(item.price);
+                            if(index === 0) {
+                                /* Paczkomaty */
+                                document.querySelector(".bigModal").style.display = "block";
+                                document.querySelector(".bigModal").style.opacity = "1";
+                                document.querySelector("#easypack-search")?.setAttribute('autocomplete', 'off');
+                                setInPostModal(true);
+                            }
                             }}>
-                                <span className={shippingMethod === index ? "formBtn--checked" : "d-none"}></span>
+                                <span className={shippingMethod === item.id ? "formBtn--checked" : "d-none"}></span>
                             </button>
-                            Paczkomaty InPost (2 PLN)
+                            {item.name} ({item.price} PLN)
                         </label>
+                            {index === 0 && shippingMethod === item.id ? <address className="inPostAddress">
+                                {inPostAddress} <br/>
+                                {inPostCode} {inPostCity}
+                            </address> : ""}
+                        </>
                     })}
                 </section>
 

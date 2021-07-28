@@ -806,7 +806,12 @@ input[type=file] {
 
 /* Order details */
 .panelContent__header--smaller {
-    font-size: 18px;
+    font-size: 17px;
+    font-weight: 400;
+}
+
+.panelContent__header--smaller b {
+    font-size: 21px;
 }
 
 .panelContent__cart__content {
@@ -1147,4 +1152,26 @@ select {
 /* Modifications */
 .d-flex > .addProduct__input {
     width: 47%;
+}
+
+.panelContent__cart__column,
+.panelContent__data
+
+{
+    color: #fff;
+    border-color: #fff;
+}
+
+.panelContent__orderStatus__img {
+    filter: brightness(0) invert(1);
+}
+
+.inPost__address__header {
+    font-size: 17px;
+    margin-bottom: 15px;
+}
+
+.inPost__address {
+    color: #fff;
+    margin-top: 40px;
 }

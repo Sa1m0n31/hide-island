@@ -24,6 +24,37 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
+
+    <!-- PACZKOMATY API -->
+    <script src="https://geowidget.easypack24.net/js/sdk-for-javascript.js"></script>
+    <script type="text/javascript">
+      window.easyPackAsyncInit = function () {
+        easyPack.init({
+          mapType: 'google',
+          searchType: 'osm',
+          map: {
+            googleKey: 'AIzaSyAS0nA7DChYpHzv5CVpXM1K4vqYaGNCElw'
+          }
+        });
+        var map = easyPack.mapWidget('paczkomatyMapa', function(point) {
+          /* Paczkomat zostal wybrany */
+          sessionStorage.setItem('paczkomat-miasto', point.address_details.city);
+          sessionStorage.setItem('paczkomat-kod', point.address_details.post_code);
+          sessionStorage.setItem('paczkomat-adres', point.address_details.street + " " + point.address_details.building_number);
+
+          const storage = new Event('storage');
+          document.dispatchEvent(storage);
+
+          const modal = document.querySelector(".bigModal");
+          modal.style.opacity = "0";
+          setTimeout(() => {
+              modal.style.display = "none";
+          }, 500);
+        });
+      };
+    </script>
+    <link rel="stylesheet" href="https://geowidget.easypack24.net/css/easypack.css"/>
+
     <title>React App</title>
   </head>
   <body>

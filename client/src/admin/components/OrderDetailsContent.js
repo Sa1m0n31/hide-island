@@ -35,13 +35,6 @@ const OrderDetailsContent = () => {
                calculateCartSum();
             });
 
-        /* Get ribbons info */
-        getRibbons(id)
-            .then(res => {
-                console.log(res.data.result);
-                if(res.data.result.length) setRibbons(res.data.result);
-            });
-
     }, []);
 
     const openModal = () => {
@@ -146,7 +139,7 @@ const OrderDetailsContent = () => {
                     {cart.map((item, index) => {
                         return <section key={index} className="panelContent__cart__item">
                             <section className="panelContent__cart__column">
-                                <span>{item.name?.split("/")[0]}</span>
+                                <span>{item.name}</span>
                             </section>
                             <section className="panelContent__cart__column panelQuantity">
                                 <span>Ilość: {item.quantity}</span>
@@ -159,12 +152,6 @@ const OrderDetailsContent = () => {
                             </section>
                         </section>
                     })}
-
-                    <div className="panelContent__cart__sum">
-                        <h3>
-                            <span className="smaller">Czas dostarczenia zamówienia:</span> {cart[0].delivery}
-                        </h3>
-                    </div>
                 </main>
 
             </section>
@@ -202,47 +189,20 @@ const OrderDetailsContent = () => {
 
                 <section className="panelContent__shipping">
                     <h2 className="panelContent__header--smaller">
-                        Dostawa
+                        Sposób dostawy: <b>{cart[0].shipping}</b>
                     </h2>
-                    <main className="panelContent__clientData__content">
-                        <h3 className="panelContent__data w-70">
-                            {cart[0].city}
-                        </h3>
-                        <h3 className="panelContent__data w-30">
-                            {cart[0].postal_code}
-                        </h3>
-                        <h3 className="panelContent__data w-50">
-                            {cart[0].street}
-                        </h3>
-                        <h3 className="panelContent__data w-20">
-                            {cart[0].building}
-                        </h3>
-                        <h3 className="panelContent__data w-20">
-                            {cart[0].flat ? cart[0].flat : "-"}
-                        </h3>
-                        {cart[0].order_comment !== null ? <p className="panelContent__data w-100">
-                            {cart[0].order_comment}
-                        </p> : ""}
-                    </main>
-                </section>
-            </section>
+                    <h2 className="panelContent__header--smaller mt-4">
+                        Płatność: <b>{cart[0].payment}</b>
+                    </h2>
 
-            <section className="marginTop30">
-                <h2 className="panelContent__header--smaller">
-                    Wstążka z dedykacją
-                </h2>
-                <main className="panelContent__frame__main">
-                    {ribbons.length ? ribbons.map((item, index) => (
-                        <section key={index} className="panelContent__ribbons__item">
-                            <figure className="panelContent__ribbons__column">
-                                <img className="panelContent__ribbons__column__img" src={tick} alt="tak" />
-                            </figure>
-                            <h3 className="panelContent__ribbons__column panelContent__ribbons__column--caption">
-                                <b>Napis:</b> {item.caption}
-                            </h3>
-                        </section>
-                    )) : <img src={x} alt="nie" /> }
-                </main>
+                    {cart[0].shipping === "Paczkomaty InPost" ? <section className="inPost__address">
+                        <h4 className="inPost__address__header">
+                            Adres paczkomatu:
+                        </h4>
+                        {cart[0].inpost_address}<br/>
+                        {cart[0].inpost_postal_code} {cart[0].inpost_city}
+                    </section> : ""}
+                </section>
             </section>
 
         </section>

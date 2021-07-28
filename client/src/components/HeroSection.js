@@ -27,7 +27,7 @@ const HeroSection = () => {
 
     return <main className="hero">
         <figure className="hero__slider">
-            <button className="hero__slider__arrow hero__slider__arrow--left" onClick={() => { sliderPrev(); }}>
+            <button className="d-none d-md-block hero__slider__arrow hero__slider__arrow--left" onClick={() => { sliderPrev(); }}>
                 <img className="hero__slider__arrow__img" src={sliderArrow} alt="w-lewo" />
             </button>
             <ReactSiema perPage={1} loop={true} draggable={false}
@@ -38,11 +38,11 @@ const HeroSection = () => {
                 <img ref={sliderRef3} className="hero__slider__img" id="slider-3" src={landingTest3} alt="hideisland-slider" />
             </ReactSiema>
 
-            <button className="hero__slider__arrow hero__slider__arrow--right" onClick={() => { sliderNext(); }}>
+            <button className="d-none d-md-block hero__slider__arrow hero__slider__arrow--right" onClick={() => { sliderNext(); }}>
                 <img className="hero__slider__arrow__img" src={sliderArrow} alt="w-prawo" />
             </button>
         </figure>
-        <aside className="hero__slider__controls d-flex align-items-center justify-content-between">
+        <aside className="hero__slider__controls d-none d-md-flex align-items-center justify-content-between">
             <button className={slide === 0 ? "hero__slider__btn heroSliderBtn--selected" : "hero__slider__btn"} onClick={() => { setSlide(0); slider.goTo(0); }}>
 
             </button>

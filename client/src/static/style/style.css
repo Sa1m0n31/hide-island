@@ -143,7 +143,6 @@ button, a {
     overflow: hidden;
     max-height: 600px;
     border: 2px solid #fff;
-    height: 600px;
 }
 
 .hero__slider__img {
@@ -993,7 +992,13 @@ input[type=number] {
     flex-direction: column;
 }
 
-.smallModal .ReactModal__Overlay--after-open {
+.bigModal .ReactModal__Content {
+    width: 85%;
+    height: 85%;
+}
+
+.smallModal .ReactModal__Overlay--after-open
+{
     opacity: 1;
     transform: translateX(0px);
     transition: all 500ms ease-in-out;
@@ -1407,4 +1412,16 @@ input[type=number] {
 .newLine {
     display: block;
     text-align: center;
+}
+
+#paczkomatyMapa {
+    width: 90%;
+    height: 90%;
+}
+
+.inPostAddress {
+    color: #fff;
+    margin-left: 40px;
+    font-size: 14px;
+    font-style: italic;
 }

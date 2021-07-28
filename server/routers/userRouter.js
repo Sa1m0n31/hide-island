@@ -146,6 +146,25 @@ con.connect((err) => {
             }
         });
     });
+
+    /* GET USER ORDERS */
+    router.post("/get-user-orders", (request, response) => {
+        const { id } = request.body;
+        const values = [id];
+        const query = 'SELECT * FROM orders o JOIN sells s ON o.id = s.order_id WHERE o.user = ? GROUP BY o.id';
+        con.query(query, values, (err, res) => {
+            if(res) {
+                response.send({
+                    result: res
+                });
+            }
+            else {
+                response.send({
+                    result: 0
+                });
+            }
+        })
+    })
 });
 
 module.exports = router;
