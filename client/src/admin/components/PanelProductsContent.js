@@ -114,7 +114,7 @@ const PanelProductsContent = () => {
                                 Nazwa
                             </h4>
                             <h3 className="panelContent__column__value">
-                                {item.product_name}
+                                {item.name}
                             </h3>
                         </section>
 

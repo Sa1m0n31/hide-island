@@ -257,8 +257,8 @@ const MyAccountContent = () => {
                         <h3 className="myAccount__orders__item__value">
                             {item.order_price} PLN
                         </h3>
-                        <h3 className="myAccount__orders__item__status">
-                            {item.order_status}
+                        <h3 className={item.payment_status === "nieopłacone" ? "myAccount__orders__item__status orderStatus--red" : "myAccount__orders__item__status"}>
+                            {item.payment_status}
                         </h3>
                     </section>
                 })}

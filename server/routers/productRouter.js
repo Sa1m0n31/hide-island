@@ -31,64 +31,25 @@ con.connect(err => {
       })
    });
 
-   /* ADD ALLERGENS */
-   router.post("/add-allergens", (request, response) => {
-      const { id, allergens } = request.body;
-
-      console.log(id);
-      console.log(allergens);
-
-      /* Remove all allergens for current product */
-      const values = [id];
-      const query = 'DELETE FROM allergens WHERE product_id = ?';
-      con.query(query, values, (err, res) => {
-         if(allergens) {
-            allergens.forEach((item, index, array) => {
-               const values = [id, item];
-               const query = 'INSERT INTO allergens VALUES (NULL, ?, ?)';
-               con.query(query, values, (err, res) => {
-                  console.log(err);
-               });
-
-               if(index === array.length-1) {
-                  response.send({
-                     result: 1
-                  });
-               }
-            });
-         }
-         else {
-            response.send({
-               result: 1
-            });
-         }
-      });
-   });
-
    /* ADD PRODUCT */
    router.post("/add-product", (request, response) => {
       let filenames = [];
       let filesId = [null];
 
       /* Add product to database */
-      console.log("HERE:");
-      console.log(request.body);
       let { id, name, categoryId, price, shortDescription, recommendation, hidden, size1, size2, size3, size4, size5, size1Stock, size2Stock, size3Stock, size4Stock, size5Stock } = request.body;
 
       hidden = hidden === "hidden";
       recommendation = recommendation === "true";
 
-      console.log(id, name, price, shortDescription, filesId[0], categoryId, recommendation, hidden);
       categoryId = parseInt(categoryId);
 
          /* Modify PRODUCTS table */
          const values = [id, name, price, shortDescription, filesId[0], categoryId, recommendation, hidden];
          const query = 'INSERT INTO products VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?)';
          con.query(query, values, (err, res) => {
-            console.log("First error");
-            console.log(err);
-
-
+            console.log("res");
+            console.log(res);
             if(res) {
                const productId = res.insertId;
 
@@ -97,6 +58,7 @@ con.connect(err => {
                   destination: "media/products/",
                   filename: function(req, file, cb){
                      const fName = file.fieldname + Date.now() + path.extname(file.originalname);
+                     console.log(fName);
                      filenames.push(fName);
                      cb(null, fName);
                   }
@@ -107,7 +69,10 @@ con.connect(err => {
                }).fields([{name: "mainImage"}]);
 
                upload(request, response, (err, res) => {
-                  if (err) throw err;
+                  if (err) {
+                     console.log(err);
+                     throw err;
+                  }
 
                   filenames.sort().reverse(); // First image - main image
                   /* Add images to database */

@@ -1425,3 +1425,7 @@ input[type=number] {
     font-size: 14px;
     font-style: italic;
 }
+
+.orderStatus--red {
+    background: #941212;
+}

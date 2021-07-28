@@ -24,12 +24,34 @@ con.connect(err => {
         });
     });
 
+    const decrementStock = (productId, size, quantity) => {
+        const values = [quantity, productId, size];
+        const query1 = 'UPDATE products_stock SET size_1_stock = size_1_stock - ? WHERE product_id = ? AND size_1_name = ?';
+        const query2 = 'UPDATE products_stock SET size_2_stock = size_2_stock - ? WHERE product_id = ? AND size_2_name = ?';
+        const query3 = 'UPDATE products_stock SET size_3_stock = size_3_stock - ? WHERE product_id = ? AND size_3_name = ?';
+        const query4 = 'UPDATE products_stock SET size_4_stock = size_4_stock - ? WHERE product_id = ? AND size_4_name = ?';
+        const query5 = 'UPDATE products_stock SET size_5_stock = size_5_stock - ? WHERE product_id = ? AND size_5_name = ?';
+
+        con.query(query1, values);
+        con.query(query2, values);
+        con.query(query3, values);
+        con.query(query4, values);
+        con.query(query5, values);
+    }
+
         /* ADD SELL */
         router.post("/add-sell", (request, response) => {
-            console.log("/add-sell");
-            let {productId, orderId, quantity, size} = request.body;
+            let {productId, orderId, quantity, size, paymentMethod} = request.body;
+
             const values = [orderId, productId, quantity, size];
             const query = 'INSERT INTO sells VALUES (NULL, ?, ?, ?, ?)';
+
+            decrementStock(productId, size, quantity);
+
+            if(paymentMethod === 1) {
+                /* Jesli za pobraniem - dekrementuj stan magazynowy */
+            }
+
             con.query(query, values, (err, res) => {
                 if (res) {
                     response.send({
@@ -44,33 +66,21 @@ con.connect(err => {
             });
         });
 
-        /* ADD RIBBON */
-        router.post("/add-ribbon", (request, response) => {
-            let {orderId, caption} = request.body;
-            const values = [orderId, caption];
-            const query = 'INSERT INTO ribbons VALUES (NULL, ?, ?)';
-            con.query(query, values, (err, res) => {
-                console.log(err);
-                if (res) {
-                    response.send({
-                        result: 1
-                    });
-                } else {
-                    response.send({
-                        result: 0
-                    });
-                }
-            });
-        });
-
         /* ADD ORDER */
         router.post("/add", (request, response) => {
             let {paymentMethod, shippingMethod, city, street, building, flat, postalCode, sessionId, user, comment, companyName, nip, amount, inPostAddress, inPostCode, inPostCity} = request.body;
             if (flat === "") flat = null;
-            console.log("/add-order");
+
+            let paymentStatus = "nieopłacone";
+            console.log(paymentMethod);
+            if(paymentMethod === 1) {
+                /* Payment method - za pobraniem */
+                paymentStatus = "za pobraniem";
+            }
+
             building = parseInt(building) || 0;
-            let values = [paymentMethod, shippingMethod, city, street, building, flat, postalCode, user, comment, sessionId, companyName, nip, amount, inPostAddress, inPostCode, inPostCity];
-            const query = 'INSERT INTO orders VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, "nieopłacone", "przyjęte do realizacji", CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?)';
+            let values = [paymentMethod, shippingMethod, city, street, building, flat, postalCode, user, paymentStatus, comment, sessionId, companyName, nip, amount, inPostAddress, inPostCode, inPostCity];
+            const query = 'INSERT INTO orders VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, "przyjęte do realizacji", CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?)';
 
             values = values.map((item) => {
                 if (item === "") return null;
@@ -135,7 +145,7 @@ con.connect(err => {
         router.post("/get-order", (request, response) => {
             const {id} = request.body;
             const values = [id];
-            const query = 'SELECT o.id, u.first_name, u.last_name, u.email, u.phone_number, o.date, o.order_status, pm.name as payment, sm.name as shipping, o.company_name, o.nip, s.size, s.quantity, p.price, p.name, o.inpost_address, o.inpost_postal_code, inpost_city FROM orders o ' +
+            const query = 'SELECT o.id, u.first_name, u.last_name, u.email, u.phone_number, o.date, o.order_status, pm.name as payment, sm.name as shipping, o.order_comment, o.company_name, o.nip, s.size, s.quantity, p.price, p.name, o.inpost_address, o.inpost_postal_code, inpost_city FROM orders o ' +
                 'JOIN sells s ON o.id = s.order_id ' +
                 'JOIN products p ON p.id = s.product_id ' +
                 'JOIN shipping_methods sm ON o.shipping_method = sm.id ' +

@@ -10,7 +10,6 @@ import auth from "../admin/helpers/auth";
 import GeolocationWidget from "./GeolocationWidget";
 import Modal from "react-modal";
 import closeImg from "../static/img/close.png";
-import tickImg from "../static/img/tick-sign.svg";
 
 const ShippingForm = () => {
     const [vat, setVat] = useState(false);
@@ -121,23 +120,23 @@ const ShippingForm = () => {
         enableReinitialize: true,
         onSubmit: (values) => {
             if((shippingMethod !== -1)&&(paymentMethod !== -1)) {
-                const sessionId = uuidv4();
+                    const sessionId = uuidv4();
 
-                /* Add user */
-                if(!isAuth) {
-                    axios.post(`${settings.API_URL}/auth/add-user`, {
-                        firstName: formik.values.firstName,
-                        lastName: formik.values.lastName,
-                        email: formik.values.email,
-                        phoneNumber: formik.values.phoneNumber
-                    })
-                        .then(res => {
-                            addOrder(res, sessionId);
-                        });
-                }
-                else {
-                    addOrder(null, sessionId);
-                }
+                    /* Add user */
+                    if(!isAuth) {
+                        axios.post(`${settings.API_URL}/auth/add-user`, {
+                            firstName: formik.values.firstName,
+                            lastName: formik.values.lastName,
+                            email: formik.values.email,
+                            phoneNumber: formik.values.phoneNumber
+                        })
+                            .then(res => {
+                                addOrder(res, sessionId);
+                            });
+                    }
+                    else {
+                        addOrder(null, sessionId);
+                    }
             }
     }});
 
@@ -148,7 +147,7 @@ const ShippingForm = () => {
 
         /* Add order */
         axios.post(`${settings.API_URL}/order/add`, {
-            paymentMethod: paymentMethod+1,
+            paymentMethod: paymentMethod,
             shippingMethod: shippingMethod,
             city: formik.values.city,
             street: formik.values.street,
@@ -176,26 +175,36 @@ const ShippingForm = () => {
                         orderId,
                         productId: item.id,
                         size: item.size,
-                        quantity: item.amount
+                        quantity: item.amount,
+                        paymentMethod: paymentMethod
                     })
                         .then(res => { console.log(res.data) })
                 });
 
-                /* PAYMENT PROCESS */
-                let paymentUri = "https://sandbox.przelewy24.pl/trnRequest/";
+                if(paymentMethod === 1) {
+                    /* Platnosc za pobraniem */
+                    window.location = "/";
 
-                axios.post(`${settings.API_URL}/payment/payment`, {
-                    sessionId,
-                    email: formik.values.email,
-                    amount
-                })
-                    .then(res => {
-                        /* Remove cart from local storage */
-                        localStorage.removeItem('hideisland-cart');
+                    /* Remove cart from local storage */
+                    localStorage.removeItem('hideisland-cart');
+                }
+                else {
+                    /* PAYMENT PROCESS */
+                    let paymentUri = "https://sandbox.przelewy24.pl/trnRequest/";
 
-                        const token = res.data.result;
-                        window.location.href = `${paymentUri}${token}`;
-                    });
+                    axios.post(`${settings.API_URL}/payment/payment`, {
+                        sessionId,
+                        email: formik.values.email,
+                        amount
+                    })
+                        .then(res => {
+                            /* Remove cart from local storage */
+                            localStorage.removeItem('hideisland-cart');
+
+                            const token = res.data.result;
+                            window.location.href = `${paymentUri}${token}`;
+                        });
+                }
             });
     }
 
@@ -405,7 +414,7 @@ const ShippingForm = () => {
                 </h4>
 
                 <button className="addToCartBtn button--login button--payment mt-5" type="submit">
-                    Przechodzę do płatności
+                    {paymentMethod === 1 ? "Kupuję" : "Przechodzę do płatności"}
                     <img className="addToCartBtn__img" src={arrowLong} alt="dodaj" />
                 </button>
 

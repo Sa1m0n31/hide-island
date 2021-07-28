@@ -177,12 +177,19 @@ const OrderDetailsContent = () => {
                         <h3 className="panelContent__data w-100">
                             {cart[0].date ? getDate(cart[0].date) + " " + getTime(cart[0].date) : ""}
                         </h3>
+                        <h3 className="panelContent__data w-100">
+                            {cart[0].order_comment ? cart[0].order_comment : "Brak komentarza do zamówienia"}
+                        </h3>
                     </main>
 
                     <section className="panelContent__orderStatus">
                         <h2 className="panelContent__orderStatus__header">
                             Opłacone:
                             <img className="panelContent__orderStatus__img" src={cart[0].payment_status?.toLowerCase() === "opłacone" ? tick : x} alt="oplacone" />
+                        </h2>
+                        <h2 className="panelContent__orderStatus__header">
+                            Faktura VAT:
+                            <img className="panelContent__orderStatus__img" src={cart[0].company_name ? tick : x} alt="faktura-vat" />
                         </h2>
                     </section>
                 </section>
@@ -202,6 +209,14 @@ const OrderDetailsContent = () => {
                         {cart[0].inpost_address}<br/>
                         {cart[0].inpost_postal_code} {cart[0].inpost_city}
                     </section> : ""}
+
+                    {cart[0].company_name ? <address className="inPost__address">
+                        <h4 className="inPost__address__header">
+                            Dane do faktury
+                        </h4>
+                        {cart[0].company_name}<br/>
+                        {cart[0].nip}
+                    </address> : "" }
                 </section>
             </section>
 
