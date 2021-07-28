@@ -2,7 +2,6 @@ import React, {useContext, useEffect, useState} from 'react'
 
 import { useLocation } from "react-router";
 
-import test2 from '../static/img/test2.png'
 import arrowLong from "../static/img/arrow-long.svg";
 import closeImg from '../static/img/close.png'
 import tickImg from '../static/img/tick-sign.svg'
@@ -241,9 +240,10 @@ const CategoryContent = () => {
             <main className="category__content">
             {productsFiltered.map((item, index) => {
                 if((!item.hidden)&&(loaded)) {
+                    console.log(item);
                     return <a className="recom__item" key={index} href={`http://localhost:3000/produkt/${convertToURL(item.name)}`}>
                         <figure className="recom__item__imgWrapper overflow-hidden">
-                            <img className="recom__item__img" src={test2} />
+                            <img className="recom__item__img" src={settings.API_URL + "/image?url=/media/" + item.image} />
                         </figure>
                         <h3 className="recom__item__title recom__item__title--category text-center mt-3">
                             {item.name}

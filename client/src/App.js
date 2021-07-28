@@ -49,12 +49,12 @@ function App() {
         }]);
     }
 
-    const removeFromCart = (id) => {
+    const removeFromCart = (id, size) => {
         const localStorageItem = localStorage.getItem('hideisland-cart');
         if(localStorageItem) {
             const newCart = JSON.parse(localStorage.getItem('hideisland-cart'))
                 .filter((item) => {
-                   return item.id !== id;
+                   return item.id !== id || item.size !== size;
                 });
             setCartContent(newCart);
             localStorage.setItem('hideisland-cart', JSON.stringify(newCart));

@@ -43,7 +43,7 @@ const SingleProductContent = () => {
             title={product.name}
             description={product.description}
             price={product.price}
-            img={product.img}
+            img={product.file_path}
             sizes={sizes} />
         <SingleProductCrossSells
             ids={crossSells} />

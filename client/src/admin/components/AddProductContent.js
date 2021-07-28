@@ -290,13 +290,13 @@ const AddProductContent = () => {
                            className="product__fileInput"
                            name="mainImage" />
                 </label>
-                {/*<label className="fileInputLabel">*/}
-                {/*    <span>Galeria zdjęć</span>*/}
-                {/*    <input type="file"*/}
-                {/*           multiple={true}*/}
-                {/*           className="product__fileInput"*/}
-                {/*           name="gallery" />*/}
-                {/*</label>*/}
+                <label className="fileInputLabel">
+                    <span>Galeria zdjęć</span>
+                    <input type="file"
+                           multiple={true}
+                           className="product__fileInput"
+                           name="gallery" />
+                </label>
             </section>
 
             <section className="addProduct__btnWrapper">

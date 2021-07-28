@@ -5,15 +5,21 @@ import ShippingForm from "./ShippingForm";
 
 import { CartContext } from "../App";
 import EmptyCart from "./EmptyCart";
+import settings from "../helpers/settings";
 
 const CartContent = () => {
     const [sum, setSum] = useState(0);
+    const [remove, setRemove] = useState(false);
 
     const { cartContent, addToCart, removeFromCart } = useContext(CartContext);
 
     useEffect(() => {
         calculateCartSum();
     }, []);
+
+    useEffect(() => {
+        calculateCartSum();
+    }, [remove]);
 
     const calculateCartSum = () => {
         let sum = 0;
@@ -34,11 +40,11 @@ const CartContent = () => {
                     return <section className="cart__item d-grid d-md-flex justify-content-between align-items-center">
                         <section className="d-flex cart__item__imgWrapper position-relative">
                             <button className="removeFromCartBtn"
-                                    onClick={() => { removeFromCart(item.id); }}
+                                    onClick={() => { removeFromCart(item.id, item.size); setRemove(!remove); }}
                             >
                                 &times;
                             </button>
-                            <img className="cart__item__img" src={item.img} alt="title"/>
+                            <img className="cart__item__img" src={`${settings.API_URL}/image?url=/media/${item.img}`} alt="title"/>
 
                             <h3 className="cart__item__title d-none d-md-block">
                                 {item.title}
