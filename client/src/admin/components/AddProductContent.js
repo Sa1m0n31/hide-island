@@ -119,6 +119,7 @@ const AddProductContent = () => {
             </h1>
         </header>
         {addMsg === "" ? <form className="addProduct__form addProduct__form--addProduct"
+                               encType="multipart/form-data"
                                action={update ? "http://localhost:5000/product/update-product" : "http://localhost:5000/product/add-product"}
                                method="POST"
         >
@@ -148,7 +149,7 @@ const AddProductContent = () => {
 
 
                 <select className="addProduct__categorySelect"
-                        name="categoryId"
+                        name="categoryIdSelect"
                         value={categoryId}
                         onChange={(e) => {
                             setCategoryId(parseInt(e.target.value));
@@ -157,6 +158,10 @@ const AddProductContent = () => {
                         return <option key={index} value={item.id}>{item.name}</option>
                     })}
                 </select>
+
+                <input className="invisibleInput"
+                       value={categoryId}
+                       name="categoryId" />
 
 
                 <label className="jodit--label">
@@ -169,20 +174,6 @@ const AddProductContent = () => {
                         onBlur={newContent => {}} // preferred to use only this option to update the content for performance reasons
                         onChange={newContent => { setShortDescription(newContent) }}
                     />
-                </label>
-
-                <label className="fileInputLabel">
-                    <span>Zdjęcie produktu</span>
-                    <input type="file"
-                           className="product__fileInput"
-                           name="mainImage" />
-                </label>
-                <label className="fileInputLabel">
-                    <span>Galeria zdjęć</span>
-                    <input type="file"
-                           multiple={true}
-                           className="product__fileInput"
-                           name="gallery" />
                 </label>
             </section>
 
@@ -292,6 +283,20 @@ const AddProductContent = () => {
                 <input className="invisibleInput"
                        value={recommendation ? "true" : ""}
                        name="recommendation" />
+
+                <label className="fileInputLabel">
+                    <span>Zdjęcie produktu</span>
+                    <input type="file"
+                           className="product__fileInput"
+                           name="mainImage" />
+                </label>
+                {/*<label className="fileInputLabel">*/}
+                {/*    <span>Galeria zdjęć</span>*/}
+                {/*    <input type="file"*/}
+                {/*           multiple={true}*/}
+                {/*           className="product__fileInput"*/}
+                {/*           name="gallery" />*/}
+                {/*</label>*/}
             </section>
 
             <section className="addProduct__btnWrapper">

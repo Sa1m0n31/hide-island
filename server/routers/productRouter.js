@@ -4,8 +4,6 @@ const multer = require("multer");
 const con = require("../databaseConnection");
 const path = require("path");
 
-const upload = multer({ dest: 'uploads/' });
-
 con.connect(err => {
    /* ADD CROSS-SELLS */
    const addCrossSells = (product1, product2) => {
@@ -31,78 +29,115 @@ con.connect(err => {
       })
    });
 
+   /* Modify IMAGES table */
+   // const storage = multer.diskStorage({
+   //    destination: "media/products/",
+   //    filename: function(req, file, cb){
+   //       const fName = file.fieldname + Date.now() + path.extname(file.originalname);
+   //       filenames.push(fName);
+   //       cb(null, fName);
+   //    }
+   // });
+   //
+   // const upload = multer({
+   //    storage: storage
+   // }).fields([{name: "mainImage"}]);
+   //
+   // upload(request, response, (err, res) => {
+   //    if (err) throw err;
+   //
+   //    filenames.sort().reverse(); // First image - main image
+   //    /* Add images to database */
+   //    if(filenames.length) {
+   //       filenames.forEach((item, index, array) => {
+   //          const values = ["products/" + item, productId];
+   //          const query = 'INSERT INTO images VALUES (NULL, ?, ?)';
+   //          con.query(query, values);
+   //       });
+   //    }
+   // });
+
+   // var storage = multer.diskStorage({
+   //    destination: function (req, file, cb) {
+   //       cb(null, './media/products')
+   //    },
+   //    filename: function (req, file, cb) {
+   //       cb(null, file.originalname)
+   //    }
+   // })
+   // var upload = multer({ storage: storage })
+
+
    /* ADD PRODUCT */
    router.post("/add-product", (request, response) => {
       let filenames = [];
+      let filenamesGallery = [];
       let filesId = [null];
 
-      /* Add product to database */
-      let { id, name, categoryId, price, shortDescription, recommendation, hidden, size1, size2, size3, size4, size5, size1Stock, size2Stock, size3Stock, size4Stock, size5Stock } = request.body;
+      /* Modify IMAGES table */
+      const storage = multer.diskStorage({
+         destination: "media/products/",
+         filename: function(req, file, cb){
+            const fName = file.fieldname + Date.now() + path.extname(file.originalname);
+            filenames.push(fName);
+            cb(null, fName);
+         }
+      });
 
-      hidden = hidden === "hidden";
-      recommendation = recommendation === "true";
+      const upload = multer({
+         storage: storage
+      }).fields([{name: "mainImage"}]);
 
-      categoryId = parseInt(categoryId);
+      upload(request, response, (err, res) => {
+         if (err) throw err;
 
-         /* Modify PRODUCTS table */
-         const values = [id, name, price, shortDescription, filesId[0], categoryId, recommendation, hidden];
-         const query = 'INSERT INTO products VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?)';
-         con.query(query, values, (err, res) => {
-            console.log("res");
-            console.log(res);
-            if(res) {
-               const productId = res.insertId;
+         /* Prepare */
+         console.log(request.body);
+         let { id, name, categoryId, price, shortDescription, recommendation, hidden, size1, size2, size3, size4, size5, size1Stock, size2Stock, size3Stock, size4Stock, size5Stock } = request.body;
+         hidden = hidden === "hidden";
+         recommendation = recommendation === "true";
+         categoryId = parseInt(categoryId);
 
-               /* Modify IMAGES table */
-               const storage = multer.diskStorage({
-                  destination: "media/products/",
-                  filename: function(req, file, cb){
-                     const fName = file.fieldname + Date.now() + path.extname(file.originalname);
-                     console.log(fName);
-                     filenames.push(fName);
-                     cb(null, fName);
-                  }
-               });
-
-               const upload = multer({
-                  storage: storage
-               }).fields([{name: "mainImage"}]);
-
-               upload(request, response, (err, res) => {
-                  if (err) {
-                     console.log(err);
-                     throw err;
-                  }
-
-                  filenames.sort().reverse(); // First image - main image
-                  /* Add images to database */
-                  if(!filenames.length) console.log("length=0");
-                  else {
-                     filenames.forEach((item, index, array) => {
-                        const values = ["products/" + item, productId];
-                        const query = 'INSERT INTO images VALUES (NULL, ?, ?)';
-                        con.query(query, values, (err, res) => {
-                           filesId.push(res.insertId);
-                        });
-                     });
-                  }
-               });
-
-               /* Modify PRODUCTS_STOCKS table */
-               const values2 = [productId, size1, parseInt(size1Stock), size2, parseInt(size2Stock), size3, parseInt(size3Stock), size4, parseInt(size4Stock), size5, parseInt(size5Stock)];
-               const query2 = 'INSERT INTO products_stock VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-
-               con.query(query2, values2, (err, res) => {
-                  console.log("Second error");
+         /* 1st - ADD MAIN IMAGE TO IMAGES TABLE */
+         filenames.sort().reverse(); // First image - main image
+         if(filenames.length) {
+            filenames.forEach((item, index, array) => {
+               const values = ["products/" + item];
+               const query = 'INSERT INTO images VALUES (NULL, ?, NULL)';
+               con.query(query, values, (err, res) => {
+                     /* 2nd - ADD PRODUCT TO PRODUCTS TABLE */
                   console.log(err);
-                  if(res) response.redirect("http://localhost:3000/panel/dodaj-produkt?add=1");
-                  else response.redirect("http://localhost:3000/panel/dodaj-produkt?add=0");
+                     const insertedMainImageId = res.insertId;
+                     const values = [id, name, price, shortDescription, insertedMainImageId, categoryId, recommendation, hidden];
+                     const query = 'INSERT INTO products VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?)';
+                     con.query(query, values, (err, res) => {
+                        if(res) {
+                           const productId = res.insertId;
+
+                           /* 3rd - ADD PRODUCT STOCKS TO PRODUCTS_STOCK TABLE */
+                           const values2 = [productId, size1, parseInt(size1Stock), size2, parseInt(size2Stock), size3, parseInt(size3Stock), size4, parseInt(size4Stock), size5, parseInt(size5Stock)];
+                           const query2 = 'INSERT INTO products_stock VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+
+                           con.query(query2, values2, (err, res) => {
+                              console.log("Second error");
+                              console.log(err);
+                              if(res) response.redirect("http://localhost:3000/panel/dodaj-produkt?add=1");
+                              else response.redirect("http://localhost:3000/panel/dodaj-produkt?add=0");
+                           });
+
+                           /* 4th - ADD GALLERY IMAGES */
+                        }
+                        else {
+                           response.redirect("http://localhost:3000/panel/dodaj-produkt?add=0");
+                        }
+                     });
                });
-            }
-            else {
-               response.redirect("http://localhost:3000/panel/dodaj-produkt?add=0");
-            }
-         });
+            });
+         }
+         else {
+            /* No main image */
+         }
+      });
    });
 
    /* UPDATE PRODUCT */
