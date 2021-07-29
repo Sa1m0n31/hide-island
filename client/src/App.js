@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { Helmet } from 'react-helmet'
 
 import './static/style/admin.css'
@@ -32,6 +32,7 @@ import RegisterPage from "./pages/RegisterPage";
 import LoginPageClient from "./pages/LoginPageClient";
 import AfterRegister from "./pages/AfterRegister";
 import MyAccount from "./pages/MyAccount";
+import {getPagesContent} from "./helpers/pagesFunctions";
 
 /* Context */
 const CartContext = React.createContext(null);
@@ -61,6 +62,23 @@ function App() {
         }
     }
 
+    const [terms, setTerms] = useState("");
+    const [policy, setPolicy] = useState("");
+    const [complaints, setComplaints] = useState("");
+
+    useEffect(() => {
+        /* Get pages content */
+        getPagesContent()
+            .then(res => {
+                const result = res.data?.result;
+                if(result) {
+                    setTerms(result[0].terms_of_service);
+                    setPolicy(result[0].privacy_policy);
+                    setComplaints(result[0].complaints_and_returns);
+                }
+            });
+    }, []);
+
   return (<CartContext.Provider value={{cartContent, addToCart, removeFromCart}}>
       <Helmet>
           <title>HideIsland - ubrania dla Ciebie</title>
@@ -86,17 +104,17 @@ function App() {
           <Route path="/regulamin">
               <Page
                   title="Regulamin"
-                  content="regulamin" />
+                  content={terms} />
           </Route>
             <Route path="/polityka-prywatnosci">
                 <Page
                     title="Polityka prywatności"
-                    content="regulamin" />
+                    content={policy} />
             </Route>
             <Route path="/zwroty-i-reklamacje">
                 <Page
                     title="Zwroty i reklamacje"
-                    content="regulamin" />
+                    content={complaints} />
             </Route>
 
           <Route path="/zaloguj-sie">

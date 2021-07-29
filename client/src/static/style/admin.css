@@ -1176,3 +1176,7 @@ select {
     color: #fff;
     margin-top: 40px;
 }
+
+.panelContent__filters__btnWrapper:last-child .panelContent__filters__btn {
+    margin-left: 15px;
+}

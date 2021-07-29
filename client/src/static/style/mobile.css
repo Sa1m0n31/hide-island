@@ -111,6 +111,23 @@
     .shippingForm__section {
         width: 100%;
     }
+
+    .singleProduct__carousel {
+        width: 100%;
+        max-width: 600px;
+    }
+
+    .singleProductInfo {
+        padding-top: 0;
+    }
+
+    .hero__slider__arrow--left {
+        left: 10px;
+    }
+
+    .hero__slider__arrow--right {
+        right: 10px;
+    }
 }
 
 @media(max-width: 768px) {
@@ -248,7 +265,7 @@
         padding-top: 145px;
     }
 
-    .page {
+    .page, .page--singleProduct {
         padding-top: 170px;
     }
 

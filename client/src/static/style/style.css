@@ -308,6 +308,10 @@ button, a {
     text-decoration: none;
 }
 
+.singleProduct .recom__item__imgWrapper {
+    height: auto;
+}
+
 .recom__item__imgWrapper {
     height: 400px;
     margin-bottom: 20px;
@@ -372,6 +376,12 @@ button, a {
 .aboutUs__content__text {
     margin: 30px 0;
     color: #fff;
+}
+
+.aboutUs p, .page__content * {
+    background: transparent !important;
+    color: #fff !important;
+    font-family: 'Roboto', sans-serif;
 }
 
 /* Footer */
@@ -526,9 +536,25 @@ button, a {
     align-items: center;
 }
 
+.singleProduct__carousel {
+    width: 45%;
+    position: relative;
+    max-height: 650px;
+}
+
+.singleProduct__carousel > div {
+    width: 100%;
+    max-height: 650px;
+}
+
+.singleProduct__carousel > div > div {
+    max-height: 650px;
+}
+
 .singleProductInfo__img {
-    width: auto;
-    max-width: 100%;
+    display: block;
+    min-width: 100%;
+    min-height: 100%;
 }
 
 .singleProductInfo__title {
@@ -575,6 +601,16 @@ button, a {
     text-align: center;
     padding: 0;
     margin-left: 15px;
+}
+
+.singleProductSlider__btn {
+    width: 40px;
+    height: auto;
+}
+
+.singleProductSlider__btn .hero__slider__arrow__img {
+    width: 100%;
+    height: auto;
 }
 
 /* Remove arrows from number input type - Chrome, Safari, Edge, Opera */
@@ -1438,4 +1474,37 @@ input[type=number] {
 
 .orderStatus--red {
     background: #941212;
+}
+
+.clientForm--coupon .clientForm__label {
+    width: 50%;
+}
+
+.button--coupon {
+    height: 45px;
+    width: 45%;
+}
+
+.couponInfo {
+    font-size: 17px;
+}
+
+.couponInfo--success {
+    color: #fff;
+}
+
+.tickImg {
+    filter: brightness(0) invert(1);
+    width: 20px;
+    margin-right: 20px;
+}
+
+.clientForm__input:disabled {
+    opacity: .5;
+}
+
+.couponInfo--error {
+    color: red;
+    font-size: 14px;
+    font-weight: 400;
 }

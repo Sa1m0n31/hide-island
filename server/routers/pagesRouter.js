@@ -5,12 +5,12 @@ const con = require("../databaseConnection");
 con.connect((err) => {
     /* Edit pages */
     router.post("/update", (request, response) => {
-       const { termsOfService, termsOfServiceEn, privacyPolicy, privacyPolicyEn, contact, contactEn } = request.body;
+       const { termsOfService, privacyPolicy, complaintsAndReturns, aboutUs } = request.body;
 
        console.log(request.body);
 
-       const values = [termsOfService, termsOfServiceEn, privacyPolicy, privacyPolicyEn, contact, contactEn];
-       const query = 'UPDATE pages SET terms_of_service = ?, privacy_policy = ?, contact = ? WHERE id = 1';
+       const values = [termsOfService, privacyPolicy, complaintsAndReturns, aboutUs];
+       const query = 'UPDATE pages SET terms_of_service = ?, privacy_policy = ?, complaints_and_returns = ?, about_us = ? WHERE id = 1';
 
        con.query(query, values, (err, res) => {
               if(res) response.redirect("http://localhost:5000/panel/pozostale?add=1");

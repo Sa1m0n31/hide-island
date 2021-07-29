@@ -376,7 +376,26 @@ con.connect(err => {
             });
          }
       });
-   })
+   });
+
+   /* Get product gallery */
+   router.post("/get-gallery", (request, response) => {
+      const { id } = request.body;
+      const values = [id];
+      const query = 'SELECT * FROM images WHERE product_id = ?';
+      con.query(query, values, (err, res) => {
+         if(res) {
+            response.send({
+               result: res
+            });
+         }
+         else {
+            response.send({
+               result: 0
+            });
+         }
+      });
+   });
 });
 
 module.exports = router;

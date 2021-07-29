@@ -10,6 +10,7 @@ import auth from "../admin/helpers/auth";
 import GeolocationWidget from "./GeolocationWidget";
 import Modal from "react-modal";
 import closeImg from "../static/img/close.png";
+import tickIcon from '../static/img/tick-sign.svg'
 
 const ShippingForm = () => {
     const [vat, setVat] = useState(false);
@@ -29,6 +30,10 @@ const ShippingForm = () => {
     const [street, setStreet] = useState("");
     const [building, setBuilding] = useState("");
     const [flat, setFlat] = useState("");
+    const [coupon, setCoupon] = useState(false);
+    const [couponCode, setCouponCode] = useState("");
+    const [couponVerified, setCouponVerified] = useState(-1);
+    const [discount, setDiscount] = useState("");
 
     const [inPostAddress, setInPostAddress] = useState("");
     const [inPostCode, setInPostCode] = useState("");
@@ -207,6 +212,41 @@ const ShippingForm = () => {
                 }
             });
     }
+
+    const verifyCoupon = () => {
+        axios.post(`${settings.API_URL}/coupon/verify`, {
+            code: couponCode
+        })
+            .then(res => {
+                const result = res.data;
+                if(result) {
+                    if(result.percent) {
+                        setCouponVerified(1);
+                        setAmount(Math.round(amount - amount * (result.percent / 100)));
+                        setDiscount("-" + result.percent + "%");
+                    }
+                    else if(result.amount) {
+                        setCouponVerified(1);
+                        setAmount(amount - result.amount);
+                        setDiscount("-" + result.amount + " PLN");
+                    }
+                    else {
+                        setCouponVerified(0);
+                    }
+                }
+                else {
+                    setCouponVerified(0);
+                }
+            });
+    }
+
+    useEffect(() => {
+        if(couponVerified === 0) {
+            setTimeout(() => {
+                setCouponVerified(-1);
+            }, 2000);
+        }
+    }, [couponVerified]);
 
     return <section className="shippingForm">
 
@@ -409,7 +449,48 @@ const ShippingForm = () => {
                     </label>
                 </section>
 
-                <h4 className="clientForm__shippingHeader mt-5">
+                <h3 className="clientForm__subheader mt-5 mb-4">
+                    Kod rabatowy
+                </h3>
+                <label className="label--button mt-3">
+                    <button className="formBtn" onClick={(e) => { e.preventDefault(); setCoupon(!coupon); }}>
+                        <span className={coupon ? "formBtn--checked" : "d-none"}></span>
+                    </button>
+                    Mam kod rabatowy
+                </label>
+
+                {coupon ? <section className="clientForm--vat clientForm--coupon mt-4 d-flex justify-content-between align-items-center">
+                    <label className="clientForm__label mb-0">
+                        <input className="clientForm__input mb-0"
+                               name="companyName"
+                               type="text"
+                               value={couponCode}
+                               disabled={couponVerified === 1}
+                               onChange={(e) => { setCouponCode(e.target.value); }}
+                               placeholder="Tu wpisz kod rabatowy"
+                        />
+                    </label>
+                    {couponVerified !== 1 && couponVerified !== 0 ? <button className="addToCartBtn button--login button--payment button--coupon mt-0"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            verifyCoupon();
+                        }}
+                    >
+                        Dodaj kod
+                    </button> : (couponVerified === 1 ? <h4 className="couponInfo couponInfo--success">
+                        <img className="tickImg" src={tickIcon} alt="dodany" />
+                        Kupon został dodany
+                    </h4> : "")}
+
+                    {couponVerified === 0 ? <h4 className="couponInfo couponInfo--error">
+                        Podany kupon nie istnieje
+                    </h4> : ""}
+                </section> : ""}
+
+                {couponVerified === 1 ? <h4 className="clientForm__shippingHeader mt-5">
+                    Kod rabatowy: <b>{couponCode} ({discount})</b>
+                </h4> : ""}
+                <h4 className="clientForm__shippingHeader mt-4">
                     Łącznie do zapłaty: <b>{amount} PLN</b>
                 </h4>
 

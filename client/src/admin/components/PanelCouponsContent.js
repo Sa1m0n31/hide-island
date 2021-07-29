@@ -40,6 +40,7 @@ const PanelCouponsContent = () => {
                         setCode(result.code);
                         setFrom(result.date_from.substring(0, 10));
                         setTo(result.date_to.substring(0, 10));
+                        setTimesToUse(result.times_to_use);
                         if(result.percent) {
                             setPercent(true);
                             setDiscountValue(result.percent);
@@ -67,7 +68,7 @@ const PanelCouponsContent = () => {
                     setCoupons(res.data.result);
                 }
             });
-    }, [deleted]);
+    }, [deleted, addedMsg]);
 
     useEffect(() => {
         if(addedMsg !== "") {
@@ -202,7 +203,7 @@ const PanelCouponsContent = () => {
                     </label>
 
                     <section className="d-flex">
-                        <label className="panelContent__filters__btnWrapper">
+                        <label className="panelContent__filters__btnWrapper mr-3">
                             <button className="panelContent__filters__btn panelContent__filters__btn--options" onClick={(e) => { e.preventDefault(); setPercent(true); }}>
                                 <span className={percent ? "panelContent__filters__btn--active" : "d-none"} />
                             </button>

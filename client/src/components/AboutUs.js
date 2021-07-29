@@ -4,9 +4,11 @@ import icon1 from '../static/img/award.png'
 import icon2 from '../static/img/poland.png'
 import icon3 from '../static/img/price-tag.png'
 import icon4 from '../static/img/hand.png'
+import {getPagesContent} from "../helpers/pagesFunctions";
 
 const AboutUs = () => {
     const [icons, setIcons] = useState([]);
+    const [text, setText] = useState("");
 
     useEffect(() => {
         const result = [
@@ -16,6 +18,15 @@ const AboutUs = () => {
             { icon: icon4, text: "Ubrania w Twoim stylu" }
         ];
         setIcons(result);
+
+        /* Get about us content */
+        getPagesContent()
+            .then(res => {
+                const result = res.data?.result;
+                if(result) {
+                    setText(result[0].about_us);
+                }
+            });
     }, []);
 
     return <section className="aboutUs">
@@ -38,16 +49,7 @@ const AboutUs = () => {
                 Kilka słów...
             </h3>
 
-            <article className="aboutUs__content__text">
-                <p>
-                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est
-                </p>
-                <p>
-                    Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-                </p>
-                <p>
-                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
-                </p>
+            <article className="aboutUs__content__text" dangerouslySetInnerHTML={{__html: text}}>
             </article>
         </main>
     </section>

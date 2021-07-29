@@ -6,11 +6,9 @@ import {getPagesContent} from "../../helpers/pagesFunctions";
 
 const PanelOthersContent = () => {
     const [terms, setTerms] = useState("");
-    const [termsEn, setTermsEn] = useState("");
     const [policy, setPolicy] = useState("");
-    const [policyEn, setPolicyEn] = useState("");
-    const [contact, setContact] = useState("");
-    const [contactEn, setContactEn] = useState("");
+    const [complaints, setComplaints] = useState("");
+    const [aboutUs, setAboutUs] = useState("");
 
     const [addMsg, setAddMsg] = useState("");
 
@@ -34,11 +32,9 @@ const PanelOthersContent = () => {
                         const result = res.data.result[0];
                         if(result) {
                             setTerms(result.terms_of_service);
-                            setTermsEn(result.terms_of_service_en);
                             setPolicy(result.privacy_policy);
-                            setPolicyEn(result.privacy_policy_en);
-                            setContact(result.contact);
-                            setContactEn(result.contact_en);
+                            setComplaints(result.complaints_and_returns);
+                            setAboutUs(result.about_us);
                         }
                     }
                 })
@@ -90,6 +86,32 @@ const PanelOthersContent = () => {
                             tabIndex={1} // tabIndex of textarea
                             onBlur={newContent => {}} // preferred to use only this option to update the content for performance reasons
                             onChange={newContent => { setPolicy(newContent) }}
+                        />
+                    </label>
+                </section>
+
+                <section className="panelContent__othersSection">
+                    <label className="jodit--label">
+                        <span>Zwroty i reklamacje</span>
+                        <JoditEditor
+                            name="complaintsAndReturns"
+                            value={complaints}
+                            tabIndex={1} // tabIndex of textarea
+                            onBlur={newContent => {}} // preferred to use only this option to update the content for performance reasons
+                            onChange={newContent => { setComplaints(newContent) }}
+                        />
+                    </label>
+                </section>
+
+                <section className="panelContent__othersSection">
+                    <label className="jodit--label">
+                        <span>Kilka słów o nas</span>
+                        <JoditEditor
+                            name="aboutUs"
+                            value={aboutUs}
+                            tabIndex={1} // tabIndex of textarea
+                            onBlur={newContent => {}} // preferred to use only this option to update the content for performance reasons
+                            onChange={newContent => { setAboutUs(newContent) }}
                         />
                     </label>
                 </section>
