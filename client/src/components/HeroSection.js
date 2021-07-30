@@ -42,7 +42,7 @@ const HeroSection = () => {
                 <button className="d-none d-md-block hero__slider__arrow hero__slider__arrow--left" onClick={() => { sliderPrev(); }}>
                     <img className="hero__slider__arrow__img" src={sliderArrow} alt="w-lewo" />
                 </button>
-                <ReactSiema perPage={1} loop={true} draggable={false}
+                <ReactSiema perPage={1} loop={true} draggable={true}
                             ref={siema => slider = siema}
                 >
                     <img ref={sliderRef1} className="hero__slider__img" id="slider-1"

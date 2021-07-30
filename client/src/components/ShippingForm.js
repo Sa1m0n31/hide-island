@@ -40,6 +40,37 @@ const ShippingForm = () => {
     const [inPostCity, setInPostCity] = useState("");
 
     useEffect(() => {
+        window.easyPackAsyncInit = function () {
+            window.easyPack.init({
+                mapType: 'google',
+                searchType: 'osm',
+                map: {
+                    googleKey: 'AIzaSyAS0nA7DChYpHzv5CVpXM1K4vqYaGNCElw'
+                }
+            });
+            if(document.querySelector(".cart")) {
+                const map = window.easyPack.mapWidget('paczkomatyMapa', function(point) {
+                    /* Paczkomat zostal wybrany */
+                    sessionStorage.setItem('paczkomat-miasto', point.address_details.city);
+                    sessionStorage.setItem('paczkomat-kod', point.address_details.post_code);
+                    sessionStorage.setItem('paczkomat-adres', point.address_details.street + " " + point.address_details.building_number);
+
+                    const storage = new Event('storage');
+                    document.dispatchEvent(storage);
+
+                    // const modal = document.querySelector(".bigModal");
+                    // if(modal) {
+                    //   modal.style.opacity = "0";
+                    //   setTimeout(() => {
+                    //     modal.style.display = "none";
+                    //   }, 500);
+                    // }
+                });
+            }
+        };
+    }, [inPostModal]);
+
+    useEffect(() => {
         /* Check if login - then set form data */
         auth(localStorage.getItem('sec-sessionKey'))
             .then(res => {
@@ -478,7 +509,7 @@ const ShippingForm = () => {
                     >
                         Dodaj kod
                     </button> : (couponVerified === 1 ? <h4 className="couponInfo couponInfo--success">
-                        <img className="tickImg" src={tickIcon} alt="dodany" />
+                        <img className="tickImg d-none d-md-inline" src={tickIcon} alt="dodany" />
                         Kupon został dodany
                     </h4> : "")}
 

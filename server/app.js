@@ -53,6 +53,10 @@ app.get("/panel/*", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
 
+app.get("/zarejestruj-sie", (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
+
 
 /* Routers */
 const authRouter = require("./routers/authRouter");

@@ -21,6 +21,10 @@
 }
 
 @media(max-width: 1200px) {
+    .modalHeader {
+        font-size: 18px;
+    }
+
     .header__header__section__btn,
     .header__menu__list__link {
         font-size: 14px;
@@ -127,6 +131,11 @@
 
     .hero__slider__arrow--right {
         right: 10px;
+    }
+
+    .smallModal .ReactModal__Content {
+        width: 80vw;
+        height: 80vh;
     }
 }
 
@@ -352,6 +361,29 @@
     .invert {
         filter: brightness(0) invert(1);
     }
+
+    .smallModal .ReactModal__Content {
+        width: 100vw;
+        height: 100vh;
+    }
+
+    .smallModal .modalTick {
+        transform: scale(.5);
+    }
+
+    .singleProduct__carousel > div,
+    .singleProduct__carousel > div > div
+    {
+        max-height: 400px;
+    }
+
+    .infoHeader {
+        font-size: 17px;
+    }
+
+    .couponInfo--success {
+        font-size: 14px;
+    }
 }
 
 @media(max-width: 576px) {
@@ -443,5 +475,32 @@
 
     .button--payment {
         font-size: 14px;
+    }
+
+    .footer__newsletter__form {
+        display: flex;
+        justify-content: space-between;
+        align-content: center;
+    }
+
+    .footer__btn {
+        font-size: 12px;
+    }
+
+    .modal__buttons {
+        flex-direction: column;
+    }
+
+    .modal__buttons .modal__btn:last-child {
+        margin-top: 20px;
+    }
+
+    .page {
+        padding-top: 200px;
+    }
+
+    .loginPage {
+        padding-top: 220px;
+        padding-bottom: 50px;
     }
 }

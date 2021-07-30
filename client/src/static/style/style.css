@@ -7,6 +7,10 @@
     padding: 0;
 }
 
+#root {
+    overflow: hidden;
+}
+
 h1, h2, h3, h4, h5, h6, label, input, button, a, li, p {
     font-family: 'Roboto', sans-serif;
     color: #fff;
@@ -253,7 +257,12 @@ button, a {
 }
 
 .gallerySection__img {
+    opacity: .7;
     transition: .4s all ease-in-out;
+}
+
+.gallerySection__img:hover {
+    opacity: 1;
 }
 
 .imgWrapper-1 {
@@ -284,7 +293,7 @@ button, a {
 }
 
 .gallerySection__imgWrapper .gallerySection__img:hover {
-    transform: scale(1.2);
+    transform: scale(1.02);
 }
 
 /* Recommendations */
@@ -320,6 +329,7 @@ button, a {
 
 .singleProduct .recom__item__imgWrapper {
     height: auto;
+    max-height: 400px;
 }
 
 .recom__item__imgWrapper {
@@ -329,11 +339,13 @@ button, a {
 
 .recom__item__img {
     width: 100%;
+    opacity: .7;
     transition: .4s all ease-in-out;
 }
 
 .recom__item:hover .recom__item__img {
-    transform: scale(1.2);
+    transform: scale(1.02);
+    opacity: 1;
 }
 
 .recom__item__title {
@@ -563,8 +575,7 @@ button, a {
 
 .singleProductInfo__img {
     display: block;
-    min-width: 100%;
-    min-height: 100%;
+    width: 100%;
 }
 
 .singleProductInfo__title {
@@ -791,6 +802,7 @@ input[type=number] {
     text-align: center;
     border-top: 1px solid rgba(106, 106, 106, .25);
     padding: 15px 0;
+    transition: .4s all ease;
 }
 
 .category__list__link {
@@ -798,10 +810,11 @@ input[type=number] {
     text-decoration: none;
     font-size: 14px;
     font-weight: 300;
+    display: block;
 }
 
 .category__list__link:hover {
-    letter-spacing: 2px;
+    transform: translateY(-4px);
 }
 
 .category__list__link--current {
@@ -1077,6 +1090,7 @@ input[type=number] {
 }
 
 .modalHeader {
+    text-align: center;
     margin: 30px 0;
 }
 
@@ -1101,6 +1115,14 @@ input[type=number] {
 /* Login page */
 .loginPage {
     padding-top: 100px;
+}
+
+.loginPage .clientForm__label {
+    width: clamp(100px, 400px, 100%);
+}
+
+.clientForm__label:focus-within {
+    border-color: #fff;
 }
 
 .clientForm {
@@ -1154,11 +1176,11 @@ input[type=number] {
     text-align: center;
     color: #fff !important;
     font-size: 14px;
-    margin-top: 10px;
+    margin-top: 20px;
 }
 
 .registerHintBtn:hover {
-    letter-spacing: 2px;
+    transform: translateY(-6px);
 }
 
 .button--login {
@@ -1381,7 +1403,7 @@ input[type=number] {
 }
 
 .button--transparent:hover {
-    letter-spacing: 2px;
+    transform: translateY(-6px);
 }
 
 /* Shipping form */
@@ -1501,6 +1523,7 @@ input[type=number] {
 
 .couponInfo {
     font-size: 17px;
+    margin-left: 10px;
 }
 
 .couponInfo--success {
