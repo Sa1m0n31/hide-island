@@ -110,24 +110,6 @@ const PanelOrdersContent = () => {
 
                 <section className="panelContent__filters__item">
                     <span className="panelContent__filters__label">
-                        Status zamówienia:
-                    </span>
-                    <label className="panelContent__filters__label__label">
-                        <button className="panelContent__filters__btn" onClick={() => { setFilterOplacone(!filterOplacone) }}>
-                            <span className={filterOplacone ? "panelContent__filters__btn--active" : "d-none"} />
-                        </button>
-                        Opłacone
-                    </label>
-                    <label className="panelContent__filters__label__label">
-                        <button className="panelContent__filters__btn" onClick={() => { setFilterNieoplacone(!filterNieoplacone) }}>
-                            <span className={filterNieoplacone ? "panelContent__filters__btn--active" : "d-none"} />
-                        </button>
-                        Nieopłacone
-                    </label>
-                </section>
-
-                <section className="panelContent__filters__item">
-                    <span className="panelContent__filters__label">
                         Sortuj wg daty:
                     </span>
 

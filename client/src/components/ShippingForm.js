@@ -34,7 +34,7 @@ const ShippingForm = () => {
     const [couponCode, setCouponCode] = useState("");
     const [couponVerified, setCouponVerified] = useState(-1);
     const [discount, setDiscount] = useState("");
-
+    const [accountExistsError, setAccountExistsError] = useState("");
     const [inPostAddress, setInPostAddress] = useState("");
     const [inPostCode, setInPostCode] = useState("");
     const [inPostCity, setInPostCity] = useState("");
@@ -167,7 +167,12 @@ const ShippingForm = () => {
                             phoneNumber: formik.values.phoneNumber
                         })
                             .then(res => {
-                                addOrder(res, sessionId);
+                                if(res.data.result === -1) {
+                                    setAccountExistsError("Istnieje konto o podanym adresie email. Aby dokonać zakupu, zaloguj się.");
+                                }
+                                else {
+                                    addOrder(res, sessionId);
+                                }
                             });
                     }
                     else {
@@ -179,7 +184,7 @@ const ShippingForm = () => {
     const addOrder = (res, sessionId) => {
         let insertedUserId = null;
 
-        if(res) insertedUserId = res.data.result;
+        if(res) insertedUserId = res.data.userId;
 
         /* Add order */
         axios.post(`${settings.API_URL}/order/add`, {
@@ -190,7 +195,7 @@ const ShippingForm = () => {
             building: formik.values.building,
             flat: formik.values.flat,
             postalCode: formik.values.postalCode,
-            user: insertedUserId !== -1 && insertedUserId !== null ? insertedUserId : parseInt(localStorage.getItem('sec-user-id')),
+            user: insertedUserId !== -1 && insertedUserId ? insertedUserId : parseInt(localStorage.getItem('sec-user-id')),
             comment: formik.values.comment,
             sessionId,
             companyName: formik.values.companyName,
@@ -203,43 +208,49 @@ const ShippingForm = () => {
             .then(res => {
                 const orderId = res.data.result;
 
-                /* Add sells */
-                const cart = JSON.parse(localStorage.getItem('hideisland-cart'));
-                cart?.forEach((item, cartIndex) => {
+                if(orderId) {
                     /* Add sells */
-                    axios.post(`${settings.API_URL}/order/add-sell`, {
-                        orderId,
-                        productId: item.id,
-                        size: item.size,
-                        quantity: item.amount,
-                        paymentMethod: paymentMethod
-                    })
-                        .then(res => { console.log(res.data) })
-                });
+                    const cart = JSON.parse(localStorage.getItem('hideisland-cart'));
+                    cart?.forEach((item, cartIndex) => {
+                        /* Add sells */
+                        axios.post(`${settings.API_URL}/order/add-sell`, {
+                            orderId,
+                            productId: item.id,
+                            size: item.size,
+                            quantity: item.amount,
+                            paymentMethod: paymentMethod
+                        })
+                            .then(res => { console.log(res.data) })
+                    });
 
-                if(paymentMethod === 1) {
-                    /* Platnosc za pobraniem */
-                    window.location = "/";
+                    if(paymentMethod === 2) {
+                        /* Platnosc za pobraniem */
+                        localStorage.setItem('hideisland-ty', 'true');
+                        window.location = "/dziekujemy";
 
-                    /* Remove cart from local storage */
-                    localStorage.removeItem('hideisland-cart');
+                        /* Remove cart from local storage */
+                        localStorage.removeItem('hideisland-cart');
+                    }
+                    else {
+                        /* PAYMENT PROCESS */
+                        let paymentUri = "https://sandbox.przelewy24.pl/trnRequest/";
+
+                        axios.post(`${settings.API_URL}/payment/payment`, {
+                            sessionId,
+                            email: formik.values.email,
+                            amount
+                        })
+                            .then(res => {
+                                /* Remove cart from local storage */
+                                localStorage.removeItem('hideisland-cart');
+
+                                const token = res.data.result;
+                                window.location.href = `${paymentUri}${token}`;
+                            });
+                    }
                 }
                 else {
-                    /* PAYMENT PROCESS */
-                    let paymentUri = "https://sandbox.przelewy24.pl/trnRequest/";
-
-                    axios.post(`${settings.API_URL}/payment/payment`, {
-                        sessionId,
-                        email: formik.values.email,
-                        amount
-                    })
-                        .then(res => {
-                            /* Remove cart from local storage */
-                            localStorage.removeItem('hideisland-cart');
-
-                            const token = res.data.result;
-                            window.location.href = `${paymentUri}${token}`;
-                        });
+                    window.location = "/";
                 }
             });
     }
@@ -307,6 +318,7 @@ const ShippingForm = () => {
                     <input className="clientForm__input"
                            name="firstName"
                            type="text"
+                           disabled={isAuth}
                            value={formik.values.firstName}
                            onChange={formik.handleChange}
                            placeholder="Imię"
@@ -316,6 +328,7 @@ const ShippingForm = () => {
                     <input className="clientForm__input"
                            name="lastName"
                            type="text"
+                           disabled={isAuth}
                            value={formik.values.lastName}
                            onChange={formik.handleChange}
                            placeholder="Nazwisko"
@@ -326,6 +339,7 @@ const ShippingForm = () => {
                     <input className="clientForm__input"
                            name="email"
                            type="text"
+                           disabled={isAuth}
                            value={formik.values.email}
                            onChange={formik.handleChange}
                            placeholder="Adres email"
@@ -335,6 +349,7 @@ const ShippingForm = () => {
                     <input className="clientForm__input"
                            name="phoneNumber"
                            type="text"
+                           disabled={isAuth}
                            value={formik.values.phoneNumber}
                            onChange={formik.handleChange}
                            placeholder="Numer telefonu"
@@ -345,6 +360,7 @@ const ShippingForm = () => {
                         <input className="clientForm__input"
                                name="postalCode"
                                type="text"
+                               disabled={isAuth}
                                value={formik.values.postalCode}
                                onChange={formik.handleChange}
                                placeholder="Kod pocztowy"
@@ -354,6 +370,7 @@ const ShippingForm = () => {
                         <input className="clientForm__input"
                                name="city"
                                type="text"
+                               disabled={isAuth}
                                value={formik.values.city}
                                onChange={formik.handleChange}
                                placeholder="Miejscowość"
@@ -365,6 +382,7 @@ const ShippingForm = () => {
                         <input className="clientForm__input"
                                name="street"
                                type="text"
+                               disabled={isAuth}
                                value={formik.values.street}
                                onChange={formik.handleChange}
                                placeholder="Ulica"
@@ -374,6 +392,7 @@ const ShippingForm = () => {
                         <input className="clientForm__input"
                                name="building"
                                type="text"
+                               disabled={isAuth}
                                value={formik.values.building}
                                onChange={formik.handleChange}
                                placeholder="Budynek"
@@ -383,6 +402,7 @@ const ShippingForm = () => {
                         <input className="clientForm__input"
                                name="flat"
                                type="text"
+                               disabled={isAuth}
                                value={formik.values.flat}
                                onChange={formik.handleChange}
                                placeholder="Mieszkanie"
@@ -467,14 +487,14 @@ const ShippingForm = () => {
                 </h4>
                 <section className="paymentMethods">
                     <label className="label--button mb-3">
-                        <button className="formBtn" onClick={(e) => { e.preventDefault(); setPaymentMethod(0); }}>
-                            <span className={paymentMethod === 0 ? "formBtn--checked" : "d-none"}></span>
+                        <button className="formBtn" onClick={(e) => { e.preventDefault(); setPaymentMethod(1); }}>
+                            <span className={paymentMethod === 1 ? "formBtn--checked" : "d-none"}></span>
                         </button>
                         Płatności internetowe (Przelewy24)
                     </label>
                     <label className="label--button mb-3">
-                        <button className="formBtn" onClick={(e) => { e.preventDefault(); setPaymentMethod(1); }}>
-                            <span className={paymentMethod === 1 ? "formBtn--checked" : "d-none"}></span>
+                        <button className="formBtn" onClick={(e) => { e.preventDefault(); setPaymentMethod(2); }}>
+                            <span className={paymentMethod === 2 ? "formBtn--checked" : "d-none"}></span>
                         </button>
                         Płatność za pobraniem
                     </label>
@@ -526,7 +546,7 @@ const ShippingForm = () => {
                 </h4>
 
                 <button className="addToCartBtn button--login button--payment mt-5" type="submit">
-                    {paymentMethod === 1 ? "Kupuję" : "Przechodzę do płatności"}
+                    {paymentMethod === 2 ? "Kupuję" : "Przechodzę do płatności"}
                     <img className="addToCartBtn__img" src={arrowLong} alt="dodaj" />
                 </button>
 
@@ -539,6 +559,7 @@ const ShippingForm = () => {
                         {formik.errors.city && formik.submitCount ? <span className="newLine">{formik.errors.city}</span> : ""}
                         {formik.errors.building && formik.submitCount ? <span className="newLine">{formik.errors.building}</span> : ""}
                         {formik.errors.street && formik.submitCount ? <span className="newLine">{formik.errors.street}</span> : ""}
+                        {accountExistsError !== "" ? accountExistsError : ""}
 
                     {shippingMethod === -1 && formik.submitCount ? <span className="newLine">Wybierz metodę wysyłki</span> : ""}
                     {paymentMethod === -1 && formik.submitCount ? <span className="newLine">Wybierz metodę płatności</span> : "" }

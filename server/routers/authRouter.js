@@ -31,11 +31,40 @@ con.connect(function(err) {
        const query = 'INSERT INTO users VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
        con.query(query, values, (err, res) => {
           if(err) {
-              console.log(err);
               if(err.errno === 1062) {
                   /* User already exists */
-                  response.send({
-                      result: -1
+
+                  /* Check if account exists */
+                  const values = [email, email];
+                  const query = 'SELECT id, (SELECT id FROM users WHERE email = ? AND password IS NOT NULL) as userId FROM users WHERE email = ?';
+                  con.query(query, values, (err, res) => {
+                      if(res) {
+                          if(res[0].userId) {
+                            /* Account exists */
+                            response.send({
+                                result: -1
+                            });
+                          }
+                          else {
+                              /* It's not an account, but send back already existed data - UPDATE */
+                              const userId = res[0].id;
+                              const values = [firstName, lastName, city, street, building, flat, postalCode, phoneNumber, email];
+                              const query = 'UPDATE users SET first_name = ?, last_name = ?, city = ?, street = ?, building = ?, flat = ?, postal_code = ?, phone_number = ? WHERE email = ?';
+                              con.query(query, values, (err, res) => {
+                                    console.log(err);
+                                    console.log(res);
+                                  response.send({
+                                      result: 1,
+                                      userId
+                                  });
+                              });
+                          }
+                      }
+                      else {
+                        response.send({
+                            result: 0
+                        });
+                      }
                   });
               }
               else {
@@ -46,7 +75,8 @@ con.connect(function(err) {
           }
           else {
               response.send({
-                  result: 1
+                  result: 1,
+                  userId: res.insertId
               });
           }
        });

@@ -384,6 +384,10 @@
     .couponInfo--success {
         font-size: 14px;
     }
+
+    .page__header--ty {
+        font-size: 17px;
+    }
 }
 
 @media(max-width: 576px) {

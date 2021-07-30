@@ -17,7 +17,7 @@ const SingleProductInfo = ({id, title, description, img, price, sizes, gallery})
     const [size, setSize] = useState("S");
     const [amount, setAmount] = useState(1);
     const [modal, setModal] = useState(false);
-    const [loaded, setLoaded] = useState(false);
+    const [loaded, setLoaded] = useState(true);
 
     let slider = useRef({currentSlide: 0});
     const [slide, setSlide] = useState(0);

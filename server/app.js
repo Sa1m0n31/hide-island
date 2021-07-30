@@ -58,6 +58,9 @@ app.get("/panel/*", (req, res) => {
 app.get("/zarejestruj-sie", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
+app.get("/dziekujemy", (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
 
 
 /* Routers */

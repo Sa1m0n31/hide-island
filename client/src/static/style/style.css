@@ -1549,3 +1549,8 @@ input[type=number] {
 .category__clientForm__label {
     height: 40px;
 }
+
+/* TY page */
+.page__header--ty {
+    font-size: 24px;
+}

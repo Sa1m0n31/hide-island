@@ -222,7 +222,7 @@ ul {
 .panelContent {
     background: var(--black-primary);
     width: 80%;
-    min-height: 105vh;
+    min-height: 135vh;
     margin-left: 20%;
     padding: 60px 40px;
 }

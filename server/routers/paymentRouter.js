@@ -69,7 +69,7 @@ con.connect(err => {
                 email: request.body.email,
                 country: "PL",
                 language: "pl",
-                urlReturn: "http://hideisland.skylo-test3.pl/",
+                urlReturn: "http://hideisland.skylo-test3.pl/dziekujemy",
                 urlStatus: "http://hideisland.skylo-test3.pl/payment/verify",
                 sign: gen_hash
             };

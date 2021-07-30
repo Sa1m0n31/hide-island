@@ -38,6 +38,8 @@ import MyAccount from "./pages/MyAccount";
 import {getPagesContent} from "./helpers/pagesFunctions";
 import PanelImages from "./admin/pages/PanelImages";
 import NewsletterPage from "./admin/pages/NewsletterPage";
+import TYPage from "./pages/TYPage";
+import auth from "./admin/helpers/auth";
 
 /* Context */
 const CartContext = React.createContext(null);
@@ -86,6 +88,14 @@ function App() {
                     setPolicy(result[0].privacy_policy);
                     setComplaints(result[0].complaints_and_returns);
                 }
+            });
+
+        /* Auth */
+        auth(localStorage.getItem('sec-sessionKey'))
+            .then(res => {
+               if(!res.data.result) {
+                   localStorage.removeItem('sec-user-id');
+               }
             });
     }, []);
 
@@ -138,6 +148,9 @@ function App() {
           </Route>
           <Route path="/moje-konto">
               <MyAccount />
+          </Route>
+          <Route path="/dziekujemy">
+              <TYPage />
           </Route>
 
             {/* Admin routes */}

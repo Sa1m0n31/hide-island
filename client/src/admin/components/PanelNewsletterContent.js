@@ -1,6 +1,4 @@
 import React, {useEffect, useState} from "react";
-import exit from "../static/img/exit.svg";
-import trash from "../static/img/trash.svg";
 import axios from "axios";
 import settings from "../helpers/settings";
 
