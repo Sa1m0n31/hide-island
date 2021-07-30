@@ -120,7 +120,7 @@ const AddProductContent = () => {
         </header>
         {addMsg === "" ? <form className="addProduct__form addProduct__form--addProduct"
                                encType="multipart/form-data"
-                               action={update ? "http://localhost:5000/product/update-product" : "http://localhost:5000/product/add-product"}
+                               action={update ? "http://hideisland.skylo-test3.pl/product/update-product" : "http://hideisland.skylo-test3.pl/product/add-product"}
                                method="POST"
         >
             <section className="addProduct__form__section">
@@ -174,6 +174,20 @@ const AddProductContent = () => {
                         onBlur={newContent => {}} // preferred to use only this option to update the content for performance reasons
                         onChange={newContent => { setShortDescription(newContent) }}
                     />
+                </label>
+
+                <label className="fileInputLabel">
+                    <span>Zdjęcie produktu</span>
+                    <input type="file"
+                           className="product__fileInput"
+                           name="mainImage" />
+                </label>
+                <label className="fileInputLabel">
+                    <span>Galeria zdjęć</span>
+                    <input type="file"
+                           multiple={true}
+                           className="product__fileInput"
+                           name="gallery" />
                 </label>
             </section>
 
@@ -270,7 +284,7 @@ const AddProductContent = () => {
                     </button>
                     Ukryj produkt
                 </label>
-                <label className="panelContent__filters__label__label panelContent__filters__label__label--category">
+                <label className="panelContent__filters__label__label panelContent__filters__label__label--category mt-4">
                     <button className="panelContent__filters__btn" onClick={(e) => { e.preventDefault(); setRecommendation(!recommendation); }}>
                         <span className={recommendation ? "panelContent__filters__btn--active" : "d-none"} />
                     </button>
@@ -283,20 +297,6 @@ const AddProductContent = () => {
                 <input className="invisibleInput"
                        value={recommendation ? "true" : ""}
                        name="recommendation" />
-
-                <label className="fileInputLabel">
-                    <span>Zdjęcie produktu</span>
-                    <input type="file"
-                           className="product__fileInput"
-                           name="mainImage" />
-                </label>
-                <label className="fileInputLabel">
-                    <span>Galeria zdjęć</span>
-                    <input type="file"
-                           multiple={true}
-                           className="product__fileInput"
-                           name="gallery" />
-                </label>
             </section>
 
             <section className="addProduct__btnWrapper">

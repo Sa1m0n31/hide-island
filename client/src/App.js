@@ -1,6 +1,9 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { Helmet } from 'react-helmet'
 
+import "aos/dist/aos.css";
+import AOS from 'aos';
+
 import './static/style/admin.css'
 import './static/style/adminMobile.css'
 import './static/style/style.css'
@@ -33,6 +36,7 @@ import LoginPageClient from "./pages/LoginPageClient";
 import AfterRegister from "./pages/AfterRegister";
 import MyAccount from "./pages/MyAccount";
 import {getPagesContent} from "./helpers/pagesFunctions";
+import PanelImages from "./admin/pages/PanelImages";
 
 /* Context */
 const CartContext = React.createContext(null);
@@ -67,6 +71,11 @@ function App() {
     const [complaints, setComplaints] = useState("");
 
     useEffect(() => {
+        /* Initialize AOS */
+        AOS.init({
+            mirror: true
+        });
+
         /* Get pages content */
         getPagesContent()
             .then(res => {
@@ -157,6 +166,9 @@ function App() {
             </Route>
             <Route path="/panel/kupony">
                 <PanelCoupons />
+            </Route>
+            <Route path="/panel/zdjecia">
+                <PanelImages />
             </Route>
             <Route path="/panel/pozostale">
                 <PanelOthers />

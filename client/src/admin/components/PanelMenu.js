@@ -11,10 +11,9 @@ import powerOff from '../static/img/power-off.png'
 import addImg from '../static/img/add.png'
 import hamburger from '../../static/img/hamburger.png'
 import close from '../static/img/close.png'
-import write from '../static/img/write.svg'
-import aboutUs from '../static/img/about-us.png'
 import others from '../static/img/file.png'
 import discount from '../static/img/discount.png'
+import banner from '../static/img/banner.png'
 
 import settings from "../helpers/settings";
 import auth from "../helpers/auth";
@@ -71,7 +70,7 @@ const PanelMenu = ({active, submenu}) => {
                 </header>
             </section>
 
-            <header className="panelMenu__menuMobile d-mobile">
+            <header className="panelMenu__menuMobile d-flex d-md-none">
                 <header className="panelMenu__top__info">
                     <h3 className="panelMenu__top__header">
                         Zalogowany jako:
@@ -85,7 +84,7 @@ const PanelMenu = ({active, submenu}) => {
                 </button>
             </header>
 
-            <nav className="panelMenu__menu d-desktop" ref={menu}>
+            <nav className="panelMenu__menu" ref={menu}>
                 <button className="panelMenu__menuMobile__closeBtn d-mobile" onClick={() => { closeMenu(); }}>
                     <img className="panelMenu__menuMobile__closeBtn__img" src={close} alt="zamknij" />
                 </button>
@@ -144,7 +143,13 @@ const PanelMenu = ({active, submenu}) => {
                         </a>
                     </li>
                     <li className="panelMenu__list__item">
-                        <a className="panelMenu__list__item__link" id={active === 8 ? "menuItem--active" : ""} href="/panel/pozostale">
+                        <a className="panelMenu__list__item__link" id={active === 8 ? "menuItem--active" : ""} href="/panel/zdjecia">
+                            <img className="panelMenu__list__item__img" src={banner} alt="zdjecia" />
+                            Zdjęcia
+                        </a>
+                    </li>
+                    <li className="panelMenu__list__item">
+                        <a className="panelMenu__list__item__link" id={active === 9 ? "menuItem--active" : ""} href="/panel/pozostale">
                             <img className="panelMenu__list__item__img" src={others} alt="pozostale" />
                             Pozostałe
                         </a>

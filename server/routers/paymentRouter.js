@@ -69,8 +69,8 @@ con.connect(err => {
                 email: request.body.email,
                 country: "PL",
                 language: "pl",
-                urlReturn: "http://localhost:3000/",
-                urlStatus: "http://localhost:5000/payment/verify",
+                urlReturn: "http://hideisland.skylo-test3.pl/",
+                urlStatus: "http://hideisland.skylo-test3.pl/payment/verify",
                 sign: gen_hash
             };
 

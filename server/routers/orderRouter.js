@@ -5,12 +5,7 @@ const con = require("../databaseConnection");
 con.connect(err => {
     /* GET ALL ORDERS */
     router.get("/get-orders", (request, response) => {
-        const query = 'SELECT o1.id as id, u.first_name, u.last_name, u.email, pm.name, o2.payment_status, o2.order_status, o2.date ' +
-            'FROM (SELECT o.id, price FROM orders o ' +
-            'JOIN sells s ON o.id = s.order_id ' +
-            'JOIN products p ON p.id = s.product_id GROUP BY o.id) o1 ' +
-            'JOIN orders o2 USING(id) JOIN users u ON u.id = o2.user ' +
-            'LEFT OUTER JOIN payment_methods pm ON o2.payment_method = pm.id';
+        const query = 'SELECT o.id as id, u.first_name, u.last_name, u.email, o.date, o.payment_status FROM orders o JOIN users u ON o.user = u.id';
         con.query(query, (err, res) => {
             if (res) {
                 response.send({
@@ -147,7 +142,7 @@ con.connect(err => {
             const values = [id];
             const query = 'SELECT o.id, u.first_name, u.last_name, u.email, u.phone_number, o.date, o.order_status, pm.name as payment, sm.name as shipping, o.order_comment, o.company_name, o.nip, s.size, s.quantity, p.price, p.name, o.inpost_address, o.inpost_postal_code, inpost_city FROM orders o ' +
                 'JOIN sells s ON o.id = s.order_id ' +
-                'JOIN products p ON p.id = s.product_id ' +
+                'LEFT OUTER JOIN products p ON p.id = s.product_id ' +
                 'JOIN shipping_methods sm ON o.shipping_method = sm.id ' +
                 'JOIN payment_methods pm ON o.payment_method = pm.id ' +
                 'JOIN users u ON u.id = o.user ' +

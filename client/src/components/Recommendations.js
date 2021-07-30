@@ -16,17 +16,16 @@ const Recommendations = () => {
                 if(res.data?.result) {
                     setRecoms(res.data.result);
                 }
-            })
+            });
     }, []);
 
     return <section className="recommendationsSection">
-        <h2 className="section__header">
+        <h2 className="section__header" data-aos="fade-up">
             Polecane
         </h2>
         <main className="recom__content d-flex justify-content-between align-items-center">
             {recoms.map((item, index) => {
-                console.log(item);
-                return <a className="recom__item" href={`/produkt/${convertToURL(item.name)}`}>
+                return <a className="recom__item" href={`/produkt/${convertToURL(item.name)}`} data-aos="fade-up" data-aos-delay={400}>
                     <figure className="recom__item__imgWrapper overflow-hidden">
                         <img className="recom__item__img" src={`${settings.API_URL}/image?url=/media/${item.file_path}`} />
                     </figure>

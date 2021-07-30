@@ -121,6 +121,14 @@ button, a {
     text-decoration: underline;
 }
 
+.header__menu__list__item {
+    transition: .4s all;
+}
+
+.header__menu__list__item:hover {
+    transform: translateY(-5px);
+}
+
 /* Hero section */
 .hero {
     background: var(--black-secondary);
@@ -147,11 +155,12 @@ button, a {
     overflow: hidden;
     max-height: 600px;
     border: 2px solid #fff;
+    transition: 1s all ease;
 }
 
 .hero__slider__img {
     height: auto !important;
-    cursor: default !important;
+    cursor: pointer;
     transition: .4s all ease-in-out;
 }
 
@@ -241,7 +250,6 @@ button, a {
 .gallerySection__imgWrapper {
     overflow: hidden;
     display: block;
-    cursor: pointer; /* tmp */
 }
 
 .gallerySection__img {
@@ -251,11 +259,13 @@ button, a {
 .imgWrapper-1 {
     grid-column: 1;
     grid-row: 1;
+    margin-bottom: 8px;
 }
 
 .imgWrapper-2 {
     grid-column: 2;
     grid-row: 1;
+    margin-bottom: 8px;
 }
 
 .imgWrapper-3 {
@@ -1199,6 +1209,10 @@ input[type=number] {
     width: 49%;
 }
 
+.category .clientForm__label {
+    width: 100% !important;
+}
+
 .d-flex .clientForm__input {
     min-width: 0;
 }
@@ -1507,4 +1521,8 @@ input[type=number] {
     color: red;
     font-size: 14px;
     font-weight: 400;
+}
+
+.category__clientForm__label {
+    height: 40px;
 }

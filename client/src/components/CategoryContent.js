@@ -12,6 +12,7 @@ import {getAllProducts, getProductsByCategory} from "../helpers/productFunctions
 import settings from "../admin/helpers/settings";
 import axios from "axios";
 import convertToURL from "../helpers/convertToURL";
+import {productSearchForUser} from "../admin/helpers/search";
 
 const CategoryContent = () => {
     const filters = [
@@ -22,6 +23,7 @@ const CategoryContent = () => {
 
     const { cartContent, addToCart } = useContext(CartContext);
 
+    const [search, setSearch] = useState("");
     const [products, setProducts] = useState([1, 2, 3, 4, 5, 6]);
     const [productsFiltered, setProductsFiltered] = useState([]);
     const [categories, setCategories] = useState([]);
@@ -128,6 +130,11 @@ const CategoryContent = () => {
         }).length > 0;
     }
 
+    useEffect(() => {
+        setProductsFiltered(productSearchForUser(products, search));
+        setPrice(4);
+    }, [search]);
+
     return <section className="page category">
         <Modal
             isOpen={modal}
@@ -185,37 +192,48 @@ const CategoryContent = () => {
                 </h3>
 
                 <h4 className="category__filters__item__subheader">
-                    Rozmiar:
+                    Szukaj wg nazwy:
                 </h4>
                 <section className="singleProductInfo__sizes__buttons d-flex justify-content-between">
-                    <button className="singleProductInfo__sizes__btn"
-                            value="S"
-                            onClick={() => { handleSizeFilter("S"); }}
-                            id={isSizeSelected("S") ? "sizeSelected" : ""}
-                    >
-                        S
-                    </button>
-                    <button className="singleProductInfo__sizes__btn"
-                            value="M"
-                            onClick={() => { handleSizeFilter("M"); }}
-                            id={isSizeSelected("M") ? "sizeSelected" : ""}
-                    >
-                        M
-                    </button>
-                    <button className="singleProductInfo__sizes__btn"
-                            value="L"
-                            onClick={() => { handleSizeFilter("L"); }}
-                            id={isSizeSelected("L") ? "sizeSelected" : ""}
-                    >
-                        L
-                    </button>
-                    <button className="singleProductInfo__sizes__btn"
-                            value="XL"
-                            onClick={() => { handleSizeFilter("XL"); }}
-                            id={isSizeSelected("XL") ? "sizeSelected" : ""}
-                    >
-                        XL
-                    </button>
+
+                    <label className="clientForm__label mt-1">
+                        <input className="clientForm__input"
+                               name="firstName"
+                               type="text"
+                               value={search}
+                               onChange={(e) => { setSearch(e.target.value); }}
+                               placeholder="Szukaj..."
+                        />
+                    </label>
+
+                    {/*<button className="singleProductInfo__sizes__btn"*/}
+                    {/*        value="S"*/}
+                    {/*        onClick={() => { handleSizeFilter("S"); }}*/}
+                    {/*        id={isSizeSelected("S") ? "sizeSelected" : ""}*/}
+                    {/*>*/}
+                    {/*    S*/}
+                    {/*</button>*/}
+                    {/*<button className="singleProductInfo__sizes__btn"*/}
+                    {/*        value="M"*/}
+                    {/*        onClick={() => { handleSizeFilter("M"); }}*/}
+                    {/*        id={isSizeSelected("M") ? "sizeSelected" : ""}*/}
+                    {/*>*/}
+                    {/*    M*/}
+                    {/*</button>*/}
+                    {/*<button className="singleProductInfo__sizes__btn"*/}
+                    {/*        value="L"*/}
+                    {/*        onClick={() => { handleSizeFilter("L"); }}*/}
+                    {/*        id={isSizeSelected("L") ? "sizeSelected" : ""}*/}
+                    {/*>*/}
+                    {/*    L*/}
+                    {/*</button>*/}
+                    {/*<button className="singleProductInfo__sizes__btn"*/}
+                    {/*        value="XL"*/}
+                    {/*        onClick={() => { handleSizeFilter("XL"); }}*/}
+                    {/*        id={isSizeSelected("XL") ? "sizeSelected" : ""}*/}
+                    {/*>*/}
+                    {/*    XL*/}
+                    {/*</button>*/}
                 </section>
 
                 <h4 className="category__filters__item__subheader mt-4 mb-4">
@@ -241,7 +259,7 @@ const CategoryContent = () => {
             {productsFiltered.map((item, index) => {
                 if((!item.hidden)&&(loaded)) {
                     console.log(item);
-                    return <a className="recom__item" key={index} href={`http://localhost:3000/produkt/${convertToURL(item.name)}`}>
+                    return <a className="recom__item" key={index} href={`http://hideisland.skylo-test3.pl/produkt/${convertToURL(item.name)}`}>
                         <figure className="recom__item__imgWrapper overflow-hidden">
                             <img className="recom__item__img" src={settings.API_URL + "/image?url=/media/" + item.image} />
                         </figure>

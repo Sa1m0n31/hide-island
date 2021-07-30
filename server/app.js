@@ -67,6 +67,7 @@ const paymentRouter = require("./routers/paymentRouter");
 const pagesRouter = require("./routers/pagesRouter");
 const couponRouter = require("./routers/couponRouter");
 const newsletterRouter = require("./routers/newsletterRouter");
+const homepageRouter = require("./routers/homepageRouter");
 
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
@@ -80,6 +81,7 @@ app.use("/payment", paymentRouter);
 app.use("/pages", pagesRouter);
 app.use("/coupon", couponRouter);
 app.use("/newsletter", newsletterRouter);
+app.use("/homepage", homepageRouter);
 
 app.listen(5000, () => {
     console.log("Listening on port 5000");

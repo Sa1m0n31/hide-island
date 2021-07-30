@@ -11,7 +11,7 @@ con.connect(err => {
         if(parentId === "0") parentId = null;
 
         if(name === "") {
-            response.redirect("http://localhost:5000/panel/kategorie?added=0");
+            response.redirect("http://hideisland.skylo-test3.pl/panel/kategorie?added=0");
             return 0;
         }
 
@@ -20,8 +20,8 @@ con.connect(err => {
 
         con.query(query, values, (err, res) => {
             console.log(err);
-            if(!err) response.redirect("http://localhost:3000/panel/kategorie?added=1");
-            else response.redirect("http://localhost:3000/panel/kategorie?added=-1")
+            if(!err) response.redirect("http://hideisland.skylo-test3.pl/panel/kategorie?added=1");
+            else response.redirect("http://hideisland.skylo-test3.pl/panel/kategorie?added=-1")
         });
     });
 
@@ -120,8 +120,8 @@ con.connect(err => {
     const query = 'UPDATE categories SET name = ?, parent_id = ?, permalink = ?, hidden = ? WHERE id = ?';
 
     con.query(query, values, (err, res) => {
-        if(!err) response.redirect("http://localhost:5000/panel/kategorie?added=2");
-        else response.redirect("http://localhost:5000/panel/kategorie?added=-1")
+        if(!err) response.redirect("http://hideisland.skylo-test3.pl/panel/kategorie?added=2");
+        else response.redirect("http://hideisland.skylo-test3.pl/panel/kategorie?added=-1")
     });
     });
 });

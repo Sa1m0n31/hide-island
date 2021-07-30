@@ -29,52 +29,9 @@ con.connect(err => {
       })
    });
 
-   /* Modify IMAGES table */
-   // const storage = multer.diskStorage({
-   //    destination: "media/products/",
-   //    filename: function(req, file, cb){
-   //       const fName = file.fieldname + Date.now() + path.extname(file.originalname);
-   //       filenames.push(fName);
-   //       cb(null, fName);
-   //    }
-   // });
-   //
-   // const upload = multer({
-   //    storage: storage
-   // }).fields([{name: "mainImage"}]);
-   //
-   // upload(request, response, (err, res) => {
-   //    if (err) throw err;
-   //
-   //    filenames.sort().reverse(); // First image - main image
-   //    /* Add images to database */
-   //    if(filenames.length) {
-   //       filenames.forEach((item, index, array) => {
-   //          const values = ["products/" + item, productId];
-   //          const query = 'INSERT INTO images VALUES (NULL, ?, ?)';
-   //          con.query(query, values);
-   //       });
-   //    }
-   // });
-
-   // var storage = multer.diskStorage({
-   //    destination: function (req, file, cb) {
-   //       cb(null, './media/products')
-   //    },
-   //    filename: function (req, file, cb) {
-   //       cb(null, file.originalname)
-   //    }
-   // })
-   // var upload = multer({ storage: storage })
-
-
    /* ADD PRODUCT */
    router.post("/add-product", (request, response) => {
       let filenames = [];
-      let filenamesGallery = [];
-      let filesId = [null];
-
-      console.log(request.file);
 
       /* Modify IMAGES table */
       const storage = multer.diskStorage({
@@ -89,19 +46,6 @@ con.connect(err => {
       const upload = multer({
          storage: storage
       }).fields([{name: "mainImage", maxCount: 10}, { name: 'gallery', maxCount: 10 }]);
-
-      // const galleryStorage = multer.diskStorage({
-      //    destination: "media/products/",
-      //    filename: function(req, file, cb){
-      //       const fName = file.fieldname + Date.now() + path.extname(file.originalname);
-      //       filenamesGallery.push(fName);
-      //       cb(null, fName);
-      //    }
-      // });
-      //
-      // const galleryUpload = multer({
-      //    storage: galleryStorage
-      // }).fields([{name: 'gallery'}]);
 
       upload(request, response, (err, res) => {
          if (err) throw err;
@@ -138,22 +82,22 @@ con.connect(err => {
                                  const values = [mainImageId, productId];
                                  const query = 'UPDATE products SET main_image = ? WHERE id = ?';
                                  con.query(query, values, (err, res) => {
-                                    if(res) response.redirect("http://localhost:3000/panel/dodaj-produkt?add=1");
-                                    else response.redirect("http://localhost:3000/panel/dodaj-produkt?add=0");
+                                    if(res) response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=1");
+                                    else response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=0");
                                  });
                               }
                               else {
-                                 response.redirect("http://localhost:3000/panel/dodaj-produkt?add=0");
+                                 response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=0");
                               }
                            }
                         })
                      });
                   }
-                  else response.redirect("http://localhost:3000/panel/dodaj-produkt?add=0");
+                  else response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=0");
                });
             }
             else {
-               response.redirect("http://localhost:3000/panel/dodaj-produkt?add=0");
+               response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=0");
             }
          });
       });
@@ -185,8 +129,8 @@ con.connect(err => {
          con.query(querySizes, valuesSizes, (err, res) => {
             console.log("2 error");
             console.log(err);
-            if(res) response.redirect("http://localhost:3000/panel/dodaj-produkt?add=1");
-            else response.redirect("http://localhost:3000/panel/dodaj-produkt?add=0");
+            if(res) response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=1");
+            else response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=0");
          });
       });
    });

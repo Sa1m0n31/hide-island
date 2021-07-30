@@ -69,6 +69,11 @@ const Header = () => {
                                 Strona główna
                             </a>
                         </li>
+                        <li className="header__menu__list__item">
+                            <a className="header__menu__list__link" href="/sklep">
+                                Sklep
+                            </a>
+                        </li>
                         {menu.map((item, index) => {
                             if(!item.hidden) {
                                 return <li className="header__menu__list__item" key={index}>
@@ -99,6 +104,11 @@ const Header = () => {
                             <li className="header__menu__list__item text-center pb-2">
                                 <a className="header__menu__list__link" href="/">
                                     Strona główna
+                                </a>
+                            </li>
+                            <li className="header__menu__list__item text-center pb-2">
+                                <a className="header__menu__list__link" href="/sklep">
+                                    Sklep
                                 </a>
                             </li>
                             {menu.map((item, index) => {

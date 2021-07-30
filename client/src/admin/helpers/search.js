@@ -56,7 +56,7 @@ const productSearch = (str) => {
             const re = new RegExp(`.*${str}.*`, 'gi');
 
             /* Search by first name */
-            if(item.product_name.search(re) !== -1) return true;
+            if(item.name.search(re) !== -1) return true;
 
             /* Search by category name */
             if(item.category_name.search(re) !== -1) return true;
@@ -68,4 +68,19 @@ const productSearch = (str) => {
     return filteredProducts;
 }
 
-export { orderSearch, sortByDate, productSearch };
+const productSearchForUser = (products, str) => {
+    if(products) {
+        return products.filter((item, index) => {
+            const re = new RegExp(`.*${str}.*`, 'gi');
+
+            console.log(item);
+            if(item.name?.search(re) !== -1) return true;
+            if(item.category_name?.search(re) !== -1) return true;
+
+            return false;
+        });
+    }
+    else return [];
+}
+
+export { orderSearch, sortByDate, productSearch, productSearchForUser };

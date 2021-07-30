@@ -46,10 +46,12 @@
           document.dispatchEvent(storage);
 
           const modal = document.querySelector(".bigModal");
-          modal.style.opacity = "0";
-          setTimeout(() => {
+          if(modal) {
+            modal.style.opacity = "0";
+            setTimeout(() => {
               modal.style.display = "none";
-          }, 500);
+            }, 500);
+          }
         });
       };
     </script>

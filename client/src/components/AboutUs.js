@@ -30,21 +30,21 @@ const AboutUs = () => {
     }, []);
 
     return <section className="aboutUs">
-        <h2 className="section__header">
+        <h2 className="section__header" data-aos="fade-up">
             Poznaj nas
         </h2>
 
         <header className="aboutUs__icons d-flex justify-content-center justify-content-md-between align-items-center">
             {icons.map((item, index) => {
                 return <section className="aboutUs__icons__item d-flex flex-column align-items-center" key={index}>
-                    <img className="aboutUs__icons__item__img" src={item.icon} alt={item.text} />
-                    <h4 className="aboutUs__icons__item__header mt-4">
+                    <img className="aboutUs__icons__item__img" src={item.icon} alt={item.text} data-aos="zoom-in" data-aos-delay={100 * index} />
+                    <h4 className="aboutUs__icons__item__header mt-4" data-aos="fade-in" data-aos-delay={100 * index}>
                         {item.text}
                     </h4>
                 </section>
             })}
         </header>
-        <main className="aboutUs__content">
+        <main className="aboutUs__content" data-aos="fade-left">
             <h3 className="aboutUs__header">
                 Kilka słów...
             </h3>

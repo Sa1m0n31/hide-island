@@ -112,6 +112,17 @@ ul {
     background: var(--black-primary);
 }
 
+.panelMenu__menu {
+    display: block;
+    background: var(--black-secondary) !important;
+}
+
+@media(max-width: 776px) {
+    .panelMenu__menu {
+        display: none;
+    }
+}
+
 .panelMenu__top {
     margin: 50px 20px 70px;
     display: flex;
@@ -1179,4 +1190,12 @@ select {
 
 .panelContent__filters__btnWrapper:last-child .panelContent__filters__btn {
     margin-left: 15px;
+}
+
+.addShipping__input {
+    max-width: 500px;
+}
+
+.btn--editSectionHeader {
+    max-width: 400px;
 }

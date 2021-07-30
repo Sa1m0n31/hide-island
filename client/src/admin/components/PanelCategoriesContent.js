@@ -3,8 +3,6 @@ import {deleteCategory, getAllCategories, getCategory} from "../helpers/categori
 import exit from "../static/img/exit.svg";
 import trash from "../static/img/trash.svg";
 
-import settings from "../helpers/settings";
-
 import Modal from 'react-modal'
 import closeImg from "../static/img/close.png";
 import {useLocation} from "react-router";
@@ -147,7 +145,7 @@ const PanelCategoriesContent = () => {
 
                 {addedMsg === "" ? <form className="panelContent__frame__form categoriesForm"
                                          method="POST"
-                                         action={update ? "http://localhost:5000/category/update" : "http://localhost:5000/category/add"}
+                                         action={update ? "http://hideisland.skylo-test3.pl/category/update" : "http://hideisland.skylo-test3.pl/category/add"}
                                          onSubmit={(e) => { handleSubmit(e) }}
                 >
                     <input className="invisibleInput"
