@@ -14,6 +14,7 @@ import close from '../static/img/close.png'
 import others from '../static/img/file.png'
 import discount from '../static/img/discount.png'
 import banner from '../static/img/banner.png'
+import newsletterIcon from '../static/img/about-us.png'
 
 import settings from "../helpers/settings";
 import auth from "../helpers/auth";
@@ -152,6 +153,12 @@ const PanelMenu = ({active, submenu}) => {
                         <a className="panelMenu__list__item__link" id={active === 9 ? "menuItem--active" : ""} href="/panel/pozostale">
                             <img className="panelMenu__list__item__img" src={others} alt="pozostale" />
                             Pozostałe
+                        </a>
+                    </li>
+                    <li className="panelMenu__list__item">
+                        <a className="panelMenu__list__item__link" id={active === 10 ? "menuItem--active" : ""} href="/panel/newsletter">
+                            <img className="panelMenu__list__item__img" src={newsletterIcon} alt="pozostale" />
+                            Newsletter
                         </a>
                     </li>
                     <li className="panelMenu__list__item">

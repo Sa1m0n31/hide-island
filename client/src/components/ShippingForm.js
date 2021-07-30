@@ -58,13 +58,13 @@ const ShippingForm = () => {
                     const storage = new Event('storage');
                     document.dispatchEvent(storage);
 
-                    // const modal = document.querySelector(".bigModal");
-                    // if(modal) {
-                    //   modal.style.opacity = "0";
-                    //   setTimeout(() => {
-                    //     modal.style.display = "none";
-                    //   }, 500);
-                    // }
+                    const modal = document.querySelector(".bigModal");
+                    if(modal) {
+                      modal.style.opacity = "0";
+                      setTimeout(() => {
+                        modal.style.display = "none";
+                      }, 500);
+                    }
                 });
             }
         };

@@ -37,6 +37,7 @@ import AfterRegister from "./pages/AfterRegister";
 import MyAccount from "./pages/MyAccount";
 import {getPagesContent} from "./helpers/pagesFunctions";
 import PanelImages from "./admin/pages/PanelImages";
+import NewsletterPage from "./admin/pages/NewsletterPage";
 
 /* Context */
 const CartContext = React.createContext(null);
@@ -172,6 +173,9 @@ function App() {
             </Route>
             <Route path="/panel/pozostale">
                 <PanelOthers />
+            </Route>
+            <Route path="/panel/newsletter">
+                <NewsletterPage />
             </Route>
 
             {/* Add content pages */}

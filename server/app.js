@@ -43,6 +43,9 @@ app.get("/zaloguj-sie", (req, res) => {
 app.get("/moje-konto", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
+app.get("/konto-zalozone", (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
 app.get("/admin", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
@@ -52,7 +55,6 @@ app.get("/panel", (req, res) => {
 app.get("/panel/*", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
-
 app.get("/zarejestruj-sie", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
