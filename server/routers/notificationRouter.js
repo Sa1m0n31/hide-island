@@ -1,7 +1,5 @@
 const express = require("express");
-const crypto = require("crypto");
 const router = express.Router();
-const { v4: uuidv4 } = require('uuid');
 const con = require("../databaseConnection");
 
 const nodemailer = require("nodemailer");
@@ -97,7 +95,7 @@ con.connect(err => {
                        if(res) {
                            if(res.length) {
                                res.forEach((item, index, array) => {
-                                   sendMail(item.email, item.name);
+                                   //sendMail(item.email, item.name);
 
                                    if(index === array.length-1) {
                                        /* Remove all notifications rows */

@@ -937,6 +937,7 @@ input[type=number] {
     margin-bottom: 30px;
     padding-bottom: 30px;
     border-bottom: 1px solid rgba(106, 106, 106, .25);
+    position: relative;
 }
 
 .cart__item__imgWrapper {
@@ -993,7 +994,7 @@ input[type=number] {
     width: 20px;
     padding: 0;
     background: transparent;
-    opacity: .5;
+    opacity: .7;
     transition: .4s all ease-in-out;
 }
 

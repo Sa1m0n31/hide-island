@@ -388,6 +388,12 @@
     .page__header--ty {
         font-size: 17px;
     }
+
+    .removeFromCartBtn {
+        position: absolute;
+        bottom: 10px;
+        right: 0;
+    }
 }
 
 @media(max-width: 576px) {
