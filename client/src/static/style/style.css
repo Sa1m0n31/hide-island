@@ -547,6 +547,17 @@ button, a {
     transform: translateX(-50%);
 }
 
+.clientForm__label--notification {
+    width: 80%;
+    max-width: 300px;
+}
+
+.clientForm__input--notification {
+    width: 100%;
+    max-width: 280px;
+    min-width: 0 !important;
+}
+
 .singleProductInfo__section {
     width: 45%;
     transition: 1s all;
@@ -902,6 +913,12 @@ input[type=number] {
     padding-bottom: 50px;
 }
 
+.removeFromCartBtn__img {
+    filter: brightness(0) invert(1);
+    width: 100%;
+    height: auto;
+}
+
 .cart__header {
     font-weight: 500;
     font-size: 26px;
@@ -926,6 +943,7 @@ input[type=number] {
     height: 100%;
     width: auto;
     align-items: center;
+    transition: .4s all;
 }
 
 .cart__item__img {
@@ -972,24 +990,11 @@ input[type=number] {
 }
 
 .removeFromCartBtn {
-    position: absolute;
-    top: -15px;
-    left: -15px;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: var(--black-primary);
-    color: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    width: 20px;
     padding: 0;
-    opacity: 0;
+    background: transparent;
+    opacity: .5;
     transition: .4s all ease-in-out;
-}
-
-.cart__item:hover .removeFromCartBtn {
-    opacity: 1;
 }
 
 .removeFromCartBtn:hover {
@@ -1553,4 +1558,13 @@ input[type=number] {
 /* TY page */
 .page__header--ty {
     font-size: 24px;
+}
+
+/* Product not available */
+.font-size-12 {
+    font-size: 14px;
+}
+
+.modalHeader--smaller {
+    font-size: 17px;
 }

@@ -34,7 +34,7 @@ const SingleProductCrossSells = ({ids}) => {
                                 {item.price} PLN
                             </h4>
                         <button className="addToCartBtn addToCartBtn--crossSells">
-                            Dodaj do koszyka
+                            Zobacz produkt
                             <img className="addToCartBtn__img" src={arrowLong} alt="dodaj" />
                         </button>
                     </a>

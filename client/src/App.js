@@ -40,6 +40,7 @@ import PanelImages from "./admin/pages/PanelImages";
 import NewsletterPage from "./admin/pages/NewsletterPage";
 import TYPage from "./pages/TYPage";
 import auth from "./admin/helpers/auth";
+import { v4 as uuidv4 } from 'uuid';
 
 /* Context */
 const CartContext = React.createContext(null);
@@ -48,21 +49,23 @@ function App() {
     const [cartContent, setCartContent] = useState(localStorage.getItem('hideisland-cart') ? JSON.parse(localStorage.getItem('hideisland-cart')) : []);
 
     const addToCart = (id, title, amount, img, size, price) => {
+        const uuid = uuidv4();
+
         localStorage.setItem('hideisland-cart', JSON.stringify([...cartContent, {
-            id, title, amount, img, size, price
+            uuid, id, title, amount, img, size, price
         }]));
 
         setCartContent([...cartContent, {
-            id, title, amount, img, size, price
+            uuid, id, title, amount, img, size, price
         }]);
     }
 
-    const removeFromCart = (id, size) => {
+    const removeFromCart = (uuid) => {
         const localStorageItem = localStorage.getItem('hideisland-cart');
         if(localStorageItem) {
             const newCart = JSON.parse(localStorage.getItem('hideisland-cart'))
                 .filter((item) => {
-                   return item.id !== id || item.size !== size;
+                   return item.uuid !== uuid;
                 });
             setCartContent(newCart);
             localStorage.setItem('hideisland-cart', JSON.stringify(newCart));

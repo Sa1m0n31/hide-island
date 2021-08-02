@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react'
 
-import test3 from '../static/img/test3.png'
 import ShippingForm from "./ShippingForm";
+import trashIcon from '../static/img/trash.png'
 
 import { CartContext } from "../App";
 import EmptyCart from "./EmptyCart";
@@ -39,11 +39,6 @@ const CartContent = () => {
                 {cartContent.map((item, index) => {
                     return <section className="cart__item d-grid d-md-flex justify-content-between align-items-center">
                         <section className="d-flex cart__item__imgWrapper position-relative">
-                            <button className="removeFromCartBtn"
-                                    onClick={() => { removeFromCart(item.id, item.size); setRemove(!remove); }}
-                            >
-                                &times;
-                            </button>
                             <img className="cart__item__img" src={`${settings.API_URL}/image?url=/media/${item.img}`} alt="title"/>
 
                             <h3 className="cart__item__title d-none d-md-block">
@@ -85,6 +80,12 @@ const CartContent = () => {
                                 {item.price} PLN
                             </h4>
                         </section>
+
+                        <button className="removeFromCartBtn"
+                                onClick={() => { removeFromCart(item.uuid); setRemove(!remove); }}
+                        >
+                            <img className="removeFromCartBtn__img" src={trashIcon} alt="usun" />
+                        </button>
                     </section>
                 })}
 
