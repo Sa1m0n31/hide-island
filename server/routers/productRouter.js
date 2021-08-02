@@ -151,7 +151,7 @@ con.connect(err => {
                con.query(query2, values2, (err, res) => {
                   if(res) {
                      /* HERE WE HAVE TO CHECK WHETHER WE HAVE TO SEND NOTIFICATION TO CLIENT */
-                     got.post("http://localhost:5000/notification/check-notifications", {
+                     got.post("http://hideisland.skylo-test3.pl/notification/check-notifications", {
                         json: { productId: id },
                         responseType: "json"
                      })
