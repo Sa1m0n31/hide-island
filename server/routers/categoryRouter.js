@@ -45,7 +45,7 @@ con.connect(err => {
 
     /* GET ALL CATEGORIES */
     router.get("/get-all", (request, response) => {
-        con.query('SELECT * FROM categories', (err, res) => {
+        con.query('SELECT c1.name as parent_name, c2.id, c2.name as name, c2.parent_id, c2.permalink, c2.hidden FROM categories c1 RIGHT OUTER JOIN categories c2 ON c1.id = c2.parent_id', (err, res) => {
            response.send({
                result: res
            });

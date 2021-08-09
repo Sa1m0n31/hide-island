@@ -36,7 +36,7 @@ const Header = () => {
 
     const getCategoryChildren = (categoryId) => {
         return menu.filter(item => {
-            return item.parent_id === categoryId;
+            return item.parent_id === categoryId && !item.hidden;
         });
     }
 
@@ -91,11 +91,11 @@ const Header = () => {
 
                                     {getCategoryChildren(item.id).length ? <ul className="header__menu__submenu">
                                         {getCategoryChildren(item.id).map((itemChild, indexChild) => {
-                                            return <li className="header__menu__list__item" key={indexChild}>
-                                                <a className="header__menu__list__link" href={`/kategoria/${item.permalink}/${itemChild.permalink}`}>
-                                                    {itemChild.name}
-                                                </a>
-                                            </li>
+                                                return <li className="header__menu__list__item" key={indexChild}>
+                                                    <a className="header__menu__list__link" href={`/kategoria/${item.permalink}/${itemChild.permalink}`}>
+                                                        {itemChild.name}
+                                                    </a>
+                                                </li>
                                     })}
                                     </ul> : ""}
                                 </li>
@@ -130,11 +130,20 @@ const Header = () => {
                                 </a>
                             </li>
                             {menu.map((item, index) => {
-                                if(!item.hidden) {
-                                    return <li className="header__menu__list__item text-center pb-2" key={index}>
+                                if((!item.hidden)&&(!item.parent_id)) {
+                                    return <li className="header__menu__list__item pb-2 flex-column" key={index}>
                                         <a className="header__menu__list__link" href={`/kategoria/${item.permalink}`}>
                                             {item.name}
                                         </a>
+                                        {getCategoryChildren(item.id).length ? getCategoryChildren(item.id).map((itemChild, indexChild) => {
+                                            if((!itemChild.hidden)&&(itemChild.parent_id === item.id)) {
+                                                return <li className="header__menu__list__item pt-2 pl-5" key={indexChild}>
+                                                    <a className="header__menu__list__link" href={`/kategoria/${item.permalink}/${itemChild.permalink}`}>
+                                                        {itemChild.name}
+                                                    </a>
+                                                </li>
+                                            }
+                                        }) : ""}
                                     </li>
                                 }
                             })}

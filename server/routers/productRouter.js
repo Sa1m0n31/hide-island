@@ -293,7 +293,6 @@ con.connect(err => {
             });
          }
          else {
-            console.log(err);
             response.send({
                result: null
             });

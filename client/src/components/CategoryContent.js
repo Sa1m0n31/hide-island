@@ -63,6 +63,15 @@ const CategoryContent = () => {
                                     setProducts(res.data.result);
                                     setProductsFiltered(res.data.result);
                                     setLoaded(true);
+
+                                    if(urlPathArray.length === 4) {
+                                        axios.post("http://hideisland.skylo-test3.pl/category/get-category-by-slug", { slug: urlPathArray[urlPathArray.length-2] })
+                                            .then(res => {
+                                               if(res.data?.result) {
+                                                   setCurrentParentCategory(res.data.result[0]?.name);
+                                               }
+                                            });
+                                    }
                                 }
                             });
                     }
@@ -178,16 +187,16 @@ const CategoryContent = () => {
                         </a>
                     </li>
                     {categories.map((item, index) => {
-                        if(!item.parent_id) {
+                        if((!item.parent_id)&&(!item.hidden)) {
                             return <li className="category__list__item" key={index}>
                                 <a className={item.name === currentCategory ? "category__list__link category__list__link--current" : "category__list__link"} href={`/kategoria/${item.permalink}`}>
                                     {item.name}
-                                    <img className="category__list__link__img" src={arrow} alt="rozwin" />
+                                    {/*<img className="category__list__link__img" src={arrow} alt="rozwin" />*/}
                                 </a>
-                                <span className={item.name === currentCategory ? "d-block" : "d-none"}>
+                                <span className="d-block">
                                      {categories.map((itemChild, indexChild) => {
-                                         if(itemChild.parent_id === item.id) {
-                                             return <a className={itemChild.name === currentCategory ? "category__list__link category__list__link--current mt-3" : "category__list__link mt-3"} href={`/kategoria/${item.permalink}/${itemChild.permalink}`}>
+                                         if((itemChild.parent_id === item.id)&&(!itemChild.hidden)) {
+                                             return <a className={item.name === currentParentCategory && itemChild.name === currentCategory ? "category__list__link category__list__link--current mt-3" : "category__list__link mt-3"} href={`/kategoria/${item.permalink}/${itemChild.permalink}`}>
                                                  {itemChild.name}
                                              </a>
                                          }

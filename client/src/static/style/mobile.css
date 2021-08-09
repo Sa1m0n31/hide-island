@@ -394,6 +394,12 @@
         bottom: 10px;
         right: 0;
     }
+
+    /* Mobile menu */
+    .header__menu__list__item {
+        justify-content: flex-start;
+        align-items: flex-start;
+    }
 }
 
 @media(max-width: 576px) {

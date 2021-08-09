@@ -180,7 +180,7 @@ const PanelCategoriesContent = () => {
                         ))}
                     </select>
 
-                    <label className="panelContent__filters__label__label panelContent__filters__label__label--category">
+                    <label className="panelContent__filters__label__label panelContent__filters__label__label--category mt-4">
                         <button className="panelContent__filters__btn" onClick={(e) => { e.preventDefault(); setHidden(!hidden); }}>
                             <span className={hidden ? "panelContent__filters__btn--active" : "d-none"} />
                         </button>

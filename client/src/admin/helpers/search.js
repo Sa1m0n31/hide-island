@@ -73,9 +73,8 @@ const productSearchForUser = (products, str) => {
         return products.filter((item, index) => {
             const re = new RegExp(`.*${str}.*`, 'gi');
 
-            console.log(item);
             if(item.name?.search(re) !== -1) return true;
-            if(item.category_name?.search(re) !== -1) return true;
+            //if(item.category_name?.search(re) !== -1) return true;
 
             return false;
         });
