@@ -147,22 +147,22 @@ const SingleProductInfo = ({id, title, description, img, price, sizes, gallery})
         </Modal>
 
         <section className={loaded ? "singleProduct__carousel m-auto m-lg-0 mb-4 mb-lg-0" : "singleProduct__carousel m-auto m-lg-0 mb-4 mb-lg-0 opacity-0"}>
-            <button className="d-block hero__slider__arrow hero__slider__arrow--left singleProductSlider__btn" onClick={() => { sliderPrev(); }}>
+            {gallery.length > 1 ? <button className="d-block hero__slider__arrow hero__slider__arrow--left singleProductSlider__btn" onClick={() => { sliderPrev(); }}>
                 <img className="hero__slider__arrow__img" src={sliderArrow} alt="w-lewo" />
-            </button>
-                <ReactSiema perPage={1} loop={true} ref={siema => slider = siema}>
-                    {gallery.map((item, index) => {
-                        return <div>
-                            <img className="singleProductInfo__img" key={index}
-                                 src={`${settings.API_URL}/image?url=/media/${item.file_path}`} alt={title}
-                                 onLoad={() => { setLoaded(true); }}
-                            />
-                        </div>
-                    }).reverse()}
-                </ReactSiema>
-            <button className="d-block hero__slider__arrow hero__slider__arrow--right singleProductSlider__btn" onClick={() => { sliderNext(); }}>
+            </button> : ""}
+            <ReactSiema perPage={1} loop={true} ref={siema => slider = siema}>
+                {gallery.map((item, index) => {
+                    return <div>
+                        <img className="singleProductInfo__img" key={index}
+                             src={`${settings.API_URL}/image?url=/media/${item.file_path}`} alt={title}
+                             onLoad={() => { setLoaded(true); }}
+                        />
+                    </div>
+                }).reverse()}
+            </ReactSiema>
+            {gallery.length > 1 ? <button className="d-block hero__slider__arrow hero__slider__arrow--right singleProductSlider__btn" onClick={() => { sliderNext(); }}>
                 <img className="hero__slider__arrow__img" src={sliderArrow} alt="w-prawo" />
-            </button>
+            </button> : ""}
         </section>
 
             <section className={loaded ? "singleProductInfo__section" : "singleProductInfo__section opacity-0"}>

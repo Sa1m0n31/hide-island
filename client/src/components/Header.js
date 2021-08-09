@@ -9,6 +9,7 @@ import {getAllCategories} from "../helpers/categoryFunctions";
 import auth from "../admin/helpers/auth";
 import hamburger from '../static/img/hamburger.svg'
 import closeIcon from '../static/img/close.png'
+import arrow from '../static/img/arrow-white.svg'
 
 const Header = () => {
     const [menu, setMenu] = useState([]);
@@ -32,6 +33,12 @@ const Header = () => {
                 else setIsAuth(false);
             });
     }, []);
+
+    const getCategoryChildren = (categoryId) => {
+        return menu.filter(item => {
+            return item.parent_id === categoryId;
+        });
+    }
 
     return <header className="header">
                 <header className="header__header d-flex">
@@ -75,11 +82,22 @@ const Header = () => {
                             </a>
                         </li>
                         {menu.map((item, index) => {
-                            if(!item.hidden) {
+                            if((!item.hidden)&&(!item.parent_id)) {
                                 return <li className="header__menu__list__item" key={index}>
                                     <a className="header__menu__list__link" href={`/kategoria/${item.permalink}`}>
                                         {item.name}
                                     </a>
+                                    {getCategoryChildren(item.id).length ? <img className="header__menu__arrow" src={arrow} alt="rozwin" /> : "" }
+
+                                    {getCategoryChildren(item.id).length ? <ul className="header__menu__submenu">
+                                        {getCategoryChildren(item.id).map((itemChild, indexChild) => {
+                                            return <li className="header__menu__list__item" key={indexChild}>
+                                                <a className="header__menu__list__link" href={`/kategoria/${item.permalink}/${itemChild.permalink}`}>
+                                                    {itemChild.name}
+                                                </a>
+                                            </li>
+                                    })}
+                                    </ul> : ""}
                                 </li>
                             }
                         })}

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 
-import example from '../static/img/single-product-test.png'
 import SingleProductInfo from "./SingleProductInfo";
 import SingleProductCrossSells from "./SingleProductCrossSells";
 import {getProductByName} from "../helpers/productFunctions";
@@ -20,6 +19,7 @@ const SingleProductContent = () => {
 
     useEffect(() => {
         /* Get product info */
+        console.log(convertToString(window.location.pathname.split("/")[2]));
         getProductByName(convertToString(window.location.pathname.split("/")[2]))
             .then(res => {
                const result = res.data?.result;
@@ -41,7 +41,6 @@ const SingleProductContent = () => {
                         .then(res => {
                            const galleryResult = res.data?.result;
                            if(galleryResult) {
-                               console.log(galleryResult);
                                setGallery(galleryResult.filter(item => {
                                    return item.file_path;
                                }));

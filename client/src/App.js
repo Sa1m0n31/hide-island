@@ -79,6 +79,7 @@ function App() {
     useEffect(() => {
         /* Initialize AOS */
         AOS.init({
+            offset: -50,
             mirror: true
         });
 

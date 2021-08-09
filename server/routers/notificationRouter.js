@@ -95,7 +95,7 @@ con.connect(err => {
                        if(res) {
                            if(res.length) {
                                res.forEach((item, index, array) => {
-                                   //sendMail(item.email, item.name);
+                                   sendMail(item.email, item.name);
 
                                    if(index === array.length-1) {
                                        /* Remove all notifications rows */

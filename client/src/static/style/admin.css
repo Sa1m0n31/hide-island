@@ -390,6 +390,10 @@ ul {
     cursor: pointer;
 }
 
+.addProduct__categorySelect .panelContent__filters__label__label {
+    justify-content: flex-start;
+}
+
 .panelContent__filters__btn {
     width: 20px;
     height: 20px;
@@ -526,8 +530,6 @@ ul {
 
 .addProduct__categorySelect {
     width: 100%;
-    margin-bottom: 30px;
-    height: 30px;
 }
 
 .addProduct__btn {
@@ -1198,4 +1200,8 @@ select {
 
 .btn--editSectionHeader {
     max-width: 400px;
+}
+
+.pl-5 {
+    padding-left: 25px;
 }

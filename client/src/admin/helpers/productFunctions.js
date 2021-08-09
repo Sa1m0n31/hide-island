@@ -4,11 +4,15 @@ import settings from "./settings";
 const { API_URL } = settings;
 
 const getAllProducts = () => {
-    return axios.get(`${API_URL}/product/get-all-products`);
+    return axios.get(`http://localhost:5000/product/get-all-products`);
 }
 
 const getProductDetails = (id) => {
-    return axios.post(`${API_URL}/product/single-product`, { id });
+    return axios.post(`http://localhost:5000/product/single-product`, { id });
+}
+
+const getProductCategories = (id) => {
+    return axios.post(`http://localhost:5000/product/get-product-categories`, { id });
 }
 
 const deleteProductById = (id) => {
@@ -27,4 +31,4 @@ const deleteProduct = (id) => {
     return axios.post(`${API_URL}/product/delete`, { id });
 }
 
-export { getAllProducts, deleteProductById, getProductDetails, addAllergens, getNewId, deleteProduct };
+export { getAllProducts, deleteProductById, getProductDetails, addAllergens, getNewId, deleteProduct, getProductCategories };

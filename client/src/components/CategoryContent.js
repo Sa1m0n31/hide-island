@@ -3,6 +3,7 @@ import React, {useContext, useEffect, useState} from 'react'
 import { useLocation } from "react-router";
 
 import arrowLong from "../static/img/arrow-long.svg";
+import arrow from '../static/img/arrow-white.svg'
 import closeImg from '../static/img/close.png'
 import tickImg from '../static/img/tick-sign.svg'
 import Modal from 'react-modal'
@@ -36,6 +37,7 @@ const CategoryContent = () => {
     const [price, setPrice] = useState(4);
     const [modal, setModal] = useState(false);
     const [currentCategory, setCurrentCategory] = useState("");
+    const [currentParentCategory, setCurrentParentCategory] = useState("");
     const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
@@ -50,33 +52,32 @@ const CategoryContent = () => {
         /* Get current category */
         const urlPathArray = window.location.pathname.split("/");
         const categorySlug = urlPathArray[urlPathArray.length-1];
-
-        axios.post(`${settings.API_URL}/category/get-category-by-slug`, { slug: categorySlug })
-            .then(res => {
-                if(res.data.result[0]) {
-                    /* Category page => Get products of current category */
-                    setCurrentCategory(res.data.result[0]?.name);
-                    getProductsByCategory(res.data.result[0]?.id)
-                        .then(res => {
-                           if(res?.data?.result) {
-                               setProducts(res.data.result);
-                               setProductsFiltered(res.data.result);
-                               setLoaded(true);
-                           }
-                        });
-                }
-                else {
-                    /* Shop page => Get all products */
-                    getAllProducts()
-                        .then(res => {
-                            if(res?.data?.result) {
-                                setProducts(res.data.result);
-                                setProductsFiltered(res.data.result);
-                                setLoaded(true);
-                            }
-                        });
-                }
-            });
+            axios.post(`${settings.API_URL}/category/get-category-by-slug`, { slug: categorySlug })
+                .then(res => {
+                    if(res.data.result[0]) {
+                        /* Category page => Get products of current category */
+                        setCurrentCategory(res.data.result[0]?.name);
+                        getProductsByCategory(res.data.result[0]?.id)
+                            .then(res => {
+                                if(res?.data?.result) {
+                                    setProducts(res.data.result);
+                                    setProductsFiltered(res.data.result);
+                                    setLoaded(true);
+                                }
+                            });
+                    }
+                    else {
+                        /* Shop page => Get all products */
+                        getAllProducts()
+                            .then(res => {
+                                if(res?.data?.result) {
+                                    setProducts(res.data.result);
+                                    setProductsFiltered(res.data.result);
+                                    setLoaded(true);
+                                }
+                            });
+                    }
+                });
     }, []);
 
     const handleSizeFilter = (size) => {
@@ -177,11 +178,23 @@ const CategoryContent = () => {
                         </a>
                     </li>
                     {categories.map((item, index) => {
-                        return <li className="category__list__item" key={index}>
-                            <a className={item.name === currentCategory ? "category__list__link category__list__link--current" : "category__list__link"} href={`/kategoria/${item.permalink}`}>
-                                {item.name}
-                            </a>
-                        </li>
+                        if(!item.parent_id) {
+                            return <li className="category__list__item" key={index}>
+                                <a className={item.name === currentCategory ? "category__list__link category__list__link--current" : "category__list__link"} href={`/kategoria/${item.permalink}`}>
+                                    {item.name}
+                                    <img className="category__list__link__img" src={arrow} alt="rozwin" />
+                                </a>
+                                <span className={item.name === currentCategory ? "d-block" : "d-none"}>
+                                     {categories.map((itemChild, indexChild) => {
+                                         if(itemChild.parent_id === item.id) {
+                                             return <a className={itemChild.name === currentCategory ? "category__list__link category__list__link--current mt-3" : "category__list__link mt-3"} href={`/kategoria/${item.permalink}/${itemChild.permalink}`}>
+                                                 {itemChild.name}
+                                             </a>
+                                         }
+                                     })}
+                                </span>
+                            </li>
+                        }
                     })}
                 </ul>
             </section>
@@ -205,35 +218,6 @@ const CategoryContent = () => {
                                placeholder="Szukaj..."
                         />
                     </label>
-
-                    {/*<button className="singleProductInfo__sizes__btn"*/}
-                    {/*        value="S"*/}
-                    {/*        onClick={() => { handleSizeFilter("S"); }}*/}
-                    {/*        id={isSizeSelected("S") ? "sizeSelected" : ""}*/}
-                    {/*>*/}
-                    {/*    S*/}
-                    {/*</button>*/}
-                    {/*<button className="singleProductInfo__sizes__btn"*/}
-                    {/*        value="M"*/}
-                    {/*        onClick={() => { handleSizeFilter("M"); }}*/}
-                    {/*        id={isSizeSelected("M") ? "sizeSelected" : ""}*/}
-                    {/*>*/}
-                    {/*    M*/}
-                    {/*</button>*/}
-                    {/*<button className="singleProductInfo__sizes__btn"*/}
-                    {/*        value="L"*/}
-                    {/*        onClick={() => { handleSizeFilter("L"); }}*/}
-                    {/*        id={isSizeSelected("L") ? "sizeSelected" : ""}*/}
-                    {/*>*/}
-                    {/*    L*/}
-                    {/*</button>*/}
-                    {/*<button className="singleProductInfo__sizes__btn"*/}
-                    {/*        value="XL"*/}
-                    {/*        onClick={() => { handleSizeFilter("XL"); }}*/}
-                    {/*        id={isSizeSelected("XL") ? "sizeSelected" : ""}*/}
-                    {/*>*/}
-                    {/*    XL*/}
-                    {/*</button>*/}
                 </section>
 
                 <h4 className="category__filters__item__subheader mt-4 mb-4">

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react'
 
-import {addAllergens, getNewId, getProductDetails} from "../helpers/productFunctions";
+import {addAllergens, getNewId, getProductCategories, getProductDetails} from "../helpers/productFunctions";
 import { useLocation } from "react-router";
 import {getAllCategories} from "../helpers/categoriesFunctions";
 
@@ -17,6 +17,7 @@ const AddProductContent = () => {
     const [categories, setCategories] = useState([]);
     const [hidden, setHidden] = useState(false);
     const [recommendation, setRecommendation] = useState(false);
+    const [choosenCategories, setChoosenCategories] = useState([]);
 
     /* Sizes and stocks */
     const [size1, setSize1] = useState("");
@@ -45,6 +46,16 @@ const AddProductContent = () => {
 
     const location = useLocation();
 
+    /* Initialize categories */
+    const initializeCategories = (categoryList) => {
+        setChoosenCategories(categoryList.map(item => {
+           return {
+               id: item.category_id,
+               selected: true
+           }
+        }));
+    }
+
     useEffect(() => {
         /* PRODUCT ADDED */
         const added = parseInt(new URLSearchParams(location.search).get("add"));
@@ -67,6 +78,12 @@ const AddProductContent = () => {
         getAllCategories()
             .then(res => {
                 setCategories(res.data.result);
+                setChoosenCategories(res.data.result.map((item) => {
+                    return {
+                        id: item.id,
+                        selected: false
+                    }
+                }));
             });
 
         /* UPDATE PRODUCT MODE */
@@ -79,6 +96,13 @@ const AddProductContent = () => {
                 .then(async res => {
                     await setProduct(res.data.result[0]);
                     await setInitialValues(res.data.result[0]);
+                });
+
+            getProductCategories(param)
+                .then(res => {
+                    if(res.data.result) {
+                        initializeCategories(res.data.result);
+                    }
                 });
         }
         else {
@@ -112,6 +136,36 @@ const AddProductContent = () => {
         setShortDescription(productData.description);
     }
 
+    const isInArray = (categoryId) => {
+        return choosenCategories.filter(item => {
+            return item.id === categoryId;
+        }).length > 0;
+    }
+
+    const handleCategories = (categoryToToggle) => {
+        if(isInArray(categoryToToggle)) {
+            setChoosenCategories(choosenCategories.map((item) => {
+                return {
+                    id: item.id,
+                    selected: item.id === categoryToToggle ? !item.selected : item.selected
+                }
+            }));
+        }
+        else {
+            setChoosenCategories([...choosenCategories, { id: categoryToToggle, selected: true }]);
+        }
+    }
+
+    const isCategoryChoosen = (categoryId) => {
+        return choosenCategories.filter((item) => {
+            if(item.selected) {
+                console.log(categoryId);
+                console.log(item.id);
+            }
+            return item.id === categoryId && item.selected;
+        }).length > 0;
+    }
+
     return <main className="panelContent addProduct">
         <header className="addProduct__header">
             <h1 className="addProduct__header__h">
@@ -120,7 +174,7 @@ const AddProductContent = () => {
         </header>
         {addMsg === "" ? <form className="addProduct__form addProduct__form--addProduct"
                                encType="multipart/form-data"
-                               action={update ? "http://hideisland.skylo-test3.pl/product/update-product" : "http://hideisland.skylo-test3.pl/product/add-product"}
+                               action={update ? "http://localhost:5000/product/update-product" : "http://localhost:5000/product/add-product"}
                                method="POST"
         >
             <section className="addProduct__form__section">
@@ -148,21 +202,38 @@ const AddProductContent = () => {
                 </label>
 
 
-                <select className="addProduct__categorySelect"
-                        name="categoryIdSelect"
-                        value={categoryId}
-                        onChange={(e) => {
-                            setCategoryId(parseInt(e.target.value));
-                        }}>
+                <section className="addProduct__categorySelect">
                     {categories?.map((item, index) => {
-                        return <option key={index} value={item.id}>{item.name}</option>
+                        if(!item.parent_id) {
+                            return <><label className="panelContent__filters__label__label" key={index}>
+                                <button value={item.id} className="panelContent__filters__btn" onClick={(e) => { e.preventDefault(); handleCategories(item.id); }}>
+                                    <span className={isCategoryChoosen(item.id) ? "panelContent__filters__btn--active" : "d-none"} />
+                                </button>
+                                {item.name}
+                            </label>
+                                <input className="invisibleInput"
+                                       name={`category-${item.id}`}
+                                       value={isCategoryChoosen(item.id)} />
+
+
+                                {categories?.map((itemChild, indexChild) => {
+                                    if(itemChild.parent_id === item.id) {
+                                        return <><label className="panelContent__filters__label__label pl-5 d-block" key={index}>
+                                            <button value={itemChild.id} className="panelContent__filters__btn" onClick={(e) => { e.preventDefault(); handleCategories(itemChild.id); }}>
+                                                <span className={isCategoryChoosen(itemChild.id) ? "panelContent__filters__btn--active" : "d-none"} />
+                                            </button>
+                                            {itemChild.name}
+                                        </label>
+                                            <input className="invisibleInput"
+                                                   name={`category-${itemChild.id}`}
+                                                   value={isCategoryChoosen(itemChild.id)} />
+                                        </>
+                                    }
+                                })}
+                            </>
+                        }
                     })}
-                </select>
-
-                <input className="invisibleInput"
-                       value={categoryId}
-                       name="categoryId" />
-
+                </section>
 
                 <label className="jodit--label">
                     <span>Krótki opis</span>

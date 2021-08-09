@@ -4,7 +4,7 @@ import settings from "./settings";
 const { API_URL } = settings;
 
 const getAllProducts = () => {
-    return axios.get(`${API_URL}/product/get-all-products`);
+    return axios.get(`http://localhost:5000/product/get-all-products`);
 }
 
 const getSingleProduct = (id) => {
@@ -16,11 +16,11 @@ const getProductById = (id) => {
 }
 
 const getProductByName = (name) => {
-    return axios.post(`${API_URL}/product/get-product-by-name`, { name });
+    return axios.post(`http://localhost:5000/product/get-product-by-name`, { name });
 }
 
 const getProductsByCategory = (id) => {
-    return axios.post(`${API_URL}/product/get-products-by-category`, { id });
+    return axios.post(`http://localhost:5000/product/get-products-by-category`, { id });
 }
 
 const getImageById = (id) => {
