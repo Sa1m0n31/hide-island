@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from 'react'
 
-import test1 from '../static/img/test1.png'
-import test2 from '../static/img/test2.png'
-import test3 from '../static/img/test3.png'
 import axios from "axios";
 import settings from "../helpers/settings";
 import convertToURL from "../helpers/convertToURL";

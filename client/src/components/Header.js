@@ -101,20 +101,26 @@ const Header = () => {
                                 </li>
                             }
                         })}
+                        <li className="header__menu__list__item">
+                            <a className="header__menu__list__link" href="#o-nas">
+                                O nas
+                            </a>
+                        </li>
                     </ul>
                 </menu>
 
                 {/* Mobile menu */}
                 <menu className="header__mobileMenu d-flex d-md-none justify-content-between align-items-center pt-4 pb-4">
-                    <a className="header__mobileMenu__item" href="/koszyk">
-                        <img className="header__mobileMenu__icon" src={cartIcon} alt="koszyk" />
-                    </a>
-                    <a className="header__mobileMenu__item" href="/zaloguj-sie">
-                        <img className="header__mobileMenu__icon" src={loginIcon} alt="zaloguj-sie" />
-                    </a>
                     <button className="header__mobileMenu__item" onClick={() => { setMobileMenuOpen(!mobileMenuOpen); }}>
                         <img className={mobileMenuOpen ? "header__mobileMenu__icon invert" : "header__mobileMenu__icon"} src={mobileMenuOpen ? closeIcon : hamburger} alt="menu" />
                     </button>
+                    <a className="header__mobileMenu__item" href="/zaloguj-sie">
+                        <img className="header__mobileMenu__icon" src={loginIcon} alt="zaloguj-sie" />
+                    </a>
+                    <a className="header__mobileMenu__item" href="/koszyk">
+                        <img className="header__mobileMenu__icon" src={cartIcon} alt="koszyk" />
+                    </a>
+
 
 
                     <menu className={mobileMenuOpen ? "header__mobileMenu__menu d-block d-md-none" : "header__mobileMenu__menu d-none"}>
@@ -148,6 +154,11 @@ const Header = () => {
                                 }
                             })}
                         </ul>
+                        <li className="header__menu__list__item text-center pb-2">
+                            <a className="header__menu__list__link" href="#o-nas">
+                                O nas
+                            </a>
+                        </li>
                     </menu>
                 </menu>
             </header>

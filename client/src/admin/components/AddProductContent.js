@@ -1,10 +1,17 @@
 import React, { useEffect, useState, useRef } from 'react'
 
-import {addAllergens, getNewId, getProductCategories, getProductDetails} from "../helpers/productFunctions";
+import {
+    addAllergens,
+    getNewId,
+    getProductCategories,
+    getProductDetails,
+    getProductGallery
+} from "../helpers/productFunctions";
 import { useLocation } from "react-router";
 import {getAllCategories} from "../helpers/categoriesFunctions";
 
 import JoditEditor from 'jodit-react';
+import settings from "../helpers/settings";
 
 const AddProductContent = () => {
     const editorR = useRef(null);
@@ -18,6 +25,8 @@ const AddProductContent = () => {
     const [hidden, setHidden] = useState(false);
     const [recommendation, setRecommendation] = useState(false);
     const [choosenCategories, setChoosenCategories] = useState([]);
+    const [gallery, setGallery] = useState([]);
+    const [mainImageIndex, setMainImageIndex] = useState(0);
 
     /* Sizes and stocks */
     const [size1, setSize1] = useState("");
@@ -94,8 +103,14 @@ const AddProductContent = () => {
 
             getProductDetails(param)
                 .then(async res => {
+                    console.log(res.data.result[0]);
                     await setProduct(res.data.result[0]);
                     await setInitialValues(res.data.result[0]);
+                });
+
+            getProductGallery(param)
+                .then(res => {
+                    setGallery(res.data?.result);
                 });
 
             getProductCategories(param)
@@ -158,12 +173,63 @@ const AddProductContent = () => {
 
     const isCategoryChoosen = (categoryId) => {
         return choosenCategories.filter((item) => {
-            if(item.selected) {
-                console.log(categoryId);
-                console.log(item.id);
-            }
             return item.id === categoryId && item.selected;
         }).length > 0;
+    }
+
+    const addNewImage = (e) => {
+        const input = document.querySelector(".mainImageInput");
+        const mainProductImage = document.querySelector(".mainProductImage");
+
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+            mainProductImage.setAttribute("src", e.target.result);
+        }
+
+        reader.readAsDataURL(input.files[0]);
+    }
+
+    const changeMainImage = (e) => {
+        e.preventDefault();
+        const newMainImageIndex = e.target.getAttribute("id").split("-")[1];
+        setMainImageIndex(newMainImageIndex);
+    }
+
+    const addNewGalleryImage = (e) => {
+        const galleryLabel = document.querySelector(".fileInputLabel--gallery");
+        const input = document.querySelector(".galleryImageInput");
+        const imagesSlots = document.querySelectorAll(".imageSlot");
+
+        const temporaryImages = document.querySelectorAll(".galleryProductImage");
+        temporaryImages.forEach(item => {
+            item.parentElement.removeChild(item);
+        });
+
+        let i = 0;
+
+        Array.prototype.forEach.call(input.files, async (file) => {
+            const reader = new FileReader();
+            await reader.readAsDataURL(file);
+
+            reader.onload = (e) => {
+                console.log("load");
+                const newImg = document.createElement("img");
+                console.log(e.target);
+                newImg.setAttribute("src", e.target.result);
+                newImg.setAttribute("class", "galleryProductImage");
+                newImg.setAttribute("alt", "zdjecie-galerii");
+                newImg.setAttribute("id", `galleryImage-${i}`);
+                newImg.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    //console.log(e.target);
+                    changeMainImage(e);
+                })
+                galleryLabel.appendChild(newImg);
+                i++;
+            }
+            console.log(input.files);
+        });
     }
 
     return <main className="panelContent addProduct">
@@ -174,7 +240,7 @@ const AddProductContent = () => {
         </header>
         {addMsg === "" ? <form className="addProduct__form addProduct__form--addProduct"
                                encType="multipart/form-data"
-                               action={update ? "http://hideisland.skylo-test3.pl/product/update-product" : "http://hideisland.skylo-test3.pl/product/add-product"}
+                               action={update ? "http://hideisland.skylo-test3.pl/product/update-product" : "http://localhost:5000/product/add-product"}
                                method="POST"
         >
             <section className="addProduct__form__section">
@@ -250,15 +316,21 @@ const AddProductContent = () => {
                 <label className="fileInputLabel">
                     <span>Zdjęcie produktu</span>
                     <input type="file"
-                           className="product__fileInput"
+                           onChange={(e) => { addNewImage(e); }}
+                           className="product__fileInput mainImageInput"
                            name="mainImage" />
+                    <img className="mainProductImage" src={`${settings.API_URL}/image?url=/media/${product.file_path}`} alt="zdjecie-produktu" />
                 </label>
-                <label className="fileInputLabel">
+                <label className="fileInputLabel fileInputLabel--gallery">
                     <span>Galeria zdjęć</span>
                     <input type="file"
+                           onChange={(e) => { addNewGalleryImage(e); }}
                            multiple={true}
-                           className="product__fileInput"
+                           className="product__fileInput galleryImageInput"
                            name="gallery" />
+                    {gallery?.map((item) => {
+                        return <img className="galleryProductImage" src={`${settings.API_URL}/image?url=/media/${item.file_path}`} alt="zdjecie-produktu" />
+                    })}
                 </label>
             </section>
 
@@ -348,6 +420,10 @@ const AddProductContent = () => {
                 <input className="input--hidden"
                        name="l"
                        value={sizeL} />
+                <input className="input--hidden"
+                       type="number"
+                       name="mainImageIndex"
+                       value={mainImageIndex} />
 
                 <label className="panelContent__filters__label__label panelContent__filters__label__label--category">
                     <button className="panelContent__filters__btn" onClick={(e) => { e.preventDefault(); setHidden(!hidden); }}>

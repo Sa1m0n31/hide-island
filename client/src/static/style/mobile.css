@@ -400,6 +400,12 @@
         justify-content: flex-start;
         align-items: flex-start;
     }
+
+    /* Newsletter section */
+    .newsletterSection {
+        padding-top: 50px;
+        padding-bottom: 50px;
+    }
 }
 
 @media(max-width: 576px) {
@@ -518,5 +524,22 @@
     .loginPage {
         padding-top: 220px;
         padding-bottom: 50px;
+    }
+
+    .footer__newsletter__form {
+        flex-direction: column;
+    }
+
+    .footer .footer__btn {
+        width: 100%;
+        margin: 7px 0 0 0;
+    }
+
+    .footer .footer__newsletter__form {
+        width: 80%;
+    }
+
+    .footer .footer__label {
+        width: 100%;
     }
 }

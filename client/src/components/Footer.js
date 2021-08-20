@@ -3,6 +3,7 @@ import logo from '../static/img/logo.png'
 import {getAllCategories} from "../helpers/categoryFunctions";
 import axios from "axios";
 import settings from "../helpers/settings";
+import mailIcon from "../static/img/mail.svg";
 
 const Footer = () => {
     const [categories, setCategories] = useState([]);
@@ -93,32 +94,40 @@ const Footer = () => {
 
             <section className="footer__menu">
                 <h4 className="footer__menu__header">
-                    Hideisland
+                    Dane firmy
                 </h4>
 
                 <p>
-                    <b>HideIsland - ubranka</b><br/>
-                    ul. Polska 2/1, 87-100 Los Angeles
+                    Hideisland Dominik Adamczyk
+                </p>
+
+                <p>
+                    NIP: 8513260489<br/>
+                    Regon: 389065009
                 </p>
                 <p>
-                    tel. 111 222 333 <br/>
-                    mail: kontakt@hideisland.pl
+                    Ul. Topolowa 26<br/>
+                    72-006 Mierzyn
                 </p>
                 <p>
-                    Bank PKO BP<br/>
-                    Nr konta 25 2222 3333 1111 1111 4544 0000<br/>
-                    Infolinia czynna od poniedziałku do piątku w godzinach 8.00 - 16.00.
+                    mail: biuro@hideisland.pl
+                </p>
+                <p>
+                    Nr konta bankowego:<br/>
+                    42 1090 2268 0000 0001 4500 4135<br/>
+                    Santander Bank Polska
                 </p>
             </section>
         </section>
         <section className="footer__row d-flex justify-content-between align-items-start">
             <section className="footer__newsletter">
                 <h3 className="footer__newsletter__header">
-                    Nie pozwól, by Cię coś ominęło! <b>Zapisz się do newslettera!</b>
+                    Zapisz się do newslettera i zgarnij <b>10% zniżki</b>!
                 </h3>
                 <section className="footer__newsletter__form">
                     {!newsletterResponse ? <>
                         <label className="footer__label">
+                            <img className="mailIcon" src={mailIcon} alt="mail" />
                             <input className="footer__input"
                                    name="email"
                                    type="email"

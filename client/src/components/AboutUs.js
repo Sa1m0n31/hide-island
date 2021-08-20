@@ -13,8 +13,8 @@ const AboutUs = () => {
     useEffect(() => {
         const result = [
             { icon: icon1, text: "Gwarancja najwyższej jakości" },
-            { icon: icon2, text: "Produkty wyprodukowane w Polsce" },
-            { icon: icon3, text: "Ceny skrojone pod Twój portfel" },
+            { icon: icon2, text: "Produkty zaprojektowane i wyprodukowane w Polsce" },
+            { icon: icon3, text: "Szybki czas realizacji zamówienia (48h)" },
             { icon: icon4, text: "Ubrania w Twoim stylu" }
         ];
         setIcons(result);
@@ -29,7 +29,7 @@ const AboutUs = () => {
             });
     }, []);
 
-    return <section className="aboutUs">
+    return <section className="aboutUs" id="o-nas">
         <h2 className="section__header" data-aos="fade-up">
             Poznaj nas
         </h2>

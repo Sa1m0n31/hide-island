@@ -1205,3 +1205,10 @@ select {
 .pl-5 {
     padding-left: 25px;
 }
+
+/* Update - 20.08.21 */
+.mainProductImage, .galleryProductImage {
+    width: 200px;
+    height: auto;
+    margin: 20px 0;
+}

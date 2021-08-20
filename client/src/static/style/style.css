@@ -7,6 +7,10 @@
     padding: 0;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 #root {
     overflow: hidden;
 }
@@ -64,7 +68,7 @@ button, a {
 }
 
 .header__logo__img {
-    width: 350px;
+    width: 420px;
     display: block;
     margin: auto;
 }
@@ -86,15 +90,17 @@ button, a {
     text-transform: uppercase;
     font-size: 14px;
     text-decoration: none;
+    opacity: .8;
+    transition: .2s all;
+}
+
+.header__header__section__btn:hover {
+    opacity: 1;
 }
 
 .header__header__section__btn__img {
     margin-right: 10px;
     transition: .4s all;
-}
-
-.header__header__section__btn:hover .header__header__section__btn__img {
-    transform: translateX(-8px);
 }
 
 .header__header__section:last-of-type {
@@ -128,6 +134,7 @@ button, a {
 .header__menu__arrow {
     transform: rotate(180deg);
     margin-left: 10px;
+    transition: .3s all;
 }
 
 .header__menu__list__item {
@@ -138,6 +145,10 @@ button, a {
     transition: .4s all;
     position: relative;
     z-index: 5;
+}
+
+.header__menu__list__item:hover .header__menu__arrow {
+    transform: rotate(0);
 }
 
 .header__menu__submenu {
@@ -173,10 +184,6 @@ button, a {
 {
     text-align: center;
     margin-bottom: 10px;
-}
-
-.header__menu__submenu .header__menu__list__item:hover {
-    transform: translateX(5px);
 }
 
 .header__menu__list__item:hover .header__menu__submenu,
@@ -351,7 +358,7 @@ button, a {
 
 /* Recommendations */
 .recommendationsSection {
-    background: var(--black-primary);
+    background: var(--black-secondary);
     padding: var(--padding);
     padding-top: 50px;
     padding-bottom: 50px;
@@ -413,13 +420,13 @@ button, a {
 
 /* About us */
 .aboutUs {
-    background: var(--black-secondary);
+    background: var(--black-primary);
     padding: var(--padding);
     padding-bottom: 40px;
 }
 
 .aboutUs__icons {
-    background: var(--black-primary);
+    background: var(--black-secondary);
     padding: 40px;
     margin: 30px 0;
 }
@@ -498,10 +505,12 @@ button, a {
     text-decoration: none;
     font-size: 14px;
     font-weight: 300;
+    opacity: .8;
+    transition: .2s all;
 }
 
-.footer__menu__item:hover {
-    transform: translateX(10px);
+.footer__menu__link:hover, .footer__bottom__link:hover {
+    opacity: 1;
 }
 
 .footer__menu {
@@ -533,10 +542,15 @@ button, a {
 .footer__bottom__link {
     color: #fff !important;
     text-decoration: none !important;
+    opacity: .8;
+    transition: .2s all;
 }
 
 .footer__newsletter__form {
     margin: 30px 0;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
 }
 
 .footer__newsletter__header {
@@ -556,7 +570,7 @@ button, a {
 }
 
 .footer__input:active,
-.footer__input:focus {
+.footer__label:focus-within {
     border-color: #fff;
 }
 
@@ -1668,4 +1682,80 @@ input[type=number] {
     .panel *, .panel {
         zoom: .99;
     }
+}
+
+/* Newsletter section */
+.newsletterSection {
+    background: url("../img/newsletter-background.png");
+    background-size: cover;
+    background-attachment: fixed;
+    padding-top: 100px;
+    padding-bottom: 100px;
+    min-height: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.footer__newsletter__form--section {
+    margin: 30px auto 0;
+    padding-bottom: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.footer__newsletter__form--section .footer__label,
+.footer__newsletter__form--section .footer__input {
+    width: 90%;
+    max-width: 400px;
+}
+
+.footer__newsletter__form--section .footer__input {
+    width: 100%;
+}
+
+.footer__newsletter__form--section .footer__btn {
+    width: 90%;
+    max-width: 400px;
+    margin-top: 20px;
+    height: 50px;
+    margin-left: 0;
+}
+
+.newsletterSection .section__header {
+    min-width: 240px;
+    text-align: center;
+}
+
+.newsletterSection .footer__newsletter__form,
+.newsletterSection .footer__label,
+.newsletterSection .footer__input,
+.newsletterSection .footer__btn
+{
+    width: 500px;
+    max-width: 90%;
+    transition: .2s all;
+}
+
+.footer__input {
+    border: none;
+}
+
+.footer__label {
+    border: 1px solid #6A6A6A;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    transition: .2s all;
+}
+
+.mailIcon {
+    margin: 0 10px 0 20px;
+}
+
+.newsletterSection .footer__label {
+    background: #272727;
 }

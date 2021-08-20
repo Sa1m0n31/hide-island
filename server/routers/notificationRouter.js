@@ -42,6 +42,8 @@ con.connect(err => {
     }
 
     const sendMail = (email, productName) => {
+        console.log("hello from sendMail()");
+
         /* Nodemailer */
         let transporter = nodemailer.createTransport(smtpTransport ({
             auth: {
