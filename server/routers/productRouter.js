@@ -555,6 +555,11 @@ con.connect(err => {
          }
       });
    });
+
+   /* GET PRODUCTS BY CATEGORIES LIST */
+   router.post("/get-products-by-categories", (request, response) => {
+
+   });
 });
 
 module.exports = router;

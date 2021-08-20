@@ -10,6 +10,7 @@ import auth from "../admin/helpers/auth";
 import hamburger from '../static/img/hamburger.svg'
 import closeIcon from '../static/img/close.png'
 import arrow from '../static/img/arrow-white.svg'
+import mailIcon from '../static/img/mail.svg'
 
 const Header = () => {
     const [menu, setMenu] = useState([]);
@@ -51,6 +52,12 @@ const Header = () => {
                                 <img className="header__socialMedia__link__img" src={instagramIcon} alt="instagram" />
                             </a>
                         </section>
+                        <div className="header__contact d-none d-md-flex align-items-center">
+                            <a className="header__socialMedia__link" href="mailto:biuro@hideisland.pl">
+                                <img className="header__socialMedia__link__img header__mailIcon" src={mailIcon} alt="adres-email" />
+                                biuro@hideisland.pl
+                            </a>
+                        </div>
                     </section>
                     <section className="header__header__section">
                         <a className="header__logo" href="/">
@@ -102,7 +109,7 @@ const Header = () => {
                             }
                         })}
                         <li className="header__menu__list__item">
-                            <a className="header__menu__list__link" href="#o-nas">
+                            <a className="header__menu__list__link" href="http://hideisland.skylo-test3.pl#o-nas">
                                 O nas
                             </a>
                         </li>
@@ -155,7 +162,7 @@ const Header = () => {
                             })}
                         </ul>
                         <li className="header__menu__list__item text-center pb-2">
-                            <a className="header__menu__list__link" href="#o-nas">
+                            <a className="header__menu__list__link" href="http://hideisland.skylo-test3.pl#o-nas">
                                 O nas
                             </a>
                         </li>

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import logo from '../static/img/logo.png'
-import {getAllCategories} from "../helpers/categoryFunctions";
 import axios from "axios";
 import settings from "../helpers/settings";
 import mailIcon from "../static/img/mail.svg";
+import {getAllParentCategories} from "../admin/helpers/categoriesFunctions";
 
 const Footer = () => {
     const [categories, setCategories] = useState([]);
@@ -11,7 +11,7 @@ const Footer = () => {
     const [newsletterResponse, setNewsletterResponse] = useState(0);
 
     useEffect(() => {
-        getAllCategories()
+        getAllParentCategories()
             .then(res => {
                 if(res?.data?.result) {
                     setCategories(res.data.result);
@@ -110,7 +110,7 @@ const Footer = () => {
                     72-006 Mierzyn
                 </p>
                 <p>
-                    mail: biuro@hideisland.pl
+                    kontakt: biuro@hideisland.pl
                 </p>
                 <p>
                     Nr konta bankowego:<br/>

@@ -73,9 +73,17 @@ con.connect(err => {
 
     /* GET CATEGORY BY SLUG */
     router.post("/get-category-by-slug", (request, response) => {
-        const { slug } = request.body;
-        const values = [slug];
-        const query = 'SELECT * FROM categories WHERE permalink = ?';
+        const { slug, parent } = request.body;
+        let values;
+        let query;
+        if(parent) {
+            values = [slug, parent];
+            query = 'SELECT c1.name, c1.id, c1.permalink FROM categories c1 JOIN categories c2 ON c1.parent_id = c2.id WHERE c1.permalink = ? AND c2.permalink = ?';
+        }
+        else {
+            values = [slug];
+            query = 'SELECT * FROM categories WHERE permalink = ?';
+        }
         con.query(query, values, (err, res) => {
             if(res) {
                 response.send({
@@ -123,6 +131,23 @@ con.connect(err => {
         if(!err) response.redirect("http://hideisland.skylo-test3.pl/panel/kategorie?added=2");
         else response.redirect("http://hideisland.skylo-test3.pl/panel/kategorie?added=-1")
     });
+    });
+
+    /* GET ALL PARENT CATEGORIES */
+    router.get("/get-all-parent-categories", (request, response) => {
+       const query = 'SELECT * FROM categories WHERE parent_id IS NULL';
+       con.query(query, (err, res) => {
+          if(res) {
+              response.send({
+                  result: res
+              })
+          }
+          else {
+              response.send({
+                  result: 0
+              });
+          }
+       });
     });
 });
 

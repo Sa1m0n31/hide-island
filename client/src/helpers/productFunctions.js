@@ -23,6 +23,10 @@ const getProductsByCategory = (id) => {
     return axios.post(`${API_URL}/product/get-products-by-category`, { id });
 }
 
+const getProductByCategories = (categoriesIds) => {
+    return axios.post(`${API_URL}/product/get-products-by-categories`, { ids: categoriesIds });
+}
+
 const getImageById = (id) => {
     return axios.post(`${API_URL}/product/get-image`, { id });
 }

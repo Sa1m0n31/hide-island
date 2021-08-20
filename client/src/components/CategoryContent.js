@@ -52,7 +52,9 @@ const CategoryContent = () => {
         /* Get current category */
         const urlPathArray = window.location.pathname.split("/");
         const categorySlug = urlPathArray[urlPathArray.length-1];
-            axios.post(`${settings.API_URL}/category/get-category-by-slug`, { slug: categorySlug })
+        let categoryParent;
+        if(urlPathArray.length >= 4) categoryParent = urlPathArray[urlPathArray.length-2];
+            axios.post(`${settings.API_URL}/category/get-category-by-slug`, { slug: categorySlug, parent: categoryParent })
                 .then(res => {
                     if(res.data.result[0]) {
                         /* Category page => Get products of current category */
@@ -88,18 +90,6 @@ const CategoryContent = () => {
                     }
                 });
     }, []);
-
-    const handleSizeFilter = (size) => {
-        setSizes(sizes.map((item) => {
-            if(size === item.size) {
-                return {
-                    size: size,
-                    selected: !item.selected
-                }
-            }
-            else return item;
-        }));
-    }
 
     useEffect(() => {
         /* Handle price filter */

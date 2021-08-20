@@ -17,8 +17,8 @@ const getCategory = (id) => {
     return axios.post(`${API_URL}/category/category-details`, { id });
 }
 
-const updateCategory = ({id, name, parentId, imagePath, categoryImage}) => {
-
+const getAllParentCategories = () => {
+    return axios.get(`${API_URL}/category/get-all-parent-categories`);
 }
 
-export { getAllCategories, deleteCategory, updateCategory, getCategory };
+export { getAllCategories, deleteCategory, getCategory, getAllParentCategories };

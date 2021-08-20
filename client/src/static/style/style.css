@@ -76,6 +76,8 @@ button, a {
 .header__socialMedia__link {
     margin-right: 25px;
     opacity: .75;
+    color: #fff !important;
+    font-size: 14px;
 }
 
 .header__socialMedia__link:hover {
@@ -1758,4 +1760,16 @@ input[type=number] {
 
 .newsletterSection .footer__label {
     background: #272727;
+}
+
+.header__contact {
+    margin-top: 15px;
+}
+
+.header__mailIcon {
+    width: 20px;
+}
+
+.header__contact .header__socialMedia__link__img {
+    margin-right: 10px;
 }
