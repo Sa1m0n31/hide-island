@@ -1208,7 +1208,19 @@ select {
 
 /* Update - 20.08.21 */
 .mainProductImage, .galleryProductImage {
-    width: 200px;
-    height: auto;
-    margin: 20px 0;
+   height: 150px;
+    width: auto;
+    margin: 15px;
+    cursor: pointer;
+}
+
+.galleryProductImage--main {
+    border: 3px solid #000;
+}
+
+.galleryWrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
 }

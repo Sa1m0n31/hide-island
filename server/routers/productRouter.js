@@ -47,7 +47,7 @@ con.connect(err => {
 
       const upload = multer({
          storage: storage
-      }).fields([{name: "mainImage", maxCount: 10}, { name: 'gallery', maxCount: 10 }]);
+      }).fields([{ name: 'gallery', maxCount: 10 }]);
 
       upload(request, response, (err, res) => {
          if (err) throw err;
@@ -56,7 +56,6 @@ con.connect(err => {
          let { id, mainImageIndex, name, price, shortDescription, recommendation, hidden, size1, size2, size3, size4, size5, size1Stock, size2Stock, size3Stock, size4Stock, size5Stock } = request.body;
          hidden = hidden === "hidden";
          recommendation = recommendation === "true";
-         if(!categories.length) categories.push(0);
          filenames.reverse();
 
          /* Get categories */
@@ -67,6 +66,8 @@ con.connect(err => {
                }
             }
          });
+
+         if(!categories.length) categories.push(0);
 
          /* Set main image as the last one in filenames */
          let tmp = filenames[filenames.length-1];
@@ -176,16 +177,15 @@ con.connect(err => {
 
       const upload = multer({
          storage: storage
-      }).fields([{ name: 'gallery', maxCount: 10 }, {name: "mainImage", maxCount: 10}]);
+      }).fields([{ name: 'gallery', maxCount: 10 }]);
 
       upload(request, response, (err, res) => {
          if (err) throw err;
 
          /* Prepare */
-         let { id, name, price, shortDescription, recommendation, hidden, size1, size2, size3, size4, size5, size1Stock, size2Stock, size3Stock, size4Stock, size5Stock } = request.body;
+         let { id, mainImageId, name, price, shortDescription, recommendation, hidden, size1, size2, size3, size4, size5, size1Stock, size2Stock, size3Stock, size4Stock, size5Stock } = request.body;
          hidden = hidden === "hidden";
          recommendation = recommendation === "true";
-         if(!categories.length) categories.push(0);
          filenames.reverse();
 
          /* Get categories */
@@ -196,6 +196,10 @@ con.connect(err => {
                }
             }
          });
+
+         console.log(mainImageId);
+
+         if(!categories.length) categories.push(0);
 
          /* 1 - ADD PRODUCT TO PRODUCTS TABLE */
          const values = [name, price, shortDescription, recommendation, hidden, id];
@@ -230,24 +234,25 @@ con.connect(err => {
                         const queryDelete = 'DELETE FROM product_categories WHERE product_id = ?';
                         con.query(queryDelete, valuesDelete, (err, res) => {
                            if(item) {
+                              console.log("category: " + item);
+                              /* THERE ARE CATEGORIES */
                               const values = [id, item];
                               const query = 'INSERT INTO product_categories VALUES (NULL, ?, ?)';
                               con.query(query, values);
                               if(index === array.length-1) {
-                                 console.log("LENGTH: " + filenames.length);
                                  /* 3rd - ADD IMAGES TO IMAGES TABLE */
                                  if(filenames.length) {
+                                    con.query('DELETE FROM images WHERE product_id = ?', [id]);
+
                                     filenames.forEach((item, index, array) => {
                                        const values = ["products/" + item, id];
                                        const query = 'INSERT INTO images VALUES (NULL, ?, ?)';
 
                                        con.query(query, values, (err, res) => {
-                                          console.log("ADD NEW IMAGE to images TABLE");
-                                          console.log(res);
-                                          console.log(err);
                                           if(index === array.length-1) {
                                              /* 4 - MODIFY MAIN_IMAGE COLUMN IN PRODUCTS TABLE */
                                              if(res) {
+                                                console.log("I'm ready to modify mainImageId");
                                                 const mainImageId = res.insertId;
                                                 const values = [mainImageId, id];
                                                 const query = 'UPDATE products SET main_image = ? WHERE id = ?';
@@ -264,22 +269,29 @@ con.connect(err => {
                                     });
                                  }
                                  else {
-                                    response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=1");
+                                    /* 4 - MODIFY MAIN_IMAGE COLUMN IN PRODUCTS TABLE */
+                                    const values = [mainImageId, id];
+                                    const query = 'UPDATE products SET main_image = ? WHERE id = ?';
+                                    con.query(query, values, (err, res) => {
+                                       if(res) response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=1");
+                                       else response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=0");
+                                    });
                                  }
                               }
                            }
                            else {
-                              console.log("ELSE");
+                              /* THERE IS NO ANY CATEGORY */
                               /* 3rd - ADD IMAGES TO IMAGES TABLE */
                               if(filenames.length) {
+                                 console.log("no category, yes images");
+                                 console.log(id);
+                                 con.query('DELETE FROM images WHERE product_id = ?', [id]);
+
                                  filenames.forEach((item, index, array) => {
                                     const values = ["products/" + item, id];
                                     const query = 'INSERT INTO images VALUES (NULL, ?, ?)';
 
                                     con.query(query, values, (err, res) => {
-                                       console.log("ADD NEW IMAGE to images TABLE");
-                                       console.log(res);
-                                       console.log(err);
                                        if(index === array.length-1) {
                                           /* 4 - MODIFY MAIN_IMAGE COLUMN IN PRODUCTS TABLE */
                                           if(res) {
@@ -299,7 +311,13 @@ con.connect(err => {
                                  });
                               }
                               else {
-                                 response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=1");
+                                 console.log("no category. no images");
+                                 const values = [mainImageId, id];
+                                 const query = 'UPDATE products SET main_image = ? WHERE id = ?';
+                                 con.query(query, values, (err, res) => {
+                                    if(res) response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=1");
+                                    else response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=0");
+                                 });
                               }
                            }
                         });

@@ -27,6 +27,7 @@ const AddProductContent = () => {
     const [choosenCategories, setChoosenCategories] = useState([]);
     const [gallery, setGallery] = useState([]);
     const [mainImageIndex, setMainImageIndex] = useState(0);
+    const [mainImageId, setMainImageId] = useState(0);
 
     /* Sizes and stocks */
     const [size1, setSize1] = useState("");
@@ -177,29 +178,29 @@ const AddProductContent = () => {
         }).length > 0;
     }
 
-    const addNewImage = (e) => {
-        const input = document.querySelector(".mainImageInput");
-        const mainProductImage = document.querySelector(".mainProductImage");
-
-        const reader = new FileReader();
-
-        reader.onload = (e) => {
-            mainProductImage.setAttribute("src", e.target.result);
-        }
-
-        reader.readAsDataURL(input.files[0]);
-    }
-
     const changeMainImage = (e) => {
         e.preventDefault();
-        const newMainImageIndex = e.target.getAttribute("id").split("-")[1];
+        const newMainImageIndex = parseInt(e.target.getAttribute("id").split("-")[1]);
+        const allGalleryImages = document.querySelectorAll(".galleryProductImage");
         setMainImageIndex(newMainImageIndex);
+        Array.prototype.forEach.call(allGalleryImages, (item, index) => {
+            console.log("hello: " + index + " and " + newMainImageIndex);
+            if(index === newMainImageIndex) {
+                console.log("change style");
+                console.log(item);
+                item.style.border = "4px solid #fff";
+                item.style.filter = "greyscale(.7)";
+            }
+            else {
+                item.style.border = "none";
+                item.style.filter = "none";
+            }
+        });
     }
 
     const addNewGalleryImage = (e) => {
-        const galleryLabel = document.querySelector(".fileInputLabel--gallery");
+        const galleryWrapper = document.querySelector(".galleryWrapper");
         const input = document.querySelector(".galleryImageInput");
-        const imagesSlots = document.querySelectorAll(".imageSlot");
 
         const temporaryImages = document.querySelectorAll(".galleryProductImage");
         temporaryImages.forEach(item => {
@@ -213,7 +214,6 @@ const AddProductContent = () => {
             await reader.readAsDataURL(file);
 
             reader.onload = (e) => {
-                console.log("load");
                 const newImg = document.createElement("img");
                 console.log(e.target);
                 newImg.setAttribute("src", e.target.result);
@@ -222,14 +222,34 @@ const AddProductContent = () => {
                 newImg.setAttribute("id", `galleryImage-${i}`);
                 newImg.addEventListener("click", (e) => {
                     e.preventDefault();
-                    //console.log(e.target);
                     changeMainImage(e);
-                })
-                galleryLabel.appendChild(newImg);
+                });
+                if(i === 0) {
+                    newImg.style.border = "4px solid #fff";
+                    newImg.style.filter = "greyscale(.7)";
+                }
+                galleryWrapper.appendChild(newImg);
                 i++;
             }
-            console.log(input.files);
         });
+    }
+
+    const changeMainImageId = (e) => {
+        const id = parseInt(e.target.getAttribute("id").split("-")[2]);
+        const allGalleryImages = document.querySelectorAll(".galleryProductImage");
+        Array.prototype.forEach.call(allGalleryImages, (item, index) => {
+            if(id === parseInt(item.id.split("-")[2])) {
+                console.log("change style");
+                console.log(item);
+                item.style.border = "4px solid #fff";
+                item.style.filter = "greyscale(.7)";
+            }
+            else {
+                item.style.border = "none";
+                item.style.filter = "none";
+            }
+        });
+        setMainImageId(id);
     }
 
     return <main className="panelContent addProduct">
@@ -240,7 +260,7 @@ const AddProductContent = () => {
         </header>
         {addMsg === "" ? <form className="addProduct__form addProduct__form--addProduct"
                                encType="multipart/form-data"
-                               action={update ? "http://hideisland.skylo-test3.pl/product/update-product" : "http://localhost:5000/product/add-product"}
+                               action={update ? "http://hideisland.skylo-test3.pl/product/update-product" : "http://hideisland.skylo-test3.pl/product/add-product"}
                                method="POST"
         >
             <section className="addProduct__form__section">
@@ -313,14 +333,14 @@ const AddProductContent = () => {
                     />
                 </label>
 
-                <label className="fileInputLabel">
-                    <span>Zdjęcie produktu</span>
-                    <input type="file"
-                           onChange={(e) => { addNewImage(e); }}
-                           className="product__fileInput mainImageInput"
-                           name="mainImage" />
-                    <img className="mainProductImage" src={`${settings.API_URL}/image?url=/media/${product.file_path}`} alt="zdjecie-produktu" />
-                </label>
+                {/*<label className="fileInputLabel">*/}
+                {/*    <span>Zdjęcie produktu</span>*/}
+                {/*    <input type="file"*/}
+                {/*           onChange={(e) => { addNewImage(e); }}*/}
+                {/*           className="product__fileInput mainImageInput"*/}
+                {/*           name="mainImage" />*/}
+                {/*    <img className="mainProductImage" src={`${settings.API_URL}/image?url=/media/${product.file_path}`} alt="zdjecie-produktu" />*/}
+                {/*</label>*/}
                 <label className="fileInputLabel fileInputLabel--gallery">
                     <span>Galeria zdjęć</span>
                     <input type="file"
@@ -328,9 +348,12 @@ const AddProductContent = () => {
                            multiple={true}
                            className="product__fileInput galleryImageInput"
                            name="gallery" />
-                    {gallery?.map((item) => {
-                        return <img className="galleryProductImage" src={`${settings.API_URL}/image?url=/media/${item.file_path}`} alt="zdjecie-produktu" />
-                    })}
+                    <section className="galleryWrapper" onClick={e => { e.preventDefault(); }}>
+                        {gallery?.map((item, index) => {
+                            //if(index === 0) setMainImageId(item.id);
+                            return <img className="galleryProductImage" onClick={(e) => {update ? changeMainImageId(e) : changeMainImage(e)}} src={`${settings.API_URL}/image?url=/media/${item.file_path}`} id={`gallery-${index}-${item.id}`} alt="zdjecie-produktu" />
+                        })}
+                    </section>
                 </label>
             </section>
 
@@ -424,6 +447,10 @@ const AddProductContent = () => {
                        type="number"
                        name="mainImageIndex"
                        value={mainImageIndex} />
+                <input className="input--hidden"
+                       type="number"
+                       name="mainImageId"
+                       value={mainImageId} />
 
                 <label className="panelContent__filters__label__label panelContent__filters__label__label--category">
                     <button className="panelContent__filters__btn" onClick={(e) => { e.preventDefault(); setHidden(!hidden); }}>
