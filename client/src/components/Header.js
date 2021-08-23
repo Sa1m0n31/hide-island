@@ -45,10 +45,10 @@ const Header = () => {
                 <header className="header__header d-flex">
                     <section className="header__header__section">
                         <section className="header__socialMedia d-none d-md-flex">
-                            <a className="header__socialMedia__link" href="https://facebook.com">
+                            <a className="header__socialMedia__link" href="https://www.facebook.com/HideIslandwear">
                                 <img className="header__socialMedia__link__img" src={facebookIcon} alt="facebook" />
                             </a>
-                            <a className="header__socialMedia__link" href="https://instagram.com">
+                            <a className="header__socialMedia__link" href="http://hideisland.skylo-test3.pl/image?url=/media/notification/insta.png">
                                 <img className="header__socialMedia__link__img" src={instagramIcon} alt="instagram" />
                             </a>
                         </section>

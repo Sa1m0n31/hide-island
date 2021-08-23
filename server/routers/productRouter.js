@@ -197,8 +197,6 @@ con.connect(err => {
             }
          });
 
-         console.log(mainImageId);
-
          if(!categories.length) categories.push(0);
 
          /* 1 - ADD PRODUCT TO PRODUCTS TABLE */

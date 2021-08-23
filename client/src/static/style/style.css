@@ -159,7 +159,6 @@ button, a {
     left: 50%;
     transform: translate(-50%, 100%);
     background: var(--black-secondary);
-    display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -168,6 +167,7 @@ button, a {
     z-index: -1;
     min-width: 200px;
     opacity: 0;
+    display: none;
     transition: .4s all;
 }
 
@@ -191,6 +191,7 @@ button, a {
 .header__menu__list__item:hover .header__menu__submenu,
 .header__menu__submenu:hover
 {
+    display: flex;
     opacity: 1;
     z-index: 3;
 }
@@ -1773,3 +1774,4 @@ input[type=number] {
 .header__contact .header__socialMedia__link__img {
     margin-right: 10px;
 }
+

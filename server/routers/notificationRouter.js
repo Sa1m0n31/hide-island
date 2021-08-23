@@ -42,13 +42,11 @@ con.connect(err => {
     }
 
     const sendMail = (email, productName) => {
-        console.log("hello from sendMail()");
-
         /* Nodemailer */
         let transporter = nodemailer.createTransport(smtpTransport ({
             auth: {
                 user: 'test@skylo-test2.pl',
-                pass: 'HideIsland-31'
+                pass: 'SwinkaPeppa-31'
             },
             host: 'skylo-pl.atthost24.pl',
             secureConnection: true,
@@ -64,11 +62,89 @@ con.connect(err => {
             from: 'test@skylo-test2.pl',
             to: email,
             subject: 'Produkt, którego szukałeś, jest już dostępny w naszym sklepie!',
-            html: '<h2>Dobre wieści!</h2> ' +
-                '<p>Produkt, którego szukałeś/aś,' + productName + ', jest już dostępny na naszej stronie! Możesz go zakupić, klikając w poniższy link: </p> ' +
-                '<a href="http://hideisland.skylo-test3.pl/produkt/' + productURL +'">' +
-                 'PRZEJDŹ DO PRODUKTU' +
-                ' </a>'
+            html: `<style>
+@media(max-width: 768px) {
+    .notification__header, .notification__secondHeader {
+        font-size: 18px;
+    }
+
+    .notification__socialMedia__link,
+    .notification__link {
+        font-size: 14px;
+    }
+
+    .notification__arrowImg {
+        width: 20px;
+    }
+
+    .notification__socialMedia__img {
+        width: 30px;
+    }
+}
+
+@media(max-width: 576px) {
+    .notification__socialMedia {
+        flex-direction: column;
+    }
+
+    .notification__socialMedia__link:nth-of-type(2) {
+        order: 5;
+    }
+
+    .notification__imgGroup {
+        grid-template-rows: 120px 150px;
+        grid-row-gap: 15px;
+    }
+}
+</style>
+                <main>
+                <header style="max-width: 900px; box-sizing: border-box;">
+                    <img style="width: 100%;
+    transform: scaleY(1.03);" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/logo.jpg" alt="hideisland-logo"/>
+                </header>
+                <section style="background: #D9D9D9; padding: 30px; max-width: 900px; box-sizing: border-box;">
+                    <h1 class="notification__header" style=" margin: 0 0 20px; font-weight: 900; font-size: 32px; color: #313131;">
+                        Twój ulubiony produkt już na Ciebie czeka!
+                    </h1>
+
+                    <a style="display: inline-block; text-decoration: none;font-size: 21px; font-weight: 700; color: #313131; margin: 20px 0;" href="http://hideisland.skylo-test3.pl/sklep">
+                        Kliknij tutaj, aby przejść do sklepu
+                        <img style=" width: 50px; height: auto; margin-left: 20px; vertical-align: middle;" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/right-arrow.png" alt="przejdz-do-sklepu"/>
+                    </a>
+
+                    <section style="display: flex; height: 260px; overflow: hidden; margin: 30px auto;">
+                        <figure style="overflow: hidden; display: block; margin: 0; margin-right: 15px;">
+                            <img style="width: 100%; display: block;" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/bluza-biala.jpg"/>
+                        </figure>
+                        <figure style="overflow: hidden; display: block; margin: 0;">
+                            <img style="width: 100%; display: block;" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/metka.jpg"/>
+                        </figure>
+                    </section>
+                    <figure style="overflow: hidden; display: block; height: 300px; margin: 0; margin-top: 20px;">
+                        <img style="width: 100%; display: block;" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/wieszak.jpg"/>
+                    </figure>
+
+                    <h2 class="notification__secondHeader" style="color: #313131; font-size: 25px; font-weight: 700; margin: 20px 0;">
+                        Zainspiruj się i bądź na bieżąco
+                    </h2>
+
+                    <section style=" display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start;">
+                        <a style="color: #313131; font-size: 13px; display: inline-block;width: 49%;text-decoration: none;margin-bottom: 20px;" href="https://www.facebook.com/HideIslandwear">
+                            <img style=" width: 30px;height: auto;margin-right: 8px;vertical-align: middle;" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/fb.png" alt="facebook"/>
+                            Hideislandwear
+                        </a>
+                        <a style="color: #313131;font-size: 13px;display: inline-block;width: 49%;text-decoration: none;margin-bottom: 20px;" href="http://hideisland.pl">
+                            <img style=" width: 30px;height: auto;margin-right: 8px;vertical-align: middle;" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/fb.png" alt="facebook"/>
+                            www.hideisland.pl
+                        </a>
+                    </section>
+                     <a style="color: #313131;font-size: 13px;display: inline-block;width: 100%;text-decoration: none;margin-bottom: 20px;"
+                           href="https://www.instagram.com/HideIsland_wear/?fbclid=IwAR3Y8NLYGmXQ-_pvGE1UZLO1oR0iMfT0uNWYZgvrpKHv40N4fKvsfdC4UPc">
+                            <img style=" width: 30px;height: auto;margin-right: 8px;vertical-align: middle;" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/insta.png" alt="instagram"/>
+                            Hideislandwear
+                    </a>
+                </section>
+            </main>`
         }
 
         transporter.sendMail(mailOptions, function(error, info){
