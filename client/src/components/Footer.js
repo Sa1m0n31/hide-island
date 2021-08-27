@@ -72,6 +72,11 @@ const Footer = () => {
                             Reklamacje i zwroty
                         </a>
                     </li>
+                    <li className="footer__menu__item">
+                        <a className="footer__menu__link" href="/dostawa-i-platnosci">
+                            Dostawa i płatności
+                        </a>
+                    </li>
                 </ul>
             </section>
 

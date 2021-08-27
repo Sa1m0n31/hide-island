@@ -43,6 +43,25 @@ con.connect(err => {
        });
     });
 
+    /* GET CATEGORY BY ID */
+    router.post("/get-category-by-id", (request, response) => {
+        const { id } = request.body;
+        const values = [id];
+        const query = 'SELECT * FROM product_categories pc JOIN categories c ON pc.category_id = c.id WHERE c.id = ?';
+        con.query(query, values, (err, res) => {
+            if(res) {
+                response.send({
+                    result: res[0]
+                });
+            }
+            else {
+                response.send({
+                    result: 0
+                });
+            }
+        });
+    });
+
     /* GET ALL CATEGORIES */
     router.get("/get-all", (request, response) => {
         con.query('SELECT c1.name as parent_name, c2.id, c2.name as name, c2.parent_id, c2.permalink, c2.hidden FROM categories c1 RIGHT OUTER JOIN categories c2 ON c1.id = c2.parent_id', (err, res) => {

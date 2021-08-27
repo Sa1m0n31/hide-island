@@ -8,18 +8,19 @@ import { useLocation } from "react-router";
 import {convertToString} from "../helpers/convertToURL";
 import axios from "axios";
 import settings from "../helpers/settings";
+import {getProductCategories} from "../admin/helpers/productFunctions";
+import {getCategoryById} from "../helpers/categoryFunctions";
 
 const SingleProductContent = () => {
     const [product, setProduct] = useState({});
     const [sizes, setSizes] = useState([]);
-    const [crossSells, setCrossSells] = useState([]);
     const [gallery, setGallery] = useState([]);
+    const [productGender, setProductGender] = useState(-1);
 
     const location = useLocation();
 
     useEffect(() => {
         /* Get product info */
-        console.log(convertToString(window.location.pathname.split("/")[2]));
         getProductByName(convertToString(window.location.pathname.split("/")[2]))
             .then(res => {
                const result = res.data?.result;
@@ -45,12 +46,28 @@ const SingleProductContent = () => {
                                    return item.file_path;
                                }));
                            }
+
+                           /* Get product categories */
+                           getProductCategories(productInfo.id)
+                               .then(res => {
+                                   if(res?.data?.result) {
+                                       const result = res.data.result;
+                                       result.forEach(item => {
+                                           getCategoryById(item.category_id)
+                                               .then(res => {
+                                                  if(res?.data?.result?.name?.toLowerCase() === "damskie") {
+                                                      setProductGender(0);
+                                                  }
+                                                  else if(res?.data?.result?.name?.toLowerCase() === "męskie") {
+                                                      setProductGender(1);
+                                                  }
+                                               });
+                                       });
+                                   }
+                               });
                         });
                 }
             });
-
-        const crossSellsExample = [5, 7, 19];
-        setCrossSells(crossSellsExample);
     }, []);
 
     return <main className="singleProduct">
@@ -63,7 +80,8 @@ const SingleProductContent = () => {
             gallery={gallery}
             sizes={sizes} />
         <SingleProductCrossSells
-            ids={crossSells} />
+            productGender={productGender}
+        />
     </main>
 }
 

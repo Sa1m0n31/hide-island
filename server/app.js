@@ -31,6 +31,9 @@ app.get("/polityka-prywatnosci", (req, res) => {
 app.get("/zwroty-i-reklamacje", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
+app.get("/dostawa-i-platnosci", (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
 app.get("/koszyk", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });

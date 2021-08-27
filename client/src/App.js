@@ -142,6 +142,11 @@ function App() {
                     title="Zwroty i reklamacje"
                     content={complaints} />
             </Route>
+            <Route path="/dostawa-i-platnosci">
+                <Page
+                    title="Dostawa i płatności"
+                    content={policy} />
+            </Route>
 
           <Route path="/zaloguj-sie">
               <LoginPageClient />
