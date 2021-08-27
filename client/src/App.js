@@ -41,6 +41,8 @@ import NewsletterPage from "./admin/pages/NewsletterPage";
 import TYPage from "./pages/TYPage";
 import auth from "./admin/helpers/auth";
 import { v4 as uuidv4 } from 'uuid';
+import PanelStocks from "./admin/pages/PanelStocks";
+import AddStockPage from "./admin/pages/AddStockPage";
 
 /* Context */
 const CartContext = React.createContext(null);
@@ -193,6 +195,12 @@ function App() {
             </Route>
             <Route path="/panel/newsletter">
                 <NewsletterPage />
+            </Route>
+            <Route path="/panel/stany-magazynowe">
+                <PanelStocks />
+            </Route>
+            <Route path="/panel/dodaj-stan-magazynowy">
+                <AddStockPage />
             </Route>
 
             {/* Add content pages */}

@@ -62,7 +62,6 @@ app.get("/dziekujemy", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
 
-
 /* Routers */
 const authRouter = require("./routers/authRouter");
 const userRouter = require("./routers/userRouter");
@@ -78,6 +77,7 @@ const couponRouter = require("./routers/couponRouter");
 const newsletterRouter = require("./routers/newsletterRouter");
 const homepageRouter = require("./routers/homepageRouter");
 const notificationRouter = require("./routers/notificationRouter");
+const stockRouter = require("./routers/stockRouter");
 
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
@@ -93,6 +93,7 @@ app.use("/coupon", couponRouter);
 app.use("/newsletter", newsletterRouter);
 app.use("/homepage", homepageRouter);
 app.use("/notification", notificationRouter);
+app.use("/stock", stockRouter);
 
 app.listen(5000, () => {
     console.log("Listening on port 5000");

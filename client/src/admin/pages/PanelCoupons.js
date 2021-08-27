@@ -4,7 +4,7 @@ import PanelCouponsContent from "../components/PanelCouponsContent";
 
 const PanelCoupons = () => {
     return <main className="panel">
-        <PanelMenu active={7} />
+        <PanelMenu active={8} />
         <PanelCouponsContent />
     </main>
 }

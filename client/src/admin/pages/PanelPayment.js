@@ -4,7 +4,7 @@ import PanelPaymentContent from "../components/PanelPaymentContent";
 
 const PanelPayment = () => {
     return <main className="panel">
-        <PanelMenu active={5} />
+        <PanelMenu active={6} />
         <PanelPaymentContent />
     </main>
 }

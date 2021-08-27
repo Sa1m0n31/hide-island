@@ -4,7 +4,7 @@ import PanelNewsletterContent from "../components/PanelNewsletterContent";
 
 const NewsletterPage = () => {
     return <main className="panel">
-        <PanelMenu active={10} />
+        <PanelMenu active={11} />
         <PanelNewsletterContent />
     </main>
 }

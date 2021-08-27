@@ -4,7 +4,7 @@ import PanelCategoriesContent from "../components/PanelCategoriesContent";
 
 const PanelCategories = () => {
     return <main className="panel">
-        <PanelMenu active={3} />
+        <PanelMenu active={4} />
         <PanelCategoriesContent />
     </main>
 }

@@ -4,7 +4,7 @@ import PanelOrdersContent from "../components/PanelOrdersContent";
 
 const PanelOrders = () => {
     return <main className="panel">
-        <PanelMenu active={2} />
+        <PanelMenu active={3} />
         <PanelOrdersContent />
     </main>
 }

@@ -4,7 +4,7 @@ import PanelSettingsContent from "../components/PanelSettingsContent";
 
 const PanelSettings = () => {
     return <main className="panel">
-        <PanelMenu active={6} />
+        <PanelMenu active={7} />
         <PanelSettingsContent />
     </main>
 }

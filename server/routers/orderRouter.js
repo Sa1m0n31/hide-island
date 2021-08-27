@@ -19,6 +19,7 @@ con.connect(err => {
         });
     });
 
+    /* TODO - change logic */
     const decrementStock = (productId, size, quantity) => {
         const values = [quantity, productId, size];
         const query1 = 'UPDATE products_stock SET size_1_stock = size_1_stock - ? WHERE product_id = ? AND size_1_name = ?';

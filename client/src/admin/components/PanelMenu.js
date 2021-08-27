@@ -15,6 +15,7 @@ import others from '../static/img/file.png'
 import discount from '../static/img/discount.png'
 import banner from '../static/img/banner.png'
 import newsletterIcon from '../static/img/about-us.png'
+import fashion from '../static/img/fashion.png'
 
 import settings from "../helpers/settings";
 import auth from "../helpers/auth";
@@ -108,55 +109,65 @@ const PanelMenu = ({active, submenu}) => {
                         </a> : "" }
                     </li>
                     <li className="panelMenu__list__item">
-                        <a className="panelMenu__list__item__link" id={active === 2 ? "menuItem--active" : ""} href="/panel/zamowienia">
+                        <a className="panelMenu__list__item__link" id={active === 2 && !submenu ? "menuItem--active" : ""} href="/panel/stany-magazynowe">
+                            <img className="panelMenu__list__item__img" src={fashion} alt="stany-magazynowe" />
+                            Stany magazynowe
+                        </a>
+                        { active === 2 ? <a className="panelMenu__list__subitem" id={submenu ? "menuItem--active" : ""} href="/panel/dodaj-stan-magazynowy">
+                            <img className="panelMenu__list__subitem__img" src={addImg} alt="dodaj-stan-magazynowy" />
+                            Dodaj stan magazynowy
+                        </a> : "" }
+                    </li>
+                    <li className="panelMenu__list__item">
+                        <a className="panelMenu__list__item__link" id={active === 3 ? "menuItem--active" : ""} href="/panel/zamowienia">
                             <img className="panelMenu__list__item__img" src={checkboxSquare} alt="zamowienia" />
                             Zamówienia
                         </a>
                     </li>
                     <li className="panelMenu__list__item">
-                        <a className="panelMenu__list__item__link" id={active === 3 ? "menuItem--active" : ""} href="/panel/kategorie">
+                        <a className="panelMenu__list__item__link" id={active === 4 ? "menuItem--active" : ""} href="/panel/kategorie">
                             <img className="panelMenu__list__item__img" src={list} alt="kategorie" />
                             Kategorie
                         </a>
                     </li>
                     <li className="panelMenu__list__item">
-                        <a className="panelMenu__list__item__link" id={active === 4 ? "menuItem--active" : ""} href="/panel/wysylka">
+                        <a className="panelMenu__list__item__link" id={active === 5 ? "menuItem--active" : ""} href="/panel/wysylka">
                             <img className="panelMenu__list__item__img" src={box} alt="wysylka" />
                             Metody wysyłki
                         </a>
                     </li>
                     <li className="panelMenu__list__item">
-                        <a className="panelMenu__list__item__link" id={active === 5 ? "menuItem--active" : ""} href="/panel/platnosci">
+                        <a className="panelMenu__list__item__link" id={active === 6 ? "menuItem--active" : ""} href="/panel/platnosci">
                             <img className="panelMenu__list__item__img" src={creditCart} alt="platnosci" />
                             Płatności
                         </a>
                     </li>
                     <li className="panelMenu__list__item">
-                        <a className="panelMenu__list__item__link" id={active === 6 ? "menuItem--active" : ""} href="/panel/ustawienia">
+                        <a className="panelMenu__list__item__link" id={active === 7 ? "menuItem--active" : ""} href="/panel/ustawienia">
                             <img className="panelMenu__list__item__img" src={settingsImg} alt="ustawienia" />
                             Ustawienia
                         </a>
                     </li>
                     <li className="panelMenu__list__item">
-                        <a className="panelMenu__list__item__link" id={active === 7 ? "menuItem--active" : ""} href="/panel/kupony">
+                        <a className="panelMenu__list__item__link" id={active === 8 ? "menuItem--active" : ""} href="/panel/kupony">
                             <img className="panelMenu__list__item__img" src={discount} alt="kupony" />
                             Kupony rabatowe
                         </a>
                     </li>
                     <li className="panelMenu__list__item">
-                        <a className="panelMenu__list__item__link" id={active === 8 ? "menuItem--active" : ""} href="/panel/zdjecia">
+                        <a className="panelMenu__list__item__link" id={active === 9 ? "menuItem--active" : ""} href="/panel/zdjecia">
                             <img className="panelMenu__list__item__img" src={banner} alt="zdjecia" />
                             Zdjęcia
                         </a>
                     </li>
                     <li className="panelMenu__list__item">
-                        <a className="panelMenu__list__item__link" id={active === 9 ? "menuItem--active" : ""} href="/panel/pozostale">
+                        <a className="panelMenu__list__item__link" id={active === 10 ? "menuItem--active" : ""} href="/panel/pozostale">
                             <img className="panelMenu__list__item__img" src={others} alt="pozostale" />
                             Pozostałe
                         </a>
                     </li>
                     <li className="panelMenu__list__item">
-                        <a className="panelMenu__list__item__link" id={active === 10 ? "menuItem--active" : ""} href="/panel/newsletter">
+                        <a className="panelMenu__list__item__link" id={active === 11 ? "menuItem--active" : ""} href="/panel/newsletter">
                             <img className="panelMenu__list__item__img" src={newsletterIcon} alt="pozostale" />
                             Newsletter
                         </a>

@@ -4,7 +4,7 @@ import PanelImagesContent from "../components/PanelImagesContent";
 
 const PanelImages = () => {
     return <main className="panel">
-        <PanelMenu active={8} />
+        <PanelMenu active={9} />
         <PanelImagesContent />
     </main>
 }

@@ -4,7 +4,7 @@ import PanelShippingContent from "../components/PanelShippingContent";
 
 const PanelShipping = () => {
     return <main className="panel">
-        <PanelMenu active={4} />
+        <PanelMenu active={5} />
         <PanelShippingContent />
     </main>
 }
