@@ -110,7 +110,7 @@ const PanelStocksContent = () => {
                                 <div className="panelContent__column__value">
                                     <div className="panelContent__column__value panelContent__column__value--buttons">
                                         <button className="panelContent__column__btn">
-                                            <a className="panelContent__column__link" href={`/dodaj-stan-magazynowy?id=${item.id}`}>
+                                            <a className="panelContent__column__link" href={`/panel/dodaj-stan-magazynowy?id=${item.id}`}>
                                                 <img className="panelContent__column__icon" src={exit} alt="przejdz" />
                                             </a>
                                         </button>

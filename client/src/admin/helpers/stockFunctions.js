@@ -15,4 +15,16 @@ const deleteStock = (id) => {
     return axios.post(`${API_URL}/stock/delete`, { id });
 }
 
-export { getAllStocks, getSingleStock, deleteStock };
+const addStock = (values) => {
+    return axios.post(`${API_URL}/stock/add`, values);
+}
+
+const updateStock = (values) => {
+    return axios.post(`${API_URL}/stock/update`, values);
+}
+
+const getProductsWithStock = (id) => {
+    return axios.post(`${API_URL}/stock/get-products-with-stock`, { id });
+}
+
+export { getAllStocks, getSingleStock, deleteStock, addStock, updateStock, getProductsWithStock };

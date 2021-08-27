@@ -53,7 +53,7 @@ con.connect(err => {
          if (err) throw err;
 
          /* Prepare */
-         let { id, mainImageIndex, name, price, shortDescription, recommendation, hidden, size1, size2, size3, size4, size5, size1Stock, size2Stock, size3Stock, size4Stock, size5Stock } = request.body;
+         let { id, mainImageIndex, name, price, shortDescription, recommendation, hidden } = request.body;
          hidden = hidden === "hidden";
          recommendation = recommendation === "true";
          filenames.reverse();
@@ -76,53 +76,18 @@ con.connect(err => {
 
          /* 1 - ADD PRODUCT TO PRODUCTS TABLE */
          const values = [id, name, price, shortDescription, null, recommendation, hidden];
-         const query = 'INSERT INTO products VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?)';
+         const query = 'INSERT INTO products VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, NULL)';
          con.query(query, values, (err, res) => {
             if(res) {
-               /* 2nd - ADD PRODUCT STOCKS TO PRODUCTS_STOCK TABLE */
+               /* 2nd - ADD CATEGORIES */
                const productId = res.insertId;
-               const values2 = [productId, size1, parseInt(size1Stock), size2, parseInt(size2Stock), size3, parseInt(size3Stock), size4, parseInt(size4Stock), size5, parseInt(size5Stock)];
-               const query2 = 'INSERT INTO products_stock VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-
-               con.query(query2, values2, (err, res) => {
-                  if(res) {
-                     /* 3rd - ADD CATEGORIES */
-                     categories.forEach((item, index, array) => {
-                        if(item) {
-                           const values = [productId, item];
-                           const query = 'INSERT INTO product_categories VALUES (NULL, ?, ?)';
-                           con.query(query, values, (err, res) => {
-                              if(index === array.length-1) {
-                                 /* 4th - ADD IMAGES TO IMAGES TABLE */
-                                 filenames.forEach((item, index, array) => {
-                                    const values = ["products/" + item, productId];
-                                    const query = 'INSERT INTO images VALUES (NULL, ?, ?)';
-                                    console.log(item);
-
-                                    con.query(query, values, (err, res) => {
-                                       if(index === array.length-1) {
-                                          /* 4 - MODIFY MAIN_IMAGE COLUMN IN PRODUCTS TABLE */
-                                          if(res) {
-                                             console.log(res.insertId);
-                                             const mainImageId = res.insertId;
-                                             const values = [mainImageId, productId];
-                                             const query = 'UPDATE products SET main_image = ? WHERE id = ?';
-                                             con.query(query, values, (err, res) => {
-                                                if(res) response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=1");
-                                                else response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=0");
-                                             });
-                                          }
-                                          else {
-                                             response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=0");
-                                          }
-                                       }
-                                    })
-                                 });
-                              }
-                           });
-                        }
-                        else {
-                           /* 4th - ADD IMAGES TO IMAGES TABLE */
+               categories.forEach((item, index, array) => {
+                  if(item) {
+                     const values = [productId, item];
+                     const query = 'INSERT INTO product_categories VALUES (NULL, ?, ?)';
+                     con.query(query, values, (err, res) => {
+                        if(index === array.length-1) {
+                           /* 3rd - ADD IMAGES TO IMAGES TABLE */
                            filenames.forEach((item, index, array) => {
                               const values = ["products/" + item, productId];
                               const query = 'INSERT INTO images VALUES (NULL, ?, ?)';
@@ -130,7 +95,7 @@ con.connect(err => {
 
                               con.query(query, values, (err, res) => {
                                  if(index === array.length-1) {
-                                    /* 4 - MODIFY MAIN_IMAGE COLUMN IN PRODUCTS TABLE */
+                                    /* 4th - MODIFY MAIN_IMAGE COLUMN IN PRODUCTS TABLE */
                                     if(res) {
                                        console.log(res.insertId);
                                        const mainImageId = res.insertId;
@@ -150,7 +115,33 @@ con.connect(err => {
                         }
                      });
                   }
-                  else response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=0");
+                  else {
+                     /* 4th - ADD IMAGES TO IMAGES TABLE */
+                     filenames.forEach((item, index, array) => {
+                        const values = ["products/" + item, productId];
+                        const query = 'INSERT INTO images VALUES (NULL, ?, ?)';
+                        console.log(item);
+
+                        con.query(query, values, (err, res) => {
+                           if(index === array.length-1) {
+                              /* 4 - MODIFY MAIN_IMAGE COLUMN IN PRODUCTS TABLE */
+                              if(res) {
+                                 console.log(res.insertId);
+                                 const mainImageId = res.insertId;
+                                 const values = [mainImageId, productId];
+                                 const query = 'UPDATE products SET main_image = ? WHERE id = ?';
+                                 con.query(query, values, (err, res) => {
+                                    if(res) response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=1");
+                                    else response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=0");
+                                 });
+                              }
+                              else {
+                                 response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=0");
+                              }
+                           }
+                        })
+                     });
+                  }
                });
             }
             else {
@@ -183,7 +174,7 @@ con.connect(err => {
          if (err) throw err;
 
          /* Prepare */
-         let { id, mainImageId, name, price, shortDescription, recommendation, hidden, size1, size2, size3, size4, size5, size1Stock, size2Stock, size3Stock, size4Stock, size5Stock } = request.body;
+         let { id, mainImageId, name, price, shortDescription, recommendation, hidden } = request.body;
          hidden = hidden === "hidden";
          recommendation = recommendation === "true";
          filenames.reverse();
@@ -204,124 +195,109 @@ con.connect(err => {
          const query = 'UPDATE products SET name = ?, price = ?, description = ?, recommendation = ?, hidden = ? WHERE id = ?';
          con.query(query, values, (err, res) => {
             if(res) {
-               /* 2nd - ADD PRODUCT STOCKS TO PRODUCTS_STOCK TABLE */
-               const values2 = [size1, parseInt(size1Stock),
-                  size2, parseInt(size2Stock),
-                  size3, parseInt(size3Stock),
-                  size4, parseInt(size4Stock),
-                  size5, parseInt(size5Stock),
-                  id
-               ];
-               const query2 = 'UPDATE products_stock SET size_1_name = ?, size_1_stock = ?, size_2_name = ?, size_2_stock = ?, size_3_name = ?, size_3_stock = ?, size_4_name = ?, size_4_stock = ?, size_5_name = ?, size_5_stock = ? WHERE product_id = ?';
+               /* HERE WE HAVE TO CHECK WHETHER WE HAVE TO SEND NOTIFICATION TO CLIENT */
+               got.post("http://hideisland.skylo-test3.pl/notification/check-notifications", {
+                  json: { productId: id },
+                  responseType: "json"
+               })
+                   .then(res => {
+                      console.log("RESPONSE...");
+                      console.log(res.data);
+                   });
 
-               con.query(query2, values2, (err, res) => {
-                  if(res) {
-                     /* HERE WE HAVE TO CHECK WHETHER WE HAVE TO SEND NOTIFICATION TO CLIENT */
-                     got.post("http://hideisland.skylo-test3.pl/notification/check-notifications", {
-                        json: { productId: id },
-                        responseType: "json"
-                     })
-                         .then(res => {
-                            console.log("RESPONSE...");
-                            console.log(res.data);
-                         });
+               /* 2 - ADD CATEGORIES */
+               categories.forEach((item, index, array) => {
+                  const valuesDelete = [id];
+                  const queryDelete = 'DELETE FROM product_categories WHERE product_id = ?';
+                  con.query(queryDelete, valuesDelete, (err, res) => {
+                     if(item) {
+                        console.log("category: " + item);
+                        /* THERE ARE CATEGORIES */
+                        const values = [id, item];
+                        const query = 'INSERT INTO product_categories VALUES (NULL, ?, ?)';
+                        con.query(query, values);
+                        if(index === array.length-1) {
+                           /* 3 - ADD IMAGES TO IMAGES TABLE */
+                           if(filenames.length) {
+                              con.query('DELETE FROM images WHERE product_id = ?', [id]);
 
-                     /* 3rd - ADD CATEGORIES */
-                     categories.forEach((item, index, array) => {
-                        const valuesDelete = [id];
-                        const queryDelete = 'DELETE FROM product_categories WHERE product_id = ?';
-                        con.query(queryDelete, valuesDelete, (err, res) => {
-                           if(item) {
-                              console.log("category: " + item);
-                              /* THERE ARE CATEGORIES */
-                              const values = [id, item];
-                              const query = 'INSERT INTO product_categories VALUES (NULL, ?, ?)';
-                              con.query(query, values);
-                              if(index === array.length-1) {
-                                 /* 3rd - ADD IMAGES TO IMAGES TABLE */
-                                 if(filenames.length) {
-                                    con.query('DELETE FROM images WHERE product_id = ?', [id]);
+                              filenames.forEach((item, index, array) => {
+                                 const values = ["products/" + item, id];
+                                 const query = 'INSERT INTO images VALUES (NULL, ?, ?)';
 
-                                    filenames.forEach((item, index, array) => {
-                                       const values = ["products/" + item, id];
-                                       const query = 'INSERT INTO images VALUES (NULL, ?, ?)';
-
-                                       con.query(query, values, (err, res) => {
-                                          if(index === array.length-1) {
-                                             /* 4 - MODIFY MAIN_IMAGE COLUMN IN PRODUCTS TABLE */
-                                             if(res) {
-                                                console.log("I'm ready to modify mainImageId");
-                                                const mainImageId = res.insertId;
-                                                const values = [mainImageId, id];
-                                                const query = 'UPDATE products SET main_image = ? WHERE id = ?';
-                                                con.query(query, values, (err, res) => {
-                                                   if(res) response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=1");
-                                                   else response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=0");
-                                                });
-                                             }
-                                             else {
-                                                response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=0");
-                                             }
-                                          }
-                                       })
-                                    });
-                                 }
-                                 else {
-                                    /* 4 - MODIFY MAIN_IMAGE COLUMN IN PRODUCTS TABLE */
-                                    const values = [mainImageId, id];
-                                    const query = 'UPDATE products SET main_image = ? WHERE id = ?';
-                                    con.query(query, values, (err, res) => {
-                                       if(res) response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=1");
-                                       else response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=0");
-                                    });
-                                 }
-                              }
+                                 con.query(query, values, (err, res) => {
+                                    if(index === array.length-1) {
+                                       /* 4 - MODIFY MAIN_IMAGE COLUMN IN PRODUCTS TABLE */
+                                       if(res) {
+                                          console.log("I'm ready to modify mainImageId");
+                                          const mainImageId = res.insertId;
+                                          const values = [mainImageId, id];
+                                          const query = 'UPDATE products SET main_image = ? WHERE id = ?';
+                                          con.query(query, values, (err, res) => {
+                                             if(res) response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=1");
+                                             else response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=0");
+                                          });
+                                       }
+                                       else {
+                                          response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=0");
+                                       }
+                                    }
+                                 })
+                              });
                            }
                            else {
-                              /* THERE IS NO ANY CATEGORY */
-                              /* 3rd - ADD IMAGES TO IMAGES TABLE */
-                              if(filenames.length) {
-                                 console.log("no category, yes images");
-                                 console.log(id);
-                                 con.query('DELETE FROM images WHERE product_id = ?', [id]);
-
-                                 filenames.forEach((item, index, array) => {
-                                    const values = ["products/" + item, id];
-                                    const query = 'INSERT INTO images VALUES (NULL, ?, ?)';
-
-                                    con.query(query, values, (err, res) => {
-                                       if(index === array.length-1) {
-                                          /* 4 - MODIFY MAIN_IMAGE COLUMN IN PRODUCTS TABLE */
-                                          if(res) {
-                                             const mainImageId = res.insertId;
-                                             const values = [mainImageId, id];
-                                             const query = 'UPDATE products SET main_image = ? WHERE id = ?';
-                                             con.query(query, values, (err, res) => {
-                                                if(res) response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=1");
-                                                else response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=0");
-                                             });
-                                          }
-                                          else {
-                                             response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=0");
-                                          }
-                                       }
-                                    })
-                                 });
-                              }
-                              else {
-                                 console.log("no category. no images");
-                                 const values = [mainImageId, id];
-                                 const query = 'UPDATE products SET main_image = ? WHERE id = ?';
-                                 con.query(query, values, (err, res) => {
-                                    if(res) response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=1");
-                                    else response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=0");
-                                 });
-                              }
+                              /* 4 - MODIFY MAIN_IMAGE COLUMN IN PRODUCTS TABLE */
+                              const values = [mainImageId, id];
+                              const query = 'UPDATE products SET main_image = ? WHERE id = ?';
+                              con.query(query, values, (err, res) => {
+                                 if(res) response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=1");
+                                 else response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=0");
+                              });
                            }
-                        });
-                     });
-                  }
-                  else response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=0");
+                        }
+                     }
+                     else {
+                        /* THERE IS NO ANY CATEGORY */
+                        /* 3rd - ADD IMAGES TO IMAGES TABLE */
+                        if(filenames.length) {
+                           console.log("no category, yes images");
+                           console.log(id);
+                           con.query('DELETE FROM images WHERE product_id = ?', [id]);
+
+                           filenames.forEach((item, index, array) => {
+                              const values = ["products/" + item, id];
+                              const query = 'INSERT INTO images VALUES (NULL, ?, ?)';
+
+                              con.query(query, values, (err, res) => {
+                                 if(index === array.length-1) {
+                                    /* 4 - MODIFY MAIN_IMAGE COLUMN IN PRODUCTS TABLE */
+                                    if(res) {
+                                       const mainImageId = res.insertId;
+                                       const values = [mainImageId, id];
+                                       const query = 'UPDATE products SET main_image = ? WHERE id = ?';
+                                       con.query(query, values, (err, res) => {
+                                          if(res) response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=1");
+                                          else response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=0");
+                                       });
+                                    }
+                                    else {
+                                       response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=0");
+                                    }
+                                 }
+                              })
+                           });
+                        }
+                        else {
+                           console.log("no category. no images");
+                           const values = [mainImageId, id];
+                           const query = 'UPDATE products SET main_image = ? WHERE id = ?';
+                           con.query(query, values, (err, res) => {
+                              if(res) response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=1");
+                              else response.redirect("http://hideisland.skylo-test3.pl/panel/dodaj-produkt?add=0");
+                           });
+                        }
+                     }
+                  });
                });
             }
             else {
@@ -375,7 +351,7 @@ con.connect(err => {
 
    /* GET ALL PRODUCTS */
    router.get("/get-all-products", (request, response) => {
-      const query = 'SELECT p.id, p.name, i.file_path as image, p.price, p.date, COALESCE(c.name, "Brak") as category_name, p.hidden FROM products p ' +
+      const query = 'SELECT p.id, p.name, i.file_path as image, p.price, p.date, p.stock_id, COALESCE(c.name, "Brak") as category_name, p.hidden FROM products p ' +
       'LEFT OUTER JOIN product_categories pc ON pc.product_id = p.id ' +
           'LEFT OUTER JOIN categories c ON c.id = pc.category_id ' +
       'LEFT OUTER JOIN images i ON p.main_image = i.id GROUP BY p.id ORDER BY p.date DESC';
@@ -423,7 +399,7 @@ con.connect(err => {
           's.size_1_name, s.size_2_name, s.size_3_name, s.size_4_name, s.size_5_name, ' +
           's.size_1_stock, s.size_2_stock, s.size_3_stock, s.size_4_stock, s.size_5_stock ' +
           'FROM products p LEFT OUTER JOIN images i ON i.id = p.main_image ' +
-          'LEFT OUTER JOIN products_stock s ON p.id = s.product_id ' +
+          'LEFT OUTER JOIN products_stock s ON p.stock_id = s.id ' +
           'WHERE REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(LOWER(SPLIT_STR(p.name, "/", 1)), "ł", "l"), "ę", "e"), "ą", "a"), "ć", "c"), "ń", "n"), "ó", "o"), "ś", "s"), "ź", "z"), "ż", "z") = ?';
       con.query(query, values, (err, res) => {
          console.log(res);
@@ -481,7 +457,7 @@ con.connect(err => {
           'i.file_path as file_path, s.size_1_name, s.size_1_stock, s.size_2_name, s.size_2_stock, s.size_3_name, s.size_3_stock, s.size_4_name, s.size_4_stock, s.size_5_name, s.size_5_stock ' +
           'FROM products p ' +
           'LEFT OUTER JOIN images i ON i.id = p.main_image ' +
-          'LEFT OUTER JOIN products_stock s ON p.id = s.product_id ' +
+          'LEFT OUTER JOIN products_stock s ON s.id = p.stock_id ' +
           'WHERE p.id = ?';
       con.query(query, values, (err, res) => {
          if(res) {

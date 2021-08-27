@@ -19,14 +19,13 @@ con.connect(err => {
         });
     });
 
-    /* TODO - change logic */
     const decrementStock = (productId, size, quantity) => {
         const values = [quantity, productId, size];
-        const query1 = 'UPDATE products_stock SET size_1_stock = size_1_stock - ? WHERE product_id = ? AND size_1_name = ?';
-        const query2 = 'UPDATE products_stock SET size_2_stock = size_2_stock - ? WHERE product_id = ? AND size_2_name = ?';
-        const query3 = 'UPDATE products_stock SET size_3_stock = size_3_stock - ? WHERE product_id = ? AND size_3_name = ?';
-        const query4 = 'UPDATE products_stock SET size_4_stock = size_4_stock - ? WHERE product_id = ? AND size_4_name = ?';
-        const query5 = 'UPDATE products_stock SET size_5_stock = size_5_stock - ? WHERE product_id = ? AND size_5_name = ?';
+        const query1 = 'UPDATE products_stock ps JOIN products p ON ps.id = p.stock_id SET ps.size_1_stock = ps.size_1_stock - ? WHERE p.id = ? AND size_1_name = ?'
+        const query2 = 'UPDATE products_stock ps JOIN products p ON ps.id = p.stock_id SET ps.size_2_stock = ps.size_2_stock - ? WHERE p.id = ? AND size_2_name = ?'
+        const query3 = 'UPDATE products_stock ps JOIN products p ON ps.id = p.stock_id SET ps.size_3_stock = ps.size_3_stock - ? WHERE p.id = ? AND size_3_name = ?'
+        const query4 = 'UPDATE products_stock ps JOIN products p ON ps.id = p.stock_id SET ps.size_4_stock = ps.size_4_stock - ? WHERE p.id = ? AND size_4_name = ?'
+        const query5 = 'UPDATE products_stock ps JOIN products p ON ps.id = p.stock_id SET ps.size_5_stock = ps.size_5_stock - ? WHERE p.id = ? AND size_5_name = ?'
 
         con.query(query1, values);
         con.query(query2, values);
@@ -42,10 +41,9 @@ con.connect(err => {
             const values = [orderId, productId, quantity, size];
             const query = 'INSERT INTO sells VALUES (NULL, ?, ?, ?, ?)';
 
-            decrementStock(productId, size, quantity);
-
-            if(paymentMethod === 1) {
+            if(paymentMethod === 2) {
                 /* Jesli za pobraniem - dekrementuj stan magazynowy */
+                decrementStock(productId, size, quantity);
             }
 
             con.query(query, values, (err, res) => {

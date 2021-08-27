@@ -116,14 +116,10 @@ con.connect(err => {
         let currency = request.body.currency;
         let orderId = request.body.orderId;
 
-        console.log("VERTIFY!");
-
         /* Get data */
         const query = 'SELECT * FROM przelewy24 WHERE id = 1';
         con.query(query, (err, res) => {
             let crc = res[0].crc;
-
-            console.log(err);
 
             /* Calculate SHA384 checksum */
             let hash, data, gen_hash;
@@ -147,15 +143,6 @@ con.connect(err => {
                 }
             })
                 .then(res => {
-                    /* TEST */
-                    const values = [sessionId];
-                    const query = 'UPDATE orders SET payment_status = ? WHERE id = 70';
-                    con.query(query, values, (err, res) => {
-                        console.log("UPDATING PAYMENT STATUS");
-                        console.log(err);
-                    });
-
-
                     if(res.body.data.status === 'success') {
                         /* Change value in databse - payment complete */
                         const values = [sessionId];
@@ -163,6 +150,18 @@ con.connect(err => {
                         con.query(query, values, (err, res) => {
                             console.log("UPDATING PAYMENT STATUS");
                             console.log(err);
+                        });
+
+                        /* Decrement stock */
+                        const queryStock = 'SELECT * FROM orders o JOIN sells s ON o.id = s.order_id WHERE przelewy24_id = ?';
+                        con.query(queryStock, values, (err, res) => {
+                            if(res) {
+                                if(res) {
+                                    JSON.parse(JSON.stringify(res)).forEach(item => {
+                                         decrementStock(item.product_id, item.size, item.quantity);
+                                    });
+                                }
+                            }
                         });
                     }
                     else {
@@ -179,8 +178,22 @@ con.connect(err => {
                 status: "OK"
             });
         });
-
     });
+
+    const decrementStock = (productId, size, quantity) => {
+        const values = [quantity, productId, size];
+        const query1 = 'UPDATE products_stock ps JOIN products p ON ps.id = p.stock_id SET ps.size_1_stock = ps.size_1_stock - ? WHERE p.id = ? AND size_1_name = ?'
+        const query2 = 'UPDATE products_stock ps JOIN products p ON ps.id = p.stock_id SET ps.size_2_stock = ps.size_2_stock - ? WHERE p.id = ? AND size_2_name = ?'
+        const query3 = 'UPDATE products_stock ps JOIN products p ON ps.id = p.stock_id SET ps.size_3_stock = ps.size_3_stock - ? WHERE p.id = ? AND size_3_name = ?'
+        const query4 = 'UPDATE products_stock ps JOIN products p ON ps.id = p.stock_id SET ps.size_4_stock = ps.size_4_stock - ? WHERE p.id = ? AND size_4_name = ?'
+        const query5 = 'UPDATE products_stock ps JOIN products p ON ps.id = p.stock_id SET ps.size_5_stock = ps.size_5_stock - ? WHERE p.id = ? AND size_5_name = ?'
+
+        con.query(query1, values);
+        con.query(query2, values);
+        con.query(query3, values);
+        con.query(query4, values);
+        con.query(query5, values);
+    }
 });
 
 module.exports = router;

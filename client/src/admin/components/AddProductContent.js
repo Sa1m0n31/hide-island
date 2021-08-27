@@ -332,107 +332,100 @@ const AddProductContent = () => {
                         onChange={newContent => { setShortDescription(newContent) }}
                     />
                 </label>
-
-                {/*<label className="fileInputLabel">*/}
-                {/*    <span>Zdjęcie produktu</span>*/}
-                {/*    <input type="file"*/}
-                {/*           onChange={(e) => { addNewImage(e); }}*/}
-                {/*           className="product__fileInput mainImageInput"*/}
-                {/*           name="mainImage" />*/}
-                {/*    <img className="mainProductImage" src={`${settings.API_URL}/image?url=/media/${product.file_path}`} alt="zdjecie-produktu" />*/}
-                {/*</label>*/}
-                <label className="fileInputLabel fileInputLabel--gallery">
-                    <span>Galeria zdjęć</span>
-                    <input type="file"
-                           onChange={(e) => { addNewGalleryImage(e); }}
-                           multiple={true}
-                           className="product__fileInput galleryImageInput"
-                           name="gallery" />
-                    <section className="galleryWrapper" onClick={e => { e.preventDefault(); }}>
-                        {gallery?.map((item, index) => {
-                            //if(index === 0) setMainImageId(item.id);
-                            return <img className="galleryProductImage" onClick={(e) => {update ? changeMainImageId(e) : changeMainImage(e)}} src={`${settings.API_URL}/image?url=/media/${item.file_path}`} id={`gallery-${index}-${item.id}`} alt="zdjecie-produktu" />
-                        })}
-                    </section>
-                </label>
             </section>
 
             <section className="addProduct__form__section">
                 <section className="addProduct__form__subsection addProduct__form__subsection--marginLeft marginTop30">
+
+                    <label className="fileInputLabel fileInputLabel--gallery">
+                        <span>Galeria zdjęć</span>
+                        <input type="file"
+                               onChange={(e) => { addNewGalleryImage(e); }}
+                               multiple={true}
+                               className="product__fileInput galleryImageInput"
+                               name="gallery" />
+                        <section className="galleryWrapper" onClick={e => { e.preventDefault(); }}>
+                            {gallery?.map((item, index) => {
+                                //if(index === 0) setMainImageId(item.id);
+                                return <img className="galleryProductImage" onClick={(e) => {update ? changeMainImageId(e) : changeMainImage(e)}} src={`${settings.API_URL}/image?url=/media/${item.file_path}`} id={`gallery-${index}-${item.id}`} alt="zdjecie-produktu" />
+                            })}
+                        </section>
+                    </label>
+
                     {/* Sizes and stocks */}
-                    <h4 className="addProduct__form__subsection__header">
-                        Dostępne rozmiary
-                    </h4>
-                    <label className="addProduct__label d-flex justify-content-between align-items-center">
-                        <input className="addProduct__input"
-                               name="size1"
-                               type="text"
-                               value={size1}
-                               onChange={(e) => { setSize1(e.target.value) }}
-                               placeholder="Pierwszy rozmiar" />
-                        <input className="addProduct__input"
-                               name="size1Stock"
-                               type="number"
-                               value={stock1}
-                               onChange={(e) => { setStock1(e.target.value) }}
-                               placeholder="Na stanie" />
-                    </label>
-                    <label className="addProduct__label d-flex justify-content-between align-items-center">
-                        <input className="addProduct__input"
-                               name="size2"
-                               type="text"
-                               value={size2}
-                               onChange={(e) => { setSize2(e.target.value) }}
-                               placeholder="Drugi rozmiar" />
-                        <input className="addProduct__input"
-                               name="size2Stock"
-                               type="number"
-                               value={stock2}
-                               onChange={(e) => { setStock2(e.target.value) }}
-                               placeholder="Na stanie" />
-                    </label>
-                    <label className="addProduct__label d-flex justify-content-between align-items-center">
-                        <input className="addProduct__input"
-                               name="size3"
-                               type="text"
-                               value={size3}
-                               onChange={(e) => { setSize3(e.target.value) }}
-                               placeholder="Trzeci rozmiar" />
-                        <input className="addProduct__input"
-                               name="size3Stock"
-                               type="number"
-                               value={stock3}
-                               onChange={(e) => { setStock3(e.target.value) }}
-                               placeholder="Na stanie" />
-                    </label>
-                    <label className="addProduct__label d-flex justify-content-between align-items-center">
-                        <input className="addProduct__input"
-                               name="size4"
-                               type="text"
-                               value={size4}
-                               onChange={(e) => { setSize4(e.target.value) }}
-                               placeholder="Czwarty rozmiar" />
-                        <input className="addProduct__input"
-                               name="size4Stock"
-                               type="number"
-                               value={stock4}
-                               onChange={(e) => { setStock4(e.target.value) }}
-                               placeholder="Na stanie" />
-                    </label>
-                    <label className="addProduct__label d-flex justify-content-between align-items-center">
-                        <input className="addProduct__input"
-                               name="size5"
-                               type="text"
-                               value={size5}
-                               onChange={(e) => { setSize5(e.target.value) }}
-                               placeholder="Piąty rozmiar" />
-                        <input className="addProduct__input"
-                               name="size5Stock"
-                               type="number"
-                               value={stock5}
-                               onChange={(e) => { setStock5(e.target.value) }}
-                               placeholder="Na stanie" />
-                    </label>
+                    {/*<h4 className="addProduct__form__subsection__header">*/}
+                    {/*    Dostępne rozmiary*/}
+                    {/*</h4>*/}
+                    {/*<label className="addProduct__label d-flex justify-content-between align-items-center">*/}
+                    {/*    <input className="addProduct__input"*/}
+                    {/*           name="size1"*/}
+                    {/*           type="text"*/}
+                    {/*           value={size1}*/}
+                    {/*           onChange={(e) => { setSize1(e.target.value) }}*/}
+                    {/*           placeholder="Pierwszy rozmiar" />*/}
+                    {/*    <input className="addProduct__input"*/}
+                    {/*           name="size1Stock"*/}
+                    {/*           type="number"*/}
+                    {/*           value={stock1}*/}
+                    {/*           onChange={(e) => { setStock1(e.target.value) }}*/}
+                    {/*           placeholder="Na stanie" />*/}
+                    {/*</label>*/}
+                    {/*<label className="addProduct__label d-flex justify-content-between align-items-center">*/}
+                    {/*    <input className="addProduct__input"*/}
+                    {/*           name="size2"*/}
+                    {/*           type="text"*/}
+                    {/*           value={size2}*/}
+                    {/*           onChange={(e) => { setSize2(e.target.value) }}*/}
+                    {/*           placeholder="Drugi rozmiar" />*/}
+                    {/*    <input className="addProduct__input"*/}
+                    {/*           name="size2Stock"*/}
+                    {/*           type="number"*/}
+                    {/*           value={stock2}*/}
+                    {/*           onChange={(e) => { setStock2(e.target.value) }}*/}
+                    {/*           placeholder="Na stanie" />*/}
+                    {/*</label>*/}
+                    {/*<label className="addProduct__label d-flex justify-content-between align-items-center">*/}
+                    {/*    <input className="addProduct__input"*/}
+                    {/*           name="size3"*/}
+                    {/*           type="text"*/}
+                    {/*           value={size3}*/}
+                    {/*           onChange={(e) => { setSize3(e.target.value) }}*/}
+                    {/*           placeholder="Trzeci rozmiar" />*/}
+                    {/*    <input className="addProduct__input"*/}
+                    {/*           name="size3Stock"*/}
+                    {/*           type="number"*/}
+                    {/*           value={stock3}*/}
+                    {/*           onChange={(e) => { setStock3(e.target.value) }}*/}
+                    {/*           placeholder="Na stanie" />*/}
+                    {/*</label>*/}
+                    {/*<label className="addProduct__label d-flex justify-content-between align-items-center">*/}
+                    {/*    <input className="addProduct__input"*/}
+                    {/*           name="size4"*/}
+                    {/*           type="text"*/}
+                    {/*           value={size4}*/}
+                    {/*           onChange={(e) => { setSize4(e.target.value) }}*/}
+                    {/*           placeholder="Czwarty rozmiar" />*/}
+                    {/*    <input className="addProduct__input"*/}
+                    {/*           name="size4Stock"*/}
+                    {/*           type="number"*/}
+                    {/*           value={stock4}*/}
+                    {/*           onChange={(e) => { setStock4(e.target.value) }}*/}
+                    {/*           placeholder="Na stanie" />*/}
+                    {/*</label>*/}
+                    {/*<label className="addProduct__label d-flex justify-content-between align-items-center">*/}
+                    {/*    <input className="addProduct__input"*/}
+                    {/*           name="size5"*/}
+                    {/*           type="text"*/}
+                    {/*           value={size5}*/}
+                    {/*           onChange={(e) => { setSize5(e.target.value) }}*/}
+                    {/*           placeholder="Piąty rozmiar" />*/}
+                    {/*    <input className="addProduct__input"*/}
+                    {/*           name="size5Stock"*/}
+                    {/*           type="number"*/}
+                    {/*           value={stock5}*/}
+                    {/*           onChange={(e) => { setStock5(e.target.value) }}*/}
+                    {/*           placeholder="Na stanie" />*/}
+                    {/*</label>*/}
                 </section>
 
 

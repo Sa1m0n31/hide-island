@@ -27,11 +27,13 @@ con.connect(err => {
        const query = 'SELECT * FROM products_stock WHERE id = ?';
        con.query(query, values, (err, res) => {
           if(res) {
+              console.log(res);
               response.send({
-                  result: res
+                  result: res[0]
               });
           }
           else {
+              console.log(err);
               response.send({
                   result: 0
               });
@@ -44,11 +46,13 @@ con.connect(err => {
         const { products, name, size1Name, size1Stock, size2Name, size2Stock, size3Name, size3Stock, size4Name, size4Stock, size5Name, size5Stock } = request.body;
 
         /* products - array of numbers (ids) - [1, 14, 4] */
+        console.log(products);
 
         /* 1 - Add new stock */
         const values = [name, size1Name, size1Stock, size2Name, size2Stock, size3Name, size3Stock, size4Name, size4Stock, size5Name, size5Stock];
         const query = 'INSERT INTO products_stock VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
         con.query(query, values, (err, res) => {
+            console.log(err);
             if(res) {
                 const stockId = res.insertId;
                 /* 2 - Add that stock to existing products */
@@ -86,22 +90,17 @@ con.connect(err => {
                const query = 'UPDATE products SET stock_id = NULL WHERE stock_id = ?';
                con.query(query, values, (err, res) => {
                     if(res) {
+                        console.log(products);
                         /* 3 - add new products stocks to PRODUCTS table */
-                        products.forEach(item => {
+                        products.forEach((item, index, array) => {
                             const values = [id, item];
                             const query = 'UPDATE products SET stock_id = ? WHERE id = ?';
-                            con.query(query, values, (err, res) => {
-                                if(res) {
-                                    response.send({
-                                        result: 1
-                                    });
-                                }
-                                else {
-                                    response.send({
-                                        result: 0
-                                    });
-                                }
-                            })
+                            con.query(query, values);
+                            if(index === array.length-1) {
+                                response.send({
+                                    result: 1
+                                });
+                            }
                         });
                     }
                     else {
@@ -129,6 +128,26 @@ con.connect(err => {
           if(res) {
               response.send({
                   result: 1
+              });
+          }
+          else {
+              response.send({
+                  result: 0
+              });
+          }
+       });
+    });
+
+    /* Get products with given stock */
+    router.post("/get-products-with-stock", (request, response) => {
+       const { id } = request.body;
+
+       const values = [id];
+       const query = 'SELECT id FROM products WHERE stock_id = ?';
+       con.query(query, values, (err, res) => {
+          if(res) {
+              response.send({
+                  result: res
               });
           }
           else {
