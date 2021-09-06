@@ -28,13 +28,17 @@ const HeroSection = () => {
     }, []);
 
     const sliderPrev = () => {
-        slider.prev();
-        setSlide(slider.currentSlide);
+        if(slider) {
+            slider.prev();
+            setSlide(slider.currentSlide);
+        }
     }
 
     const sliderNext = () => {
-        slider.next();
-        setSlide(slider.currentSlide);
+        if(slider) {
+            slider.next();
+            setSlide(slider.currentSlide);
+        }
     }
 
     return <main className="hero">
@@ -43,7 +47,7 @@ const HeroSection = () => {
                     <img className="hero__slider__arrow__img" src={sliderArrow} alt="w-lewo" />
                 </button>
                 <ReactSiema perPage={1} loop={true} draggable={true}
-                            ref={siema => slider = siema}
+                            ref={(siema) => {slider = siema; }}
                 >
                     <img ref={sliderRef1} className="hero__slider__img" id="slider-1"
                          onLoad={() => { setLoaded(true); }}

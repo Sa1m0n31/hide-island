@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const got = require("got");
 const con = require("../databaseConnection");
 
 con.connect(err => {
@@ -96,6 +97,11 @@ con.connect(err => {
                             const values = [id, item];
                             const query = 'UPDATE products SET stock_id = ? WHERE id = ?';
                             con.query(query, values);
+                            /* Check if need to send notification */
+                            got.post("http://hideisland.skylo-test3.pl/notification/check-notifications", {
+                                json: { productId: item },
+                                responseType: "json"
+                            });
                             if(index === array.length-1) {
                                 response.send({
                                     result: 1

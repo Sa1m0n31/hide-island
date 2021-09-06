@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import user from "../static/img/mail.svg";
 import arrowLong from "../static/img/arrow-long.svg";
 
 import { useFormik } from "formik";
@@ -8,8 +7,6 @@ import axios from "axios";
 import settings from "../helpers/settings";
 
 const RegisterContent = () => {
-    const [send, setSend] = useState(false);
-
     const validationSchema = Yup.object({
         email: Yup.string()
             .email("Podaj poprawny adres email")
@@ -23,7 +20,9 @@ const RegisterContent = () => {
         phoneNumber: Yup.string()
             .matches(/\d{3,}/, 'Numer telefonu może zawierać wyłącznie cyfry'),
         postalCode: Yup.string()
-            .matches(/\d{2}-\d{3}/, "Podaj poprawny kod pocztowy")
+            .matches(/\d{2}-\d{3}/, "Podaj poprawny kod pocztowy"),
+        check: Yup.boolean()
+            .oneOf([true])
     });
 
     const formik = useFormik({
@@ -38,7 +37,8 @@ const RegisterContent = () => {
             city: "",
             street: "",
             building: "",
-            flat: ""
+            flat: "",
+            check: false
         },
         validationSchema,
         onSubmit: ({email, password, firstName, lastName, phoneNumber, postalCode, city, street, building, flat}) => {
@@ -185,6 +185,16 @@ const RegisterContent = () => {
                     />
                 </label>
             </span>
+
+            <label className="w-100 clientForm__label--checkbox mb-4 mb-sm-0">
+                <input className="clientForm__checkbox"
+                       name="check"
+                       type="checkbox"
+                       value={formik.values.check}
+                       onChange={formik.handleChange} />
+
+                Zapoznałem/am się z <a href="/regulamin">Regulaminem</a> i <a href="/polityka-prywatnosci">Polityką prywatności</a>.
+            </label>
 
             <button className="addToCartBtn button--login">
                 Załóż konto

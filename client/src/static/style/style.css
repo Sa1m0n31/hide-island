@@ -531,8 +531,10 @@ button, a {
 }
 
 .footer__logo {
-    width: 25%;
+    width: 65%;
     margin-bottom: 30px;
+    margin-left: 100%;
+    transform: translateX(-100%);
 }
 
 .footer__bottom__header {
@@ -1775,3 +1777,42 @@ input[type=number] {
     margin-right: 10px;
 }
 
+/* Update - 06.09.2021 */
+.clientForm__checkbox {
+    margin: 10px 7px 30px 0;
+}
+
+.cart .clientForm__checkbox {
+    margin-top: 0;
+}
+
+.clientForm .clientForm__label--checkbox,
+.cart .clientForm__label--checkbox
+{
+    font-size: 12px;
+    width: clamp(100px, 400px, 100%) !important;
+}
+
+.cart .clientForm__label--checkbox {
+    margin-top: 30px;
+    width: 100% !important;
+}
+
+.cookiesLink,
+.clientForm__label--checkbox a {
+    color: #fff !important;
+    transition: .2s all;
+}
+
+.cookiesLink:hover,
+.clientForm__label--checkbox a:hover {
+    opacity: .8;
+}
+
+.CookieConsent {
+    padding: var(--padding);
+}
+
+#rcc-confirm-button {
+    min-width: 100%;
+}

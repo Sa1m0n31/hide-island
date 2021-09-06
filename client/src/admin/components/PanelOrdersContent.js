@@ -35,10 +35,6 @@ const PanelOrdersContent = () => {
         setOrders(filteredOrders);
     }
 
-    const filterByStatus = (n) => {
-        setFilter(n);
-    }
-
     const deleteOrder = () => {
         deleteOrderById(candidate)
             .then(res => {
@@ -137,15 +133,6 @@ const PanelOrdersContent = () => {
 
                             <section className="panelContent__column">
                                 <h4 className="panelContent__column__label">
-                                    Imię i nazwisko
-                                </h4>
-                                <h3 className="panelContent__column__value">
-                                    {item.first_name} {item.last_name}
-                                </h3>
-                            </section>
-
-                            <section className="panelContent__column">
-                                <h4 className="panelContent__column__label">
                                     Adres email
                                 </h4>
                                 <h3 className="panelContent__column__value">
@@ -175,6 +162,26 @@ const PanelOrdersContent = () => {
                             <span className={item.payment_status.toLowerCase() === "opłacone" ? "panelContent__column__status status--positive" : "panelContent__column__status status--negative"}>
                                 {item.payment_status}
                             </span>
+                                </h3>
+                            </section>
+
+                            <section className="panelContent__column">
+                                <h4 className="panelContent__column__label">
+                                    Status zamówienia
+                                </h4>
+                                <h3 className="panelContent__column__value">
+                                    <span className={item.order_status.toLowerCase() === "wysłane" ? "panelContent__column__status status--positive" : "panelContent__column__status status--negative"}>
+                                {item.order_status}
+                            </span>
+                                </h3>
+                            </section>
+
+                            <section className="panelContent__column">
+                                <h4 className="panelContent__column__label">
+                                    Nr listu przewozowego
+                                </h4>
+                                <h3 className="panelContent__column__value">
+                                    {item.letter_number ? item.letter_number : ""}
                                 </h3>
                             </section>
 

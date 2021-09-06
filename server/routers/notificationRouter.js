@@ -46,7 +46,7 @@ con.connect(err => {
         let transporter = nodemailer.createTransport(smtpTransport ({
             auth: {
                 user: 'test@skylo-test2.pl',
-                pass: 'SwinkaPeppa-31'
+                pass: '***** *** (Sw...)'
             },
             host: 'skylo-pl.atthost24.pl',
             secureConnection: true,
@@ -62,48 +62,13 @@ con.connect(err => {
             from: 'test@skylo-test2.pl',
             to: email,
             subject: 'Produkt, którego szukałeś, jest już dostępny w naszym sklepie!',
-            html: `<style>
-@media(max-width: 768px) {
-    .notification__header, .notification__secondHeader {
-        font-size: 18px;
-    }
-
-    .notification__socialMedia__link,
-    .notification__link {
-        font-size: 14px;
-    }
-
-    .notification__arrowImg {
-        width: 20px;
-    }
-
-    .notification__socialMedia__img {
-        width: 30px;
-    }
-}
-
-@media(max-width: 576px) {
-    .notification__socialMedia {
-        flex-direction: column;
-    }
-
-    .notification__socialMedia__link:nth-of-type(2) {
-        order: 5;
-    }
-
-    .notification__imgGroup {
-        grid-template-rows: 120px 150px;
-        grid-row-gap: 15px;
-    }
-}
-</style>
-                <main>
+            html: `<main>
                 <header style="max-width: 900px; box-sizing: border-box;">
                     <img style="width: 100%;
     transform: scaleY(1.03);" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/logo.jpg" alt="hideisland-logo"/>
                 </header>
                 <section style="background: #D9D9D9; padding: 30px; max-width: 900px; box-sizing: border-box;">
-                    <h1 class="notification__header" style=" margin: 0 0 20px; font-weight: 900; font-size: 32px; color: #313131;">
+                    <h1 class="notification__header" style="margin: 0 0 20px; font-weight: 900; font-size: 1.5rem; color: #313131;">
                         Twój ulubiony produkt już na Ciebie czeka!
                     </h1>
 
@@ -124,21 +89,21 @@ con.connect(err => {
                         <img style="width: 100%; display: block;" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/wieszak.jpg"/>
                     </figure>
 
-                    <h2 class="notification__secondHeader" style="color: #313131; font-size: 25px; font-weight: 700; margin: 20px 0;">
+                    <h2 class="notification__secondHeader" style="color: #313131; font-size: 1.2rem; font-weight: 700; margin: 20px 0;">
                         Zainspiruj się i bądź na bieżąco
                     </h2>
 
-                    <section style=" display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start;">
-                        <a style="color: #313131; font-size: 13px; display: inline-block;width: 49%;text-decoration: none;margin-bottom: 20px;" href="https://www.facebook.com/HideIslandwear">
+                    <section>
+                        <a style="color: #313131; font-size: 13px; display: block;width: 49%;text-decoration: none;margin-bottom: 20px;" href="https://www.facebook.com/HideIslandwear">
                             <img style=" width: 30px;height: auto;margin-right: 8px;vertical-align: middle;" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/fb.png" alt="facebook"/>
                             Hideislandwear
                         </a>
-                        <a style="color: #313131;font-size: 13px;display: inline-block;width: 49%;text-decoration: none;margin-bottom: 20px;" href="http://hideisland.pl">
-                            <img style=" width: 30px;height: auto;margin-right: 8px;vertical-align: middle;" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/fb.png" alt="facebook"/>
+                        <a style="color: #313131;font-size: 13px;display: block;width: 49%;text-decoration: none;margin-bottom: 20px;" href="http://hideisland.pl">
+                            <img style=" width: 30px;height: auto;margin-right: 8px;vertical-align: middle;" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/website.png" alt="strona-internetowa"/>
                             www.hideisland.pl
                         </a>
                     </section>
-                     <a style="color: #313131;font-size: 13px;display: inline-block;width: 100%;text-decoration: none;margin-bottom: 20px;"
+                     <a style="color: #313131;font-size: 13px;display: block;width: 100%;text-decoration: none;margin-bottom: 20px;"
                            href="https://www.instagram.com/HideIsland_wear/?fbclid=IwAR3Y8NLYGmXQ-_pvGE1UZLO1oR0iMfT0uNWYZgvrpKHv40N4fKvsfdC4UPc">
                             <img style=" width: 30px;height: auto;margin-right: 8px;vertical-align: middle;" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/insta.png" alt="instagram"/>
                             Hideislandwear
@@ -162,7 +127,7 @@ con.connect(err => {
 
        /* 1. Check if product has more than 0 stock */
        const values1 = [productId];
-       const query1 = 'SELECT size_1_stock, size_2_stock, size_3_stock, size_4_stock, size_5_stock FROM products_stock WHERE product_id = ? AND (size_1_stock > 0 OR size_2_stock > 0 OR size_3_stock > 0 OR size_4_stock > 0 OR size_5_stock > 0)';
+       const query1 = 'SELECT size_1_stock, size_2_stock, size_3_stock, size_4_stock, size_5_stock FROM products_stock ps JOIN products p ON ps.id = p.stock_id WHERE p.id = ? AND (ps.size_1_stock > 0 OR ps.size_2_stock > 0 OR ps.size_3_stock > 0 OR ps.size_4_stock > 0 OR ps.size_5_stock > 0)';
        con.query(query1, values1, (err, res) => {
             if(res) {
                 if(res[0]) {
@@ -180,7 +145,6 @@ con.connect(err => {
                                        const values3 = [productId];
                                        const query3 = 'DELETE FROM notifications WHERE product_id = ?';
                                        con.query(query3, values3, (err, res) => {
-                                           console.log(err);
                                            response.send({
                                                result: 1
                                            });

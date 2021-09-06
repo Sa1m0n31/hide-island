@@ -542,4 +542,14 @@
     .footer .footer__label {
         width: 100%;
     }
+
+    #rcc-confirm-button {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    .CookieConsent > div:last-of-type {
+        margin: auto;
+        min-width: 100px;
+    }
 }

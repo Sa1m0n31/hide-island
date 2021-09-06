@@ -5,7 +5,7 @@ const con = require("../databaseConnection");
 con.connect(err => {
     /* GET ALL ORDERS */
     router.get("/get-orders", (request, response) => {
-        const query = 'SELECT o.id as id, u.first_name, u.last_name, u.email, o.date, o.payment_status FROM orders o LEFT OUTER JOIN users u ON o.user = u.id';
+        const query = 'SELECT o.id as id, u.first_name, u.last_name, u.email, o.date, o.payment_status, o.order_status, o.letter_number FROM orders o LEFT OUTER JOIN users u ON o.user = u.id';
         con.query(query, (err, res) => {
             if (res) {
                 response.send({
@@ -74,7 +74,7 @@ con.connect(err => {
 
             building = parseInt(building) || 0;
             let values = [paymentMethod, shippingMethod, city, street, building, flat, postalCode, user, paymentStatus, comment, sessionId, companyName, nip, amount, inPostAddress, inPostCode, inPostCity];
-            const query = 'INSERT INTO orders VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, "przyjęte do realizacji", CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?)';
+            const query = 'INSERT INTO orders VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, "złożone", CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?, NULL)';
 
             values = values.map((item) => {
                 if (item === "") return null;
@@ -109,9 +109,9 @@ con.connect(err => {
 
         /* CHANGE ORDER STATUS */
         router.post("/change-order-status", (request, response) => {
-            const {id, status} = request.body;
-            const values = [status, id];
-            const query = 'UPDATE orders SET order_status = ? WHERE id = ?';
+            const {id, orderStatus, letterNumber} = request.body;
+            const values = [orderStatus, letterNumber, id];
+            const query = 'UPDATE orders SET order_status = ?, letter_number = ? WHERE id = ?';
             con.query(query, values, (err, res) => {
                 let result = 0;
                 if (res) result = 1;
@@ -139,7 +139,7 @@ con.connect(err => {
         router.post("/get-order", (request, response) => {
             const {id} = request.body;
             const values = [id];
-            const query = 'SELECT o.id, o.payment_status, u.first_name, u.last_name, u.email, u.phone_number, o.date, o.order_status, pm.name as payment, sm.name as shipping, o.order_comment, o.company_name, o.nip, s.size, s.quantity, p.price, p.name, o.inpost_address, o.inpost_postal_code, inpost_city FROM orders o ' +
+            const query = 'SELECT o.id, o.payment_status, o.order_status, o.letter_number, u.first_name, u.last_name, u.email, u.phone_number, o.date, o.order_status, pm.name as payment, sm.name as shipping, o.order_comment, o.company_name, o.nip, s.size, s.quantity, p.price, p.name, o.inpost_address, o.inpost_postal_code, inpost_city FROM orders o ' +
                 'JOIN sells s ON o.id = s.order_id ' +
                 'LEFT OUTER JOIN products p ON p.id = s.product_id ' +
                 'JOIN shipping_methods sm ON o.shipping_method = sm.id ' +
@@ -154,25 +154,6 @@ con.connect(err => {
                 } else {
                     response.send({
                         result: null
-                    });
-                }
-            });
-        });
-
-        /* GET ORDER RIBBONS */
-        router.post("/get-ribbons", (request, response) => {
-            const {id} = request.body;
-            const values = [id];
-            const query = 'SELECT r.caption FROM ribbons r JOIN orders o ON r.order_id = o.id WHERE o.id = ?';
-            con.query(query, values, (err, res) => {
-                console.log(err);
-                if (res) {
-                    response.send({
-                        result: res
-                    });
-                } else {
-                    response.send({
-                        result: 0
                     });
                 }
             });

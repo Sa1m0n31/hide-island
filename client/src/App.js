@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet'
 
 import "aos/dist/aos.css";
 import AOS from 'aos';
+import CookieConsent from "react-cookie-consent";
 
 import './static/style/admin.css'
 import './static/style/adminMobile.css'
@@ -221,6 +222,10 @@ function App() {
                 <OrderDetails />
             </Route>
         </Router>
+
+          <CookieConsent buttonText="OK">
+              Ta strona korzysta z plików cookies w celu usprawnienia i promocji naszych usług. Pozostanie na niej jest równoznaczne z zaakceptowaniem naszej <a className="cookiesLink" href="/polityka-prywatnosci">Polityki Prywatności</a>.
+          </CookieConsent>
     </div>
   </CartContext.Provider>);
 }

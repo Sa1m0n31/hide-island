@@ -1270,3 +1270,23 @@ select {
 .infoHeader--stock {
     width: 100%;
 }
+
+/* Update - 06.09.21 */
+.panelContent__input--letterNumber {
+    border: 1px solid #fff;
+    margin: 0 15px;
+}
+
+.panelContent__select {
+    margin: 0 15px;
+}
+
+.panelContent__editOrderBtn {
+    color: #fff;
+    background: transparent;
+    border: 2px solid #fff;
+    margin-top: 20px;
+    width: 100%;
+    height: 50px;
+    max-width: 300px;
+}

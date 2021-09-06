@@ -38,6 +38,7 @@ const ShippingForm = () => {
     const [inPostAddress, setInPostAddress] = useState("");
     const [inPostCode, setInPostCode] = useState("");
     const [inPostCity, setInPostCity] = useState("");
+    const [checkbox, setCheckbox] = useState(false);
 
     useEffect(() => {
         window.easyPackAsyncInit = function () {
@@ -186,73 +187,75 @@ const ShippingForm = () => {
 
         if(res) insertedUserId = res.data.userId;
 
-        /* Add order */
-        axios.post(`${settings.API_URL}/order/add`, {
-            paymentMethod: paymentMethod,
-            shippingMethod: shippingMethod,
-            city: formik.values.city,
-            street: formik.values.street,
-            building: formik.values.building,
-            flat: formik.values.flat,
-            postalCode: formik.values.postalCode,
-            user: insertedUserId !== -1 && insertedUserId ? insertedUserId : parseInt(localStorage.getItem('sec-user-id')),
-            comment: formik.values.comment,
-            sessionId,
-            companyName: formik.values.companyName,
-            nip: formik.values.nip,
-            amount: amount,
-            inPostAddress: sessionStorage.getItem('paczkomat-adres'),
-            inPostCode: sessionStorage.getItem('paczkomat-kod'),
-            inPostCity: sessionStorage.getItem('paczkomat-miasto')
-        })
-            .then(res => {
-                const orderId = res.data.result;
+        if(checkbox) {
+            /* Add order */
+            axios.post(`${settings.API_URL}/order/add`, {
+                paymentMethod: paymentMethod,
+                shippingMethod: shippingMethod,
+                city: formik.values.city,
+                street: formik.values.street,
+                building: formik.values.building,
+                flat: formik.values.flat,
+                postalCode: formik.values.postalCode,
+                user: insertedUserId !== -1 && insertedUserId ? insertedUserId : parseInt(localStorage.getItem('sec-user-id')),
+                comment: formik.values.comment,
+                sessionId,
+                companyName: formik.values.companyName,
+                nip: formik.values.nip,
+                amount: amount,
+                inPostAddress: sessionStorage.getItem('paczkomat-adres'),
+                inPostCode: sessionStorage.getItem('paczkomat-kod'),
+                inPostCity: sessionStorage.getItem('paczkomat-miasto')
+            })
+                .then(res => {
+                    const orderId = res.data.result;
 
-                if(orderId) {
-                    /* Add sells */
-                    const cart = JSON.parse(localStorage.getItem('hideisland-cart'));
-                    cart?.forEach((item, cartIndex) => {
+                    if(orderId) {
                         /* Add sells */
-                        axios.post(`${settings.API_URL}/order/add-sell`, {
-                            orderId,
-                            productId: item.id,
-                            size: item.size,
-                            quantity: item.amount,
-                            paymentMethod: paymentMethod
-                        })
-                            .then(res => { console.log(res.data) })
-                    });
+                        const cart = JSON.parse(localStorage.getItem('hideisland-cart'));
+                        cart?.forEach((item, cartIndex) => {
+                            /* Add sells */
+                            axios.post(`${settings.API_URL}/order/add-sell`, {
+                                orderId,
+                                productId: item.id,
+                                size: item.size,
+                                quantity: item.amount,
+                                paymentMethod: paymentMethod
+                            })
+                                .then(res => { console.log(res.data) })
+                        });
 
-                    if(paymentMethod === 2) {
-                        /* Platnosc za pobraniem */
-                        localStorage.setItem('hideisland-ty', 'true');
-                        window.location = "/dziekujemy";
+                        if(paymentMethod === 2) {
+                            /* Platnosc za pobraniem */
+                            localStorage.setItem('hideisland-ty', 'true');
+                            window.location = "/dziekujemy";
 
-                        /* Remove cart from local storage */
-                        localStorage.removeItem('hideisland-cart');
+                            /* Remove cart from local storage */
+                            localStorage.removeItem('hideisland-cart');
+                        }
+                        else {
+                            /* PAYMENT PROCESS */
+                            let paymentUri = "https://sandbox.przelewy24.pl/trnRequest/";
+
+                            axios.post(`${settings.API_URL}/payment/payment`, {
+                                sessionId,
+                                email: formik.values.email,
+                                amount
+                            })
+                                .then(res => {
+                                    /* Remove cart from local storage */
+                                    localStorage.removeItem('hideisland-cart');
+
+                                    const token = res.data.result;
+                                    window.location.href = `${paymentUri}${token}`;
+                                });
+                        }
                     }
                     else {
-                        /* PAYMENT PROCESS */
-                        let paymentUri = "https://sandbox.przelewy24.pl/trnRequest/";
-
-                        axios.post(`${settings.API_URL}/payment/payment`, {
-                            sessionId,
-                            email: formik.values.email,
-                            amount
-                        })
-                            .then(res => {
-                                /* Remove cart from local storage */
-                                localStorage.removeItem('hideisland-cart');
-
-                                const token = res.data.result;
-                                window.location.href = `${paymentUri}${token}`;
-                            });
+                        window.location = "/";
                     }
-                }
-                else {
-                    window.location = "/";
-                }
-            });
+                });
+        }
     }
 
     const verifyCoupon = () => {
@@ -541,11 +544,22 @@ const ShippingForm = () => {
                 {couponVerified === 1 ? <h4 className="clientForm__shippingHeader mt-5">
                     Kod rabatowy: <b>{couponCode} ({discount})</b>
                 </h4> : ""}
+
                 <h4 className="clientForm__shippingHeader mt-4">
                     Łącznie do zapłaty: <b>{amount} PLN</b>
                 </h4>
 
-                <button className="addToCartBtn button--login button--payment mt-5" type="submit">
+                <label className="w-100 clientForm__label--checkbox mb-4 mb-sm-0">
+                    <input className="clientForm__checkbox"
+                           name="check"
+                           type="checkbox"
+                           value={checkbox}
+                           onChange={() => { setCheckbox(!checkbox); }} />
+
+                    Zapoznałem/am się z <a href="/regulamin">Regulaminem</a> i <a href="/polityka-prywatnosci">Polityką prywatności</a>.
+                </label>
+
+                <button className="addToCartBtn button--login button--payment mt-1" type="submit">
                     {paymentMethod === 2 ? "Kupuję" : "Przechodzę do płatności"}
                     <img className="addToCartBtn__img" src={arrowLong} alt="dodaj" />
                 </button>

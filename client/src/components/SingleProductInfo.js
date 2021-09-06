@@ -26,17 +26,18 @@ const SingleProductInfo = ({id, title, description, img, price, sizes, gallery})
 
     const { cartContent, addToCart } = useContext(CartContext);
 
-    const isSizeAvailable = (s) => {
-        return sizes?.findIndex((item) => {
-            return item === s;
-        }) !== -1;
-    }
-
     useEffect(() => {
+        /* Check if not added more than available */
+        sizes.forEach(item => {
+           if(item.name === size) {
+               if(amount > item.stock) setAmount(item.stock);
+           }
+        });
+
         if(amount <= 0) {
             setAmount(1);
         }
-    }, [amount]);
+    }, [amount, size]);
 
     const sliderPrev = () => {
         slider.prev();

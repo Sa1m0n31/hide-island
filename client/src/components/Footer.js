@@ -149,7 +149,9 @@ const Footer = () => {
                 </section>
             </section>
 
-            <img className="footer__logo d-none d-md-block" src={logo} alt="hideisland-logo" />
+            <a href="/">
+                <img className="footer__logo d-none d-md-block" src={logo} alt="hideisland-logo" />
+            </a>
         </section>
         <aside className="footer__bottom">
             <h6 className="footer__bottom__header">

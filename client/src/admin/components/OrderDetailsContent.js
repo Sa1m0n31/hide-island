@@ -8,6 +8,8 @@ import {getDate, getTime} from "../helpers/formatFunctions";
 
 import Modal from 'react-modal'
 import closeImg from "../static/img/close.png";
+import axios from "axios";
+import settings from "../helpers/settings";
 
 const OrderDetailsContent = () => {
     const location = useLocation();
@@ -17,7 +19,9 @@ const OrderDetailsContent = () => {
     const [sum, setSum] = useState(0);
     const [modal, setModal] = useState(false);
     const [deleteMsg, setDeleteMsg] = useState("");
-    const [ribbons, setRibbons] = useState([]);
+    const [letterNumber, setLetterNumber] = useState("");
+    const [orderStatus, setOrderStatus] = useState("");
+    const [orderUpdated, setOrderUpdated] = useState(-1);
 
     useEffect(() => {
         /* Get order id from url string */
@@ -31,6 +35,8 @@ const OrderDetailsContent = () => {
             .then(res => {
                 console.log(res.data.result);
                setCart(res.data.result);
+               setOrderStatus(res.data.result[0].order_status);
+               setLetterNumber(res.data.result[0].letter_number);
                //setSum(calculateCartSum(res.data.result));
                calculateCartSum();
             });
@@ -60,15 +66,6 @@ const OrderDetailsContent = () => {
             });
     }
 
-    const getCartItemPrice = (item) => {
-        const size = item.size;
-        const option = item.option;
-        if((size === "M")&&(option === "Mięsna")) return item.price_m_meat;
-        if((size === "L")&&(option === "Mięsna")) return item.price_l_meat;
-        if((size === "M")&&(option === "Wegetariańska")) return item.price_m_vege;
-        if((size === "L")&&(option === "Wegetariańska")) return item.price_l_vege;
-    }
-
     const calculateCartSum = () => {
         let sum = 0, qt;
         const cartPrices = document.querySelectorAll(".panelPrice");
@@ -79,6 +76,30 @@ const OrderDetailsContent = () => {
            if(index === array.length - 1) setSum(sum);
         });
     }
+
+    const changeOrderStatus = () => {
+        axios.post(`${settings.API_URL}/order/change-order-status`, {
+            id,
+            orderStatus,
+            letterNumber
+        })
+            .then(res => {
+                if(res.data.result) {
+                    setOrderUpdated(1);
+                }
+                else {
+                    setOrderUpdated(0);
+                }
+            })
+    }
+
+    useEffect(() => {
+        if(orderUpdated !== -1) {
+            setTimeout(() => {
+                setOrderUpdated(-1);
+            }, 2000);
+        }
+    }, [orderUpdated]);
 
     return <main className="panelContent">
 
@@ -217,6 +238,28 @@ const OrderDetailsContent = () => {
                         {cart[0].company_name}<br/>
                         {cart[0].nip}
                     </address> : "" }
+
+                    <h2 className="panelContent__header--smaller mt-3">
+                        Numer listu przewozowego:
+                        <input className="panelContent__input panelContent__input--letterNumber"
+                               value={letterNumber}
+                               onChange={(e) => { setLetterNumber(e.target.value); }} />
+                    </h2>
+
+                    <h2 className="panelContent__header--smaller mt-3">
+                        Status zamówienia:
+                        <select className="panelContent__select"
+                                onChange={e => { setOrderStatus(e.target.value); }}
+                                value={orderStatus}>
+                            <option value="złożone">złożone</option>
+                            <option value="spakowane">spakowane</option>
+                            <option value="wysłane">wysłane</option>
+                        </select>
+                    </h2>
+
+                    {orderUpdated === -1 ? <button className="panelContent__editOrderBtn" onClick={() => { changeOrderStatus(); }}>
+                        Zmień parametry zamówienia
+                    </button> : orderUpdated === 1 ? <h4 className="infoHeader">Dane zamówienia zostały zaktualizowane</h4> : <h4 className="infoHeader">Coś poszło nie tak... Prosimy spróbować później</h4> }
                 </section>
             </section>
 
