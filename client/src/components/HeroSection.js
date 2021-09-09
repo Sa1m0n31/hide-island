@@ -1,10 +1,6 @@
 import React, {useEffect, useState, useRef} from 'react'
 import ReactSiema from 'react-siema'
 
-import landingTest1 from '../static/img/hide-test1.jpg'
-import landingTest2 from '../static/img/hide-test2.jpg'
-import landingTest3 from '../static/img/hide-test3.jpg'
-
 import sliderArrow from '../static/img/slider-arrow.png'
 import axios from "axios";
 import settings from "../helpers/settings";
@@ -26,6 +22,15 @@ const HeroSection = () => {
                 if(result) setImagesAndLinks(res.data.result);
             });
     }, []);
+
+    const sliderInterval = (slider) => {
+        setInterval(() => {
+            if(slider) {
+                slider.next();
+                setSlide(slider.currentSlide);
+            }
+        }, 5000);
+    }
 
     const sliderPrev = () => {
         if(slider) {
@@ -50,7 +55,7 @@ const HeroSection = () => {
                             ref={(siema) => {slider = siema; }}
                 >
                     <img ref={sliderRef1} className="hero__slider__img" id="slider-1"
-                         onLoad={() => { setLoaded(true); }}
+                         onLoad={() => { setLoaded(true); sliderInterval(slider); }}
                          onClick={() => { window.location = imagesAndLinks.slider_link_1 }}
                          src={`${settings.API_URL}/image?url=/media/homepage/${imagesAndLinks.slider_image_1}`}
                          alt="hideisland-slider" />

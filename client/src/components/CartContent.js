@@ -6,12 +6,14 @@ import trashIcon from '../static/img/trash.png'
 import { CartContext } from "../App";
 import EmptyCart from "./EmptyCart";
 import settings from "../helpers/settings";
+import {getProductStock, getSingleStock} from "../admin/helpers/stockFunctions";
 
 const CartContent = () => {
+    const { cartContent, editCart, removeFromCart } = useContext(CartContext);
+
     const [sum, setSum] = useState(0);
     const [remove, setRemove] = useState(false);
-
-    const { cartContent, addToCart, removeFromCart } = useContext(CartContext);
+    const [currentCart, setCurrentCart] = useState(cartContent);
 
     useEffect(() => {
         calculateCartSum();
@@ -19,15 +21,87 @@ const CartContent = () => {
 
     useEffect(() => {
         calculateCartSum();
+        setCurrentCart(cartContent);
     }, [remove]);
 
     const calculateCartSum = () => {
         let sum = 0;
-        cartContent.forEach((item, index, array) => {
+        currentCart.forEach((item, index, array) => {
             sum += item.price * item.amount;
             if(index === array.length-1) setSum(sum);
         });
     }
+
+    useEffect(() => {
+        calculateCartSum();
+    }, [currentCart]);
+
+    const changeAmountInCart = (value, uuid, id, size) => {
+        const cart = JSON.parse(localStorage.getItem('hideisland-cart'));
+
+        if(value === "") {
+            return 0;
+        }
+
+        getProductStock(id)
+            .then(res => {
+                if(res?.data?.result) {
+                    const result = res.data.result[0];
+                    const sizes = [
+                        { name: result.size_1_name, value: result.size_1_stock },
+                        { name: result.size_2_name, value: result.size_2_stock },
+                        { name: result.size_3_name, value: result.size_3_stock },
+                        { name: result.size_4_name, value: result.size_4_stock },
+                        { name: result.size_5_name, value: result.size_5_stock }
+                    ];
+                    sizes.forEach((item) => {
+                        if(item.name === size) {
+                            if(item.value >= parseInt(value)) {
+                                console.log("CHANGING CART");
+                                localStorage.setItem('hideisland-cart', JSON.stringify(cart.map((item) => {
+                                    if(item.uuid === uuid) {
+                                        editCart(uuid, item.id, item.title, parseInt(value), item.img, item.size, item.price);
+                                        return {
+                                            uuid,
+                                            id: item.id,
+                                            img: item.img,
+                                            size: item.size,
+                                            price: item.price,
+                                            title: item.title,
+                                            amount: value
+                                        }
+                                    }
+                                    else return item;
+                                })));
+
+                                setCurrentCart(cart.map((item) => {
+                                    if(item.uuid === uuid) {
+                                        editCart(uuid, item.id, item.title, parseInt(value), item.img, item.size, item.price);
+                                        return {
+                                            uuid,
+                                            id: item.id,
+                                            img: item.img,
+                                            size: item.size,
+                                            price: item.price,
+                                            title: item.title,
+                                            amount: value
+                                        }
+                                    }
+                                    else return item;
+                                }));
+                            }
+                            else {
+                                return 0;
+                            }
+                        }
+                    })
+                }
+            });
+    }
+
+    const handleInputClick = (e) => {
+        e.target.select();
+    };
 
     return <>
         {cartContent.length ? <main className="page cart">
@@ -36,7 +110,7 @@ const CartContent = () => {
             </h2>
 
             <main className="cart__content">
-                {cartContent.map((item, index) => {
+                {currentCart.map((item, index) => {
                     return <section className="cart__item d-grid d-md-flex justify-content-between align-items-center">
                         <section className="d-flex cart__item__imgWrapper position-relative">
                             <img className="cart__item__img" src={`${settings.API_URL}/image?url=/media/${item.img}`} alt="title"/>
@@ -59,7 +133,10 @@ const CartContent = () => {
                         <label className="cart__item__amount">
                             Ilość:
                             <input className="cart__item__input"
+                                   name={item.uuid}
                                    value={item.amount}
+                                   onClick={(e) => { handleInputClick(e); }}
+                                   onChange={(e) => { changeAmountInCart(e.target.value, item.uuid, item.id, item.size); }}
                                    type="number"/>
                         </label>
 
@@ -99,7 +176,7 @@ const CartContent = () => {
                 </section>
             </main>
 
-            <ShippingForm/>
+            <ShippingForm sum={sum} />
         </main> : <EmptyCart />}
     </>
 }

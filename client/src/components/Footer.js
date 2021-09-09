@@ -119,7 +119,7 @@ const Footer = () => {
                 </p>
                 <p>
                     Nr konta bankowego:<br/>
-                    42 1090 2268 0000 0001 4500 4135<br/>
+                    45 1090 1492 0000 0001 4811 5162<br/>
                     Santander Bank Polska
                 </p>
             </section>

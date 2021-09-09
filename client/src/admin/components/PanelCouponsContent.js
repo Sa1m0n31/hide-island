@@ -143,7 +143,7 @@ const PanelCouponsContent = () => {
     }
 
     useEffect(() => {
-        if(infinite) setTimesToUse("Nieograniczony");
+        if(infinite) setTimesToUse(1000000);
         else setTimesToUse(0);
     }, [infinite]);
 

@@ -12,12 +12,12 @@ import Modal from "react-modal";
 import closeImg from "../static/img/close.png";
 import tickIcon from '../static/img/tick-sign.svg'
 
-const ShippingForm = () => {
+const ShippingForm = ({sum}) => {
     const [vat, setVat] = useState(false);
     const [shippingMethod, setShippingMethod] = useState(-1);
     const [paymentMethod, setPaymentMethod] = useState(-1);
     const [shippingCost, setShippingCost] = useState(0);
-    const [amount, setAmount] = useState(calculateCartSum(JSON.parse(localStorage.getItem('hideisland-cart'))) + shippingCost);
+    const [amount, setAmount] = useState(sum + shippingCost);
     const [isAuth, setIsAuth] = useState(false);
     const [shippingMethods, setShippingMethods] = useState([]);
     const [inPostModal, setInPostModal] = useState(false);
@@ -39,6 +39,7 @@ const ShippingForm = () => {
     const [inPostCode, setInPostCode] = useState("");
     const [inPostCity, setInPostCity] = useState("");
     const [checkbox, setCheckbox] = useState(false);
+    const [discountInPLN, setDiscountInPLN] = useState(0);
 
     useEffect(() => {
         window.easyPackAsyncInit = function () {
@@ -114,7 +115,7 @@ const ShippingForm = () => {
     }, []);
 
     useEffect(() => {
-        setAmount(calculateCartSum(JSON.parse(localStorage.getItem('hideisland-cart'))) + shippingCost);
+        setAmount(sum + shippingCost);
     }, [shippingMethod]);
 
     const validationSchema = Yup.object({
@@ -202,7 +203,7 @@ const ShippingForm = () => {
                 sessionId,
                 companyName: formik.values.companyName,
                 nip: formik.values.nip,
-                amount: amount,
+                amount: sum + shippingCost - discountInPLN,
                 inPostAddress: sessionStorage.getItem('paczkomat-adres'),
                 inPostCode: sessionStorage.getItem('paczkomat-kod'),
                 inPostCity: sessionStorage.getItem('paczkomat-miasto')
@@ -240,7 +241,7 @@ const ShippingForm = () => {
                             axios.post(`${settings.API_URL}/payment/payment`, {
                                 sessionId,
                                 email: formik.values.email,
-                                amount
+                                amount: sum + shippingCost - discountInPLN
                             })
                                 .then(res => {
                                     /* Remove cart from local storage */
@@ -267,13 +268,15 @@ const ShippingForm = () => {
                 if(result) {
                     if(result.percent) {
                         setCouponVerified(1);
-                        setAmount(Math.round(amount - amount * (result.percent / 100)));
+                        setAmount(Math.round(sum - sum * (result.percent / 100)));
                         setDiscount("-" + result.percent + "%");
+                        setDiscountInPLN(Math.round(sum * (result.percent / 100)));
                     }
                     else if(result.amount) {
                         setCouponVerified(1);
-                        setAmount(amount - result.amount);
+                        setAmount(sum - result.amount);
                         setDiscount("-" + result.amount + " PLN");
+                        setDiscountInPLN(result.amount);
                     }
                     else {
                         setCouponVerified(0);
@@ -546,7 +549,7 @@ const ShippingForm = () => {
                 </h4> : ""}
 
                 <h4 className="clientForm__shippingHeader mt-4">
-                    Łącznie do zapłaty: <b>{amount} PLN</b>
+                    Łącznie do zapłaty: <b>{sum + shippingCost - discountInPLN} PLN</b>
                 </h4>
 
                 <label className="w-100 clientForm__label--checkbox mb-4 mb-sm-0">
@@ -559,7 +562,7 @@ const ShippingForm = () => {
                     Zapoznałem/am się z <a href="/regulamin">Regulaminem</a> i <a href="/polityka-prywatnosci">Polityką prywatności</a>.
                 </label>
 
-                <button className="addToCartBtn button--login button--payment mt-1" type="submit">
+                <button className="addToCartBtn button--login button--payment mt-1" disabled={!checkbox} type="submit">
                     {paymentMethod === 2 ? "Kupuję" : "Przechodzę do płatności"}
                     <img className="addToCartBtn__img" src={arrowLong} alt="dodaj" />
                 </button>

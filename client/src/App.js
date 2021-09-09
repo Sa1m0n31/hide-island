@@ -44,6 +44,7 @@ import auth from "./admin/helpers/auth";
 import { v4 as uuidv4 } from 'uuid';
 import PanelStocks from "./admin/pages/PanelStocks";
 import AddStockPage from "./admin/pages/AddStockPage";
+import {getProductStock} from "./admin/helpers/stockFunctions";
 
 /* Context */
 const CartContext = React.createContext(null);
@@ -54,13 +55,69 @@ function App() {
     const addToCart = (id, title, amount, img, size, price) => {
         const uuid = uuidv4();
 
-        localStorage.setItem('hideisland-cart', JSON.stringify([...cartContent, {
-            uuid, id, title, amount, img, size, price
-        }]));
+        let existedUuid, existedAmount = 0;
 
-        setCartContent([...cartContent, {
-            uuid, id, title, amount, img, size, price
-        }]);
+        /* If product already in cart - increase amount */
+        if(cartContent.findIndex((item) => {
+           if((item.id === id)&&(item.size === size)) {
+               existedUuid = item.uuid;
+               existedAmount = item.amount;
+               return true;
+           }
+           else return false;
+        }) !== -1) {
+            if(existedUuid) {
+                getProductStock(id)
+                    .then(res => {
+                        const result = res?.data?.result[0];
+                        if(result) {
+                            const sizes = [
+                                { name: result.size_1_name, value: result.size_1_stock },
+                                { name: result.size_2_name, value: result.size_2_stock },
+                                { name: result.size_3_name, value: result.size_3_stock },
+                                { name: result.size_4_name, value: result.size_4_stock },
+                                { name: result.size_5_name, value: result.size_5_stock }
+                            ];
+                            sizes.forEach((item) => {
+                                if(item.name === size) {
+                                    if(item.value >= existedAmount+amount) {
+                                        editCart(existedUuid, id, title, existedAmount+amount, img, size, price);
+                                    }
+                                }
+                            })
+                        }
+                    })
+            }
+        }
+        else {
+            localStorage.setItem('hideisland-cart', JSON.stringify([...cartContent, {
+                uuid, id, title, amount, img, size, price
+            }]));
+
+            setCartContent([...cartContent, {
+                uuid, id, title, amount, img, size, price
+            }]);
+        }
+    }
+
+    const editCart = (uuid, id, title, amount, img, size, price) => {
+        localStorage.setItem('hideisland-cart', JSON.stringify(cartContent.map((item) => {
+            if(item.uuid === uuid) {
+                return {
+                    uuid, id, title, amount, img, size, price
+                }
+            }
+            else return item;
+        })));
+
+        setCartContent(cartContent.map((item) => {
+            if(item.uuid === uuid) {
+                return {
+                    uuid, id, title, amount, img, size, price
+                }
+            }
+            else return item;
+        }));
     }
 
     const removeFromCart = (uuid) => {
@@ -106,7 +163,7 @@ function App() {
             });
     }, []);
 
-  return (<CartContext.Provider value={{cartContent, addToCart, removeFromCart}}>
+  return (<CartContext.Provider value={{cartContent, addToCart, editCart, removeFromCart}}>
       <Helmet>
           <title>HideIsland - ubrania dla Ciebie</title>
       </Helmet>

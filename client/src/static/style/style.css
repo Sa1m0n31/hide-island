@@ -1816,3 +1816,11 @@ input[type=number] {
 #rcc-confirm-button {
     min-width: 100%;
 }
+
+button:disabled {
+    cursor: auto !important;
+}
+
+button:disabled .addToCartBtn__img {
+    transform: none !important;
+}

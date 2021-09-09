@@ -163,6 +163,26 @@ con.connect(err => {
           }
        });
     });
+
+    /* Get stock of given product */
+    router.post("/get-product-stock", (request, response) => {
+       const { id } = request.body;
+
+       const values = [id];
+       const query = 'SELECT * FROM products_stock ps JOIN products p ON ps.id = p.stock_id WHERE p.id = ?';
+       con.query(query, values, (err, res) => {
+          if(res) {
+              response.send({
+                  result: res
+              });
+          }
+          else {
+              response.send({
+                  result: 0
+              });
+          }
+       });
+    });
 });
 
 module.exports = router;
