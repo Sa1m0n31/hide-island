@@ -19,6 +19,7 @@ const OrderDetailsContent = () => {
     const [sum, setSum] = useState(0);
     const [modal, setModal] = useState(false);
     const [deleteMsg, setDeleteMsg] = useState("");
+    const [comment, setComment] = useState("");
     const [letterNumber, setLetterNumber] = useState("");
     const [orderStatus, setOrderStatus] = useState("");
     const [orderUpdated, setOrderUpdated] = useState(-1);
@@ -33,10 +34,12 @@ const OrderDetailsContent = () => {
         /* Get order info */
         getOrderDetails(id)
             .then(res => {
-                console.log(res.data.result);
-               setCart(res.data.result);
-               setOrderStatus(res.data.result[0].order_status);
-               setLetterNumber(res.data.result[0].letter_number);
+               if(res?.data?.result?.length) {
+                   setCart(res.data.result);
+                   setOrderStatus(res.data.result[0].order_status);
+                   setLetterNumber(res.data.result[0].letter_number);
+                   setComment(res.data.result[0].order_comment);
+               }
                //setSum(calculateCartSum(res.data.result));
                calculateCartSum();
             });
@@ -157,7 +160,7 @@ const OrderDetailsContent = () => {
                     </section>
                 </header>
                 <main className="panelContent__cart__content">
-                    {cart.map((item, index) => {
+                    {cart?.map((item, index) => {
                         return <section key={index} className="panelContent__cart__item">
                             <section className="panelContent__cart__column">
                                 <span>{item.name}</span>
@@ -182,7 +185,7 @@ const OrderDetailsContent = () => {
                     <h2 className="panelContent__header--smaller">
                         Dane klienta
                     </h2>
-                    <main className="panelContent__clientData__content">
+                    {cart?.length ?  <main className="panelContent__clientData__content">
                         <h3 className="panelContent__data w-50">
                             {cart[0].first_name}
                         </h3>
@@ -201,9 +204,9 @@ const OrderDetailsContent = () => {
                         <h3 className="panelContent__data w-100">
                             {cart[0].order_comment ? cart[0].order_comment : "Brak komentarza do zamówienia"}
                         </h3>
-                    </main>
+                    </main> : ""}
 
-                    <section className="panelContent__orderStatus">
+                    {cart?.length ? <section className="panelContent__orderStatus">
                         <h2 className="panelContent__orderStatus__header">
                             Opłacone:
                             <img className="panelContent__orderStatus__img" src={cart[0].payment_status?.toLowerCase() === "opłacone" ? tick : x} alt="oplacone" />
@@ -212,10 +215,10 @@ const OrderDetailsContent = () => {
                             Faktura VAT:
                             <img className="panelContent__orderStatus__img" src={cart[0].company_name ? tick : x} alt="faktura-vat" />
                         </h2>
-                    </section>
+                    </section> : ""}
                 </section>
 
-                <section className="panelContent__shipping">
+                {cart?.length ? <section className="panelContent__shipping">
                     <h2 className="panelContent__header--smaller">
                         Sposób dostawy: <b>{cart[0].shipping}</b>
                     </h2>
@@ -252,15 +255,15 @@ const OrderDetailsContent = () => {
                                 onChange={e => { setOrderStatus(e.target.value); }}
                                 value={orderStatus}>
                             <option value="złożone">złożone</option>
-                            <option value="spakowane">spakowane</option>
-                            <option value="wysłane">wysłane</option>
+                            <option value="przyjęte do realizacji">przyjęte do realizacji</option>
+                            <option value="zrealizowane">zrealizowane</option>
                         </select>
                     </h2>
 
                     {orderUpdated === -1 ? <button className="panelContent__editOrderBtn" onClick={() => { changeOrderStatus(); }}>
                         Zmień parametry zamówienia
                     </button> : orderUpdated === 1 ? <h4 className="infoHeader">Dane zamówienia zostały zaktualizowane</h4> : <h4 className="infoHeader">Coś poszło nie tak... Prosimy spróbować później</h4> }
-                </section>
+                </section> : ""}
             </section>
 
         </section>

@@ -7,8 +7,18 @@ const app = express();
 
 /* Middleware */
 app.use(cors());
-app.use(bodyParser({limit: '50mb'}));
-app.use(bodyParser.json());
+app.use(bodyParser({
+    limit: "50mb"
+}));
+app.use(bodyParser.json({
+    limit: "50mb"
+}));
+app.use(bodyParser.raw({
+    limit: "50mb"
+}));
+app.use(bodyParser.text({
+    limit: "50mb"
+}));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use('/uploads', express.static('uploads'));
 
@@ -63,6 +73,12 @@ app.get("/zarejestruj-sie", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
 app.get("/dziekujemy", (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
+app.get("/reklamacje", (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
+app.get("/zwroty", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
 

@@ -135,6 +135,8 @@ function App() {
     const [terms, setTerms] = useState("");
     const [policy, setPolicy] = useState("");
     const [complaints, setComplaints] = useState("");
+    const [returns, setReturns] = useState("");
+    const [shippingAndPayment, setShippingAndPayment] = useState("");
 
     useEffect(() => {
         /* Initialize AOS */
@@ -150,7 +152,9 @@ function App() {
                 if(result) {
                     setTerms(result[0].terms_of_service);
                     setPolicy(result[0].privacy_policy);
-                    setComplaints(result[0].complaints_and_returns);
+                    setComplaints(result[0].complaints);
+                    setReturns(result[0].returns);
+                    setShippingAndPayment(result[0].shipping_and_payment);
                 }
             });
 
@@ -195,15 +199,20 @@ function App() {
                     title="Polityka prywatności"
                     content={policy} />
             </Route>
-            <Route path="/zwroty-i-reklamacje">
+            <Route path="/zwroty">
                 <Page
-                    title="Zwroty i reklamacje"
+                    title="Zwroty"
                     content={complaints} />
+            </Route>
+            <Route path="/reklamacje">
+                <Page
+                    title="Reklamacje"
+                    content={returns} />
             </Route>
             <Route path="/dostawa-i-platnosci">
                 <Page
                     title="Dostawa i płatności"
-                    content={policy} />
+                    content={shippingAndPayment} />
             </Route>
 
           <Route path="/zaloguj-sie">

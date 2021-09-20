@@ -152,7 +152,8 @@ const ShippingForm = ({sum}) => {
             building: building,
             flat: flat,
             companyName: "",
-            nip: ""
+            nip: "",
+            comment: ""
         },
         validationSchema,
         enableReinitialize: true,
@@ -419,6 +420,9 @@ const ShippingForm = ({sum}) => {
 
                 <label className="clientForm__label clientForm__label--textArea">
                     <textarea placeholder="Komentarz do zamówienia (opcjonalnie)"
+                              name="comment"
+                              value={formik.values.comment}
+                              onChange={formik.handleChange}
                               className="textarea" />
                 </label>
 

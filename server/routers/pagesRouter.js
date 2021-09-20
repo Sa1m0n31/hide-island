@@ -5,12 +5,10 @@ const con = require("../databaseConnection");
 con.connect((err) => {
     /* Edit pages */
     router.post("/update", (request, response) => {
-       const { termsOfService, privacyPolicy, complaintsAndReturns, aboutUs } = request.body;
+       const { termsOfService, privacyPolicy, complaints, returns, shippingAndPayment, aboutUs } = request.body;
 
-       console.log(request.body);
-
-       const values = [termsOfService, privacyPolicy, complaintsAndReturns, aboutUs];
-       const query = 'UPDATE pages SET terms_of_service = ?, privacy_policy = ?, complaints_and_returns = ?, about_us = ? WHERE id = 1';
+       const values = [termsOfService, privacyPolicy, complaints, returns, shippingAndPayment, aboutUs];
+       const query = 'UPDATE pages SET terms_of_service = ?, privacy_policy = ?, complaints = ?, returns = ?, shipping_and_payment = ?, about_us = ? WHERE id = 1';
 
        con.query(query, values, (err, res) => {
               if(res) response.redirect("http://hideisland.skylo-test3.pl/panel/pozostale?add=1");

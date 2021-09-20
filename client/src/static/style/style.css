@@ -1123,6 +1123,10 @@ input[type=number] {
     padding: 30px 0 50px;
 }
 
+.page__content {
+    padding-top: 10px;
+}
+
 /* React modal - animation */
 .smallModal {
     transition: .4s all;
@@ -1823,4 +1827,42 @@ button:disabled {
 
 button:disabled .addToCartBtn__img {
     transform: none !important;
+}
+
+/* Update - 20.09.2021 */
+.clientForm__checkbox--marketing {
+    margin-bottom: 0;
+}
+
+.clientForm__label--checkbox {
+    text-align: justify;
+}
+
+.footer .header__socialMedia__link {
+    margin-right: 0;
+}
+
+.footer .header__socialMedia .header__socialMedia__link:first-of-type {
+    margin-right: 10px;
+}
+
+.page__linkWrapper {
+    padding: 0 0 200px;
+}
+
+.button--downloadLink {
+    height: 50px;
+    max-width: 350px;
+    text-align: center;
+    margin: auto;
+    color: #fff !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 20px;
+    background: #787878;
+}
+
+.button--downloadLink:hover {
+    background: #6A6A6A;
 }

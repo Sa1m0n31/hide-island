@@ -22,7 +22,9 @@ const RegisterContent = () => {
         postalCode: Yup.string()
             .matches(/\d{2}-\d{3}/, "Podaj poprawny kod pocztowy"),
         check: Yup.boolean()
-            .oneOf([true])
+            .oneOf([true]),
+        marketing: Yup.boolean()
+            .oneOf([true, false])
     });
 
     const formik = useFormik({
@@ -38,16 +40,21 @@ const RegisterContent = () => {
             street: "",
             building: "",
             flat: "",
-            check: false
+            check: false,
+            marketing: false
         },
         validationSchema,
-        onSubmit: ({email, password, firstName, lastName, phoneNumber, postalCode, city, street, building, flat}) => {
-            axios.post(`${settings.API_URL}/auth/add-user`, {
+        onSubmit: ({email, password, firstName, lastName, phoneNumber, postalCode, city, street, building, flat, marketing}) => {
+            console.log("submit");
+            console.log(marketing);
+            axios.post(`http://hideisland.skylo-test3.pl/auth/add-user`, {
                 email, password,
                 firstName, lastName, phoneNumber,
-                postalCode, city, street, building, flat
+                postalCode, city, street, building, flat,
+                dupa: marketing
             })
                 .then(res => {
+                    console.log(res.data);
                     if(res.data?.result === 1) {
                         localStorage.setItem('hideisland-user-registered', 'true');
                         window.location = '/konto-zalozone';
@@ -60,6 +67,9 @@ const RegisterContent = () => {
                         localStorage.setItem('hideisland-user-registered', 'false');
                         window.location = '/konto-zalozone';
                     }
+                })
+                .catch(err => {
+                    console.log(err);
                 });
         }
     })
@@ -186,6 +196,16 @@ const RegisterContent = () => {
                 </label>
             </span>
 
+            <label className="w-100 clientForm__label--checkbox">
+                <input className="clientForm__checkbox clientForm__checkbox--marketing"
+                       name="marketing"
+                       type="checkbox"
+                       value={formik.values.marketing}
+                       onChange={formik.handleChange} />
+
+                Wyrażam zgodę na przetwarzanie przez HideIsland Dominik Adamczyk moich danych osobowych w postaci adresu poczty elektronicznej w celu przesyłania mi informacji marketingowych dotyczących produktów i usług oferowanych przez HideIsland Dominik Adamczyk za pomocą środków komunikacji elektronicznej, stosownie do treści przepisu art.10 ust. 1 i 2 ustawy o świadczeniu usług drogą elektroniczną.
+            </label>
+
             <label className="w-100 clientForm__label--checkbox mb-4 mb-sm-0">
                 <input className="clientForm__checkbox"
                        name="check"
@@ -193,10 +213,10 @@ const RegisterContent = () => {
                        value={formik.values.check}
                        onChange={formik.handleChange} />
 
-                Zapoznałem/am się z <a href="/regulamin">Regulaminem</a> i <a href="/polityka-prywatnosci">Polityką prywatności</a>.
+                Zapoznałem/am się z <a href="/regulamin">Regulaminem</a> i <a href="/polityka-prywatnosci">Polityką prywatności</a>. *
             </label>
 
-            <button className="addToCartBtn button--login">
+            <button disabled={!formik.values.check} type="submit" className="addToCartBtn button--login">
                 Załóż konto
                 <img className="addToCartBtn__img" src={arrowLong} alt="dodaj" />
             </button>

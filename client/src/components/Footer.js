@@ -4,6 +4,8 @@ import axios from "axios";
 import settings from "../helpers/settings";
 import mailIcon from "../static/img/mail.svg";
 import {getAllParentCategories} from "../admin/helpers/categoriesFunctions";
+import facebookIcon from "../static/img/facebook.svg";
+import instagramIcon from "../static/img/instagram.svg";
 
 const Footer = () => {
     const [categories, setCategories] = useState([]);
@@ -52,6 +54,26 @@ const Footer = () => {
 
     return <footer className="footer">
         <section className="footer__row d-flex justify-content-between align-items-center align-items-md-start">
+            <section className="footer__menu d-block d-md-none">
+                <h4 className="footer__menu__header">
+                    Kontakt
+                </h4>
+                <div className="header__contact d-flex align-items-center justify-content-center">
+                    <a className="header__socialMedia__link" href="mailto:biuro@hideisland.pl">
+                        <img className="header__socialMedia__link__img header__mailIcon" src={mailIcon} alt="adres-email" />
+                        biuro@hideisland.pl
+                    </a>
+                </div>
+                <section className="header__socialMedia mt-3 d-flex justify-content-center align-items-center">
+                    <a className="header__socialMedia__link" href="https://www.facebook.com/HideIslandwear">
+                        <img className="header__socialMedia__link__img" src={facebookIcon} alt="facebook" />
+                    </a>
+                    <a className="header__socialMedia__link" href="http://hideisland.skylo-test3.pl/image?url=/media/notification/insta.png">
+                        <img className="header__socialMedia__link__img" src={instagramIcon} alt="instagram" />
+                    </a>
+                </section>
+            </section>
+
             <section className="footer__menu">
                 <h4 className="footer__menu__header">
                     Informacje
@@ -68,8 +90,13 @@ const Footer = () => {
                         </a>
                     </li>
                     <li className="footer__menu__item">
-                        <a className="footer__menu__link" href="/zwroty-i-reklamacje">
-                            Reklamacje i zwroty
+                        <a className="footer__menu__link" href="/reklamacje">
+                            Reklamacje
+                        </a>
+                    </li>
+                    <li className="footer__menu__item">
+                        <a className="footer__menu__link" href="/zwroty">
+                            Zwroty
                         </a>
                     </li>
                     <li className="footer__menu__item">

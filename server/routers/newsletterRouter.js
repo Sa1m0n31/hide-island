@@ -22,10 +22,11 @@ con.connect(err => {
 
     /* Add mail to newsletter */
     router.post('/add', (request, response) => {
-       const { email } = request.body;
+       const email = request.body.email;
+       console.log(request.body);
 
-       const values = [email];
        const query = 'INSERT INTO newsletter VALUES (NULL, ?)';
+       const values = [email];
        con.query(query, values, (err, res) => {
            if(res) {
                response.send({
@@ -40,7 +41,7 @@ con.connect(err => {
                }
                else {
                    response.send({
-                       result: 0
+                       result: err
                    });
                }
            }

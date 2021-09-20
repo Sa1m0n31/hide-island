@@ -170,7 +170,7 @@ const PanelOrdersContent = () => {
                                     Status zamówienia
                                 </h4>
                                 <h3 className="panelContent__column__value">
-                                    <span className={item.order_status.toLowerCase() === "wysłane" ? "panelContent__column__status status--positive" : "panelContent__column__status status--negative"}>
+                                    <span className={item.order_status.toLowerCase() === "zrealizowane" ? "panelContent__column__status status--positive" : "panelContent__column__status status--negative"}>
                                 {item.order_status}
                             </span>
                                 </h3>
@@ -182,6 +182,15 @@ const PanelOrdersContent = () => {
                                 </h4>
                                 <h3 className="panelContent__column__value">
                                     {item.letter_number ? item.letter_number : ""}
+                                </h3>
+                            </section>
+
+                            <section className="panelContent__column">
+                                <h4 className="panelContent__column__label">
+                                    Komentarz
+                                </h4>
+                                <h3 className="panelContent__column__value">
+                                    {item.order_comment ? item.order_comment : "BRAK"}
                                 </h3>
                             </section>
 

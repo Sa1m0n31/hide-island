@@ -1290,3 +1290,13 @@ select {
     height: 50px;
     max-width: 300px;
 }
+
+/* Update - 20.09.21 */
+.panelContent__column__status {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: fit-content;
+    width: -moz-max-content;
+    margin: auto;
+}
