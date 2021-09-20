@@ -6,6 +6,20 @@ const nodemailer = require("nodemailer");
 const smtpTransport = require('nodemailer-smtp-transport');
 
 con.connect(err => {
+    /* Nodemailer */
+    let transporter = nodemailer.createTransport(smtpTransport ({
+        auth: {
+            user: 'test@skylo-test2.pl',
+            pass: 'SwinkaPeppa-31'
+        },
+        host: 'skylo-pl.atthost24.pl',
+        secureConnection: true,
+        port: 587,
+        tls: {
+            rejectUnauthorized: false
+        },
+    }));
+
     /* ADD NOTIFICATION */
     router.post("/add", (request, response) => {
        const { productId, email } = request.body;
@@ -41,21 +55,15 @@ con.connect(err => {
         else return "";
     }
 
-    const sendMail = (email, productName) => {
-        /* Nodemailer */
-        let transporter = nodemailer.createTransport(smtpTransport ({
-            auth: {
-                user: 'test@skylo-test2.pl',
-                pass: '***** *** (Sw...)'
-            },
-            host: 'skylo-pl.atthost24.pl',
-            secureConnection: true,
-            port: 587,
-            tls: {
-                rejectUnauthorized: false
-            },
-        }));
+    const sendStatus1Email = (email) => {
+        /* status = ZŁOŻONE */
+    }
 
+    const sendStatus2Email = (email) => {
+        /* status = PRZYJĘTE DO REALIZACJI */
+    }
+
+    const sendMail = (email, productName) => {
         const productURL = convertToURL(productName);
 
         let mailOptions = {
