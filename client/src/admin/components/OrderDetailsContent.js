@@ -23,6 +23,7 @@ const OrderDetailsContent = () => {
     const [letterNumber, setLetterNumber] = useState("");
     const [orderStatus, setOrderStatus] = useState("");
     const [orderUpdated, setOrderUpdated] = useState(-1);
+    const [adminComment, setAdminComment] = useState("");
 
     useEffect(() => {
         /* Get order id from url string */
@@ -35,10 +36,12 @@ const OrderDetailsContent = () => {
         getOrderDetails(id)
             .then(res => {
                if(res?.data?.result?.length) {
+                   console.log(res.data.result);
                    setCart(res.data.result);
                    setOrderStatus(res.data.result[0].order_status);
                    setLetterNumber(res.data.result[0].letter_number);
                    setComment(res.data.result[0].order_comment);
+                   setAdminComment(res.data.result[0].admin_comment);
                }
                //setSum(calculateCartSum(res.data.result));
                calculateCartSum();
@@ -84,7 +87,8 @@ const OrderDetailsContent = () => {
         axios.post(`${settings.API_URL}/order/change-order-status`, {
             id,
             orderStatus,
-            letterNumber
+            letterNumber,
+            adminComment
         })
             .then(res => {
                 if(res.data.result) {
@@ -232,7 +236,13 @@ const OrderDetailsContent = () => {
                         </h4>
                         {cart[0].inpost_address}<br/>
                         {cart[0].inpost_postal_code} {cart[0].inpost_city}
-                    </section> : ""}
+                    </section> : <section className="inPost__address">
+                        <h4 className="inPost__address__header">
+                            Adres dostawy:
+                        </h4>
+                        {cart[0].street} {cart[0].building} {cart[0].flat ? `/${cart[0].flat}` : ""}<br/>
+                        {cart[0].postal_code} {cart[0].city}
+                    </section>}
 
                     {cart[0].company_name ? <address className="inPost__address">
                         <h4 className="inPost__address__header">
@@ -258,6 +268,13 @@ const OrderDetailsContent = () => {
                             <option value="przyjęte do realizacji">przyjęte do realizacji</option>
                             <option value="zrealizowane">zrealizowane</option>
                         </select>
+                    </h2>
+
+                    <h2 className="panelContent__header--smaller panelContent__header--smaller--adminComment mt-3">
+                        Twój komentarz:
+                        <textarea className="panelContent__input panelContent__input--adminComment"
+                               value={adminComment}
+                               onChange={(e) => { setAdminComment(e.target.value); }} />
                     </h2>
 
                     {orderUpdated === -1 ? <button className="panelContent__editOrderBtn" onClick={() => { changeOrderStatus(); }}>

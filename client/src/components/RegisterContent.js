@@ -54,7 +54,6 @@ const RegisterContent = () => {
                 dupa: marketing
             })
                 .then(res => {
-                    console.log(res.data);
                     if(res.data?.result === 1) {
                         localStorage.setItem('hideisland-user-registered', 'true');
                         window.location = '/konto-zalozone';

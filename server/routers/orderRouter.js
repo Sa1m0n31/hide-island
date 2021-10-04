@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const got = require("got");
 const con = require("../databaseConnection");
 
 const nodemailer = require("nodemailer");
@@ -218,13 +219,13 @@ const sendStatus2Email = (id, email, fullName, response = null) => {
 }
 
 const sendStatus1Email = (id, email, sells) => {
-    
+
 }
 
 con.connect(err => {
     /* GET ALL ORDERS */
     router.get("/get-orders", (request, response) => {
-        const query = 'SELECT o.id as id, u.first_name, u.last_name, u.email, o.date, o.payment_status, o.order_status, o.order_comment, o.letter_number FROM orders o LEFT OUTER JOIN users u ON o.user = u.id';
+        const query = 'SELECT o.id as id, u.first_name, u.last_name, u.email, o.date, o.admin_comment, o.payment_status, o.order_status, o.order_comment, o.letter_number FROM orders o LEFT OUTER JOIN users u ON o.user = u.id';
         con.query(query, (err, res) => {
             if (res) {
                 response.send({
@@ -281,7 +282,7 @@ con.connect(err => {
 
         /* ADD ORDER */
         router.post("/add", (request, response) => {
-            let {paymentMethod, shippingMethod, city, street, building, flat, postalCode, sessionId, user, comment, companyName, nip, amount, inPostAddress, inPostCode, inPostCity} = request.body;
+            let {email, paymentMethod, shippingMethod, newsletter, city, street, building, flat, postalCode, sessionId, user, comment, companyName, nip, amount, inPostAddress, inPostCode, inPostCity} = request.body;
             if (flat === "") flat = null;
 
             let paymentStatus = "nieopłacone";
@@ -292,7 +293,7 @@ con.connect(err => {
 
             building = parseInt(building) || 0;
             let values = [paymentMethod, shippingMethod, city, street, building, flat, postalCode, user, paymentStatus, comment, sessionId, companyName, nip, amount, inPostAddress, inPostCode, inPostCity];
-            const query = 'INSERT INTO orders VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, "złożone", CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?, NULL)';
+            const query = 'INSERT INTO orders VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, "złożone", CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?, NULL, NULL)';
 
             values = values.map((item) => {
                 if (item === "") return null;
@@ -327,11 +328,11 @@ con.connect(err => {
 
         /* CHANGE ORDER STATUS */
         router.post("/change-order-status", (request, response) => {
-            const {id, orderStatus, letterNumber} = request.body;
+            const {id, orderStatus, letterNumber, adminComment} = request.body;
 
             /* Change order status in database */
-            const query = 'UPDATE orders SET order_status = ?, letter_number = ? WHERE id = ?';
-            const values = [orderStatus, letterNumber, id];
+            const query = 'UPDATE orders SET order_status = ?, letter_number = ?, admin_comment = ? WHERE id = ?';
+            const values = [orderStatus, letterNumber, adminComment, id];
             con.query(query, values, (err, res) => {
                 if(res) {
                     /* Get order info */
@@ -390,7 +391,7 @@ con.connect(err => {
         router.post("/get-order", (request, response) => {
             const {id} = request.body;
             const values = [id];
-            const query = 'SELECT o.id, o.payment_status, o.order_status, o.letter_number, o.order_comment, u.first_name, u.last_name, u.email, u.phone_number, o.date, o.order_status, pm.name as payment, sm.name as shipping, o.order_comment, o.company_name, o.nip, s.size, s.quantity, p.price, p.name, o.inpost_address, o.inpost_postal_code, inpost_city FROM orders o ' +
+            const query = 'SELECT o.id, o.admin_comment, o.payment_status, o.order_status, o.letter_number, o.order_comment, u.first_name, u.last_name, u.email, u.phone_number, u.city, u.street, u.building, u.postal_code, u.city, o.date, o.order_status, pm.name as payment, sm.name as shipping, o.order_comment, o.company_name, o.nip, s.size, s.quantity, p.price, p.name, o.inpost_address, o.inpost_postal_code, inpost_city FROM orders o ' +
                 'JOIN sells s ON o.id = s.order_id ' +
                 'LEFT OUTER JOIN products p ON p.id = s.product_id ' +
                 'JOIN shipping_methods sm ON o.shipping_method = sm.id ' +

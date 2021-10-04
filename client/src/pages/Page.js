@@ -3,7 +3,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import settings from "../helpers/settings";
 
-const Page = ({title, content}) => {
+const Page = ({title, content, extra}) => {
     const [filename, setFilename] = useState("");
 
     useEffect(() => {
@@ -31,6 +31,8 @@ const Page = ({title, content}) => {
                     {title === "Reklamacje" ? "Pobierz formularz reklamacji" : "Pobierz formularz zwrotu"}
                 </a>
             </main>}
+
+            {extra ? <img className="paymentMethodsImg" src={extra} alt="metody-platnosci" /> : ""}
         </main>
         <Footer />
     </>

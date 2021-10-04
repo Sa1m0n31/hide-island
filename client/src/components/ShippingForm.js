@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import * as Yup from "yup";
 import {useFormik} from "formik";
 import arrowLong from "../static/img/arrow-long.svg";
-import {calculateCartSum} from "../admin/helpers/orderFunctions";
 import settings from "../helpers/settings";
 import axios from "axios";
 import { v4 as uuidv4 } from 'uuid';
@@ -39,6 +38,7 @@ const ShippingForm = ({sum}) => {
     const [inPostCode, setInPostCode] = useState("");
     const [inPostCity, setInPostCity] = useState("");
     const [checkbox, setCheckbox] = useState(false);
+    const [marketingCheckbox, setMarketingCheckbox] = useState(false);
     const [discountInPLN, setDiscountInPLN] = useState(0);
 
     useEffect(() => {
@@ -190,6 +190,13 @@ const ShippingForm = ({sum}) => {
         if(res) insertedUserId = res.data.userId;
 
         if(checkbox) {
+            /* Add to newsletter */
+            if(marketingCheckbox) {
+                axios.post(`${settings.API_URL}/newsletter/add`, {
+                    email: formik.values.email
+                });
+            }
+
             /* Add order */
             axios.post(`${settings.API_URL}/order/add`, {
                 paymentMethod: paymentMethod,
@@ -564,6 +571,16 @@ const ShippingForm = ({sum}) => {
                            onChange={() => { setCheckbox(!checkbox); }} />
 
                     Zapoznałem/am się z <a href="/regulamin">Regulaminem</a> i <a href="/polityka-prywatnosci">Polityką prywatności</a>.
+                </label>
+
+                <label className="w-100 clientForm__label--checkbox clientForm__label--checkbox--marketing mb-4">
+                    <input className="clientForm__checkbox clientForm__checkbox--marketing"
+                           name="marketingCheckbox"
+                           type="checkbox"
+                           value={marketingCheckbox}
+                           onChange={() => { setMarketingCheckbox(!marketingCheckbox); }} />
+
+                    Wyrażam zgodę na przetwarzanie przez HideIsland Dominik Adamczyk moich danych osobowych w postaci adresu poczty elektronicznej w celu przesyłania mi informacji marketingowych dotyczących produktów i usług oferowanych przez HideIsland Dominik Adamczyk za pomocą środków komunikacji elektronicznej, stosownie do treści przepisu art.10 ust. 1 i 2 ustawy o świadczeniu usług drogą elektroniczną.
                 </label>
 
                 <button className="addToCartBtn button--login button--payment mt-1" disabled={!checkbox} type="submit">

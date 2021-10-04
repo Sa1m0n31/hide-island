@@ -190,7 +190,7 @@ const PanelOrdersContent = () => {
                                     Komentarz
                                 </h4>
                                 <h3 className="panelContent__column__value">
-                                    {item.order_comment ? item.order_comment : "BRAK"}
+                                    {item.admin_comment ? item.admin_comment : "BRAK"}
                                 </h3>
                             </section>
 

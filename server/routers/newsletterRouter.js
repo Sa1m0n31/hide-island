@@ -5,7 +5,7 @@ const con = require("../databaseConnection");
 con.connect(err => {
     /* Get all emails */
     router.get("/get-all", (request, response) => {
-        const query = 'SELECT * FROM newsletter';
+        const query = 'SELECT * FROM newsletter ORDER BY id DESC';
         con.query(query, (err, res) => {
            if(res) {
                response.send({
@@ -23,7 +23,6 @@ con.connect(err => {
     /* Add mail to newsletter */
     router.post('/add', (request, response) => {
        const email = request.body.email;
-       console.log(request.body);
 
        const query = 'INSERT INTO newsletter VALUES (NULL, ?)';
        const values = [email];

@@ -1300,3 +1300,19 @@ select {
     width: -moz-max-content;
     margin: auto;
 }
+
+/* Update - 04.10.21 */
+.panelContent__input--adminComment {
+    color: #fff;
+    resize: none;
+    border: 1px solid #fff;
+    display: inline-block;
+    margin-left: 30px;
+    margin-top: 20px;
+}
+
+.panelContent__header--smaller--adminComment {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}

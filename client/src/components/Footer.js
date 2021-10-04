@@ -6,6 +6,7 @@ import mailIcon from "../static/img/mail.svg";
 import {getAllParentCategories} from "../admin/helpers/categoriesFunctions";
 import facebookIcon from "../static/img/facebook.svg";
 import instagramIcon from "../static/img/instagram.svg";
+import przelewy24 from '../static/img/przelewy24.png'
 
 const Footer = () => {
     const [categories, setCategories] = useState([]);
@@ -122,6 +123,13 @@ const Footer = () => {
                         }
                     })}
                 </ul>
+
+                <h4 className="footer__menu__header footer__menu__header--marginTop">
+                    Partnerzy
+                </h4>
+                <figure className="footer__menu__imgWrapper">
+                    <img className="footer__menu__img" src={przelewy24} alt="przelewy-24" />
+                </figure>
             </section>
 
             <section className="footer__menu">

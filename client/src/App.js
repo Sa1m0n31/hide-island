@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Helmet } from 'react-helmet'
 
 import "aos/dist/aos.css";
@@ -45,6 +45,7 @@ import { v4 as uuidv4 } from 'uuid';
 import PanelStocks from "./admin/pages/PanelStocks";
 import AddStockPage from "./admin/pages/AddStockPage";
 import {getProductStock} from "./admin/helpers/stockFunctions";
+import przelewy24Methods from './static/img/metody-platnosci.png'
 
 /* Context */
 const CartContext = React.createContext(null);
@@ -212,7 +213,9 @@ function App() {
             <Route path="/dostawa-i-platnosci">
                 <Page
                     title="Dostawa i płatności"
-                    content={shippingAndPayment} />
+                    content={shippingAndPayment}
+                    extra={przelewy24Methods}
+                />
             </Route>
 
           <Route path="/zaloguj-sie">

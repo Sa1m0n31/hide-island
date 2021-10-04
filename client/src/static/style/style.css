@@ -486,11 +486,21 @@ button, a {
     justify-content: center;
 }
 
+.footer__menu__img {
+    width: 150px;
+    height: auto;
+    margin-top: 30px;
+}
+
 .footer__menu__header {
     font-size: 17px;
     padding-bottom: 15px;
     border-bottom: 1px solid #6A6A6A;
     font-weight: 500;
+}
+
+.footer__menu__header--marginTop {
+    margin-top: 50px;
 }
 
 .footer__menu__list {
@@ -1865,4 +1875,21 @@ button:disabled .addToCartBtn__img {
 
 .button--downloadLink:hover {
     background: #6A6A6A;
+}
+
+/* Update - 04.10.2021 */
+.paymentMethodsImg {
+    max-width: 1200px;
+    margin: auto;
+    padding-bottom: 100px;
+    display: block;
+}
+
+.clientForm__checkbox--marketing {
+    margin: 0 7px 0 0;
+}
+
+.clientForm__label--checkbox--marketing {
+    margin-bottom: 30px !important;
+    margin-top: 0 !important;
 }

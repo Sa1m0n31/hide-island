@@ -57,7 +57,6 @@ const CartContent = () => {
                     sizes.forEach((item) => {
                         if(item.name === size) {
                             if(item.value >= parseInt(value)) {
-                                console.log("CHANGING CART");
                                 localStorage.setItem('hideisland-cart', JSON.stringify(cart.map((item) => {
                                     if(item.uuid === uuid) {
                                         editCart(uuid, item.id, item.title, parseInt(value), item.img, item.size, item.price);
