@@ -25,10 +25,6 @@ con.connect(function(err) {
     router.post("/add-user", (request, response) => {
        const { firstName, lastName, email, phoneNumber, password, postalCode, city, street, building, flat, dupa } = request.body;
 
-       console.log("adding user....");
-
-       console.log(email);
-
        let hash = null;
        if(password) hash = crypto.createHash('md5').update(password).digest('hex');
 

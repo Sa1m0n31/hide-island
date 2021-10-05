@@ -9,12 +9,12 @@ const smtpTransport = require('nodemailer-smtp-transport');
 /* Nodemailer */
 let transporter = nodemailer.createTransport(smtpTransport ({
     auth: {
-        user: 'test@skylo-test2.pl',
+        user: 'powiadomienia@skylo-pl.atthost24.pl',
         pass: 'SwinkaPeppa-31'
     },
     host: 'skylo-pl.atthost24.pl',
     secureConnection: true,
-    port: 587,
+    port: 465,
     tls: {
         rejectUnauthorized: false
     },
@@ -23,7 +23,7 @@ let transporter = nodemailer.createTransport(smtpTransport ({
 const sendStatus3Email = (id, email, fullName, letterNumber, response = null) => {
     /* status = ZREALIZOWANE */
     let mailOptions = {
-        from: 'test@skylo-test2.pl',
+        from: 'powiadomienia@skylo-pl.atthost24.pl',
         to: email,
         subject: 'Twoje zamówienie zostało zrealizowane',
         html: `<head>
@@ -131,7 +131,7 @@ const sendStatus3Email = (id, email, fullName, letterNumber, response = null) =>
 const sendStatus2Email = (id, email, fullName, response = null) => {
     /* status = PRZYJĘTE DO REALIZACJI */
     let mailOptions = {
-        from: 'test@skylo-test2.pl',
+        from: 'powiadomienia@skylo-pl.atthost24.pl',
         to: email,
         subject: 'Twoje zamówienie zostało przyjęte do realizacji',
         html: `<head>
@@ -218,11 +218,300 @@ const sendStatus2Email = (id, email, fullName, response = null) => {
     });
 }
 
-const sendStatus1Email = (id, email, sells) => {
+const sendStatus1Email = (orderInfo, response = null) => {
+    console.log(orderInfo);
+    let sells = ``;
+    let sum = 0;
+    for(let i=0; i<orderInfo.length; i++) {
+        sells += `<tr>
+            <td>
+                ${orderInfo[i].name}
+            </td>
+            <td style="font-weight: 700; font-size: 15px; text-align: center; width: 110px;">${orderInfo[i].size}</td>
+            <td style="font-weight: 700; font-size: 15px; text-align: center; width: 110px;">${orderInfo[i].quantity}</td>
+            <td style="font-weight: 700; font-size: 15px; text-align: center; width: 110px;">${orderInfo[i].price} PLN</td>
+            <td style="font-weight: 700; font-size: 15px; text-align: center; width: 110px;">${orderInfo[i].price * orderInfo[i].quantity} PLN</td>
+        </tr>`;
 
+        sum += parseInt(orderInfo[i].quantity) * parseInt(orderInfo[i].price);
+    }
+
+    let discount = sum + parseInt(orderInfo[0].shipping_method_price) - parseInt(orderInfo[0].order_price);
+    const address = orderInfo[0].building.toString() + (orderInfo[0].flat ? "/" + orderInfo[0].flat : "");
+    const vat = orderInfo[0].company_name ? `${orderInfo[0].companyName}<br/>${orderInfo[0].nip}` : "Nie dotyczy";
+    const inPost = orderInfo[0].inpost_address ? `${orderInfo[0].inpost_address}<br/>${orderInfo[0].inpost_postal_code} ${orderInfo[0].inpost_city}` : "Nie dotyczy";
+
+    /* status = ZŁOŻONE */
+    let mailOptions = {
+    from: 'powiadomienia@skylo-pl.atthost24.pl',
+    to: orderInfo[0].email,
+    subject: 'Dziękujemy za złożenie zamówienia w sklepie HideIsland',
+    html: `<head>
+    <meta charSet="UTF-8">
+        <title>Title</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin>
+                <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;700;1,300&display=swap"
+                      rel="stylesheet">
+</head>
+<body>
+<main style="width: 100%;">
+    <img style="max-width: 100%; width: 800px; margin: 0;" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/logo.jpg" alt="zamowienie-zostalo-zlozone"/>
+    <table
+        style="display: block; padding: 20px; max-width: 100%; width: 800px; background: #59545A; margin-top: -5px; color: #fff; font-weight: 300; font-family: 'Open Sans', sans-serif;">
+        <thead style="display: block;">
+        <tr style="display: block;">
+            <th style="font-weight: 300; font-size: 21px; display: block; margin-top: 20px; text-align: center;">
+                Dziękujemy za zamówienie w sklepie HideIsland.pl
+            </th>
+        </tr>
+        <tr style="display: block;">
+            <th style="font-weight: 300; display: block; font-size: 21px; text-align: center;">
+                Poniżej znajdują się szczegóły Twojego zamówienia.
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td style="display: block; margin-top: 25px; font-weight: 700;">
+                Kupione przedmioty:
+            </td>
+        </tr>
+        <tr></tr>
+        <tr></tr>
+        ${sells}
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr style="display: block; margin-top: 15px;">
+            <td style="font-size: 14px; width: 150px;">
+                Wartość produktów:
+            </td>
+            <td style="font-size: 14px;">
+                ${sum} PLN
+            </td>
+        </tr>
+        <tr style="display: block; margin-top: 5px;">
+            <td style="font-size: 14px; width: 150px;">
+                Rabat - kod rabatowy:
+            </td>
+            <td style="font-size: 14px;">
+                - ${discount} PLN
+            </td>
+        </tr>
+        <tr style="display: block; margin-top: 5px;">
+            <td style="font-size: 14px; width: 150px;">
+                Koszt dostawy:
+            </td>
+            <td style="font-size: 14px;">
+                ${orderInfo[0].shipping_method_price} PLN
+            </td>
+        </tr>
+        <tr style="display: block; margin-top: 5px; border-bottom: 3px solid #fff; padding-bottom: 15px;">
+            <td style="font-weight: 700; font-size: 15px; width: 150px;">
+                Razem
+            </td>
+            <td style="font-weight: 700; font-size: 15px;">
+                ${orderInfo[0].order_price} PLN
+            </td>
+        </tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr style="">
+            <td colSpan="1" style="text-align: center; font-size: 14px; font-weight: 700;">Sposób dostawy</td>
+            <td colSpan="2.5" style="text-align: center; font-size: 14px; font-weight: 700;">Szacowany czas dostawy</td>
+            <td colSpan="2.5" style="text-align: center; font-size: 14px; font-weight: 700;">Metoda płatności</td>
+        </tr>
+        <tr style="">
+            <td colSpan="1" style="text-align: center; font-size: 14px; font-weight: 400;">${orderInfo[0].shipping_method}</td>
+            <td colSpan="2.5" style="text-align: center; font-size: 14px; font-weight: 400;">1-2 dni robocze</td>
+            <td colSpan="2.5" style="text-align: center; font-size: 14px; font-weight: 400;">${orderInfo[0].payment_method}</td>
+        </tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr style="margin-top: 50px;">
+            <td colSpan="1" style="text-align: center; font-size: 14px; font-weight: 700;">Dane odbiorcy przesyłki</td>
+            <td colSpan="2.5" style="text-align: center; font-size: 14px; font-weight: 700;">Dane do faktury</td>
+            <td colSpan="2.5" style="text-align: center; font-size: 14px; font-weight: 700;">Adres paczkomatu</td>
+        </tr>
+        <tr style="">
+            <td colSpan="1" style="text-align: center; font-size: 14px; font-weight: 400;">
+                ${orderInfo[0].first_name} ${orderInfo[0].last_name}<br/>
+                ${orderInfo[0].street} ${address}<br/>
+                ${orderInfo[0].postal_code} ${orderInfo[0].city}
+            </td>
+            <td colSpan="2.5" style="text-align: center; font-size: 14px; font-weight: 400;">
+                ${vat}
+            </td>
+            <td colSpan="2.5" style="text-align: center; font-size: 14px; font-weight: 400;">
+                ${inPost}
+            </td>
+        </tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr>
+            <td style="font-size: 14px; font-weight: 700;">Uwagi do zamówienia:</td>
+        </tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr>
+            <td colSpan="5" style="font-size: 14px;">
+                Drogi kliencie, realizacja Twojego zamówienia nr: ${orderInfo[0].id} rozpocznie się po zaksięgowaniu płatności na
+                naszym koncie. W następnych mailach będziemy Cię informować o kolejnych etapach zamówienia.
+            </td>
+        </tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr>
+            <td style="font-size: 14px; font-weight: 700;">
+                Odstąpienie od umowy
+            </td>
+        </tr>
+        <tr>
+            <td colSpan="5" style="font-size: 14px;">
+                Czas odstąpienia od umowy to 14 dni. Nie musisz podawać przyczyny i ponosić kosztów za odstąpienie od
+                umowy poza kosztem przesyłki. Wystarczy, że w w/w terminie wyślesz stosowne oświadczenie o odstąpieniu
+                np. wypełniając formularz, który znajduje się w treści tego maila jako załącznik oraz, który jest
+                dostępny na naszej stronie internetowej w zakładce "Reklamacje i zwroty", a następnie odeślesz go nam
+                wraz z produktem. Pragniemy zaznaczyć, iż bezpośredni koszt zwrotu produktu leży po Twojej stronie.
+            </td>
+        </tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr>
+            <td colSpan="5" style="text-align: center; font-size: 14px; font-weight: 700;">
+                Zwroty i reklamacje prosimy wysyłać na adres:
+            </td>
+        </tr>
+        <tr>
+            <td colSpan="5" style="text-align: center; font-size: 14px;">
+                Topolowa 26
+            </td>
+        </tr>
+        <tr>
+            <td colSpan="5" style="text-align: center; font-size: 14px;">
+                72-006 Mierzyn
+            </td>
+        </tr>
+        </tbody>
+        <tfoot style="display: block; border-top: 2px solid #fff; margin: 20px auto;">
+        <tr>
+            <td style="display: block; margin-top: 20px;">
+                Pozdrawiamy
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Zespół HideIsland
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a style="color: #fff; display: block; margin-top: 20px; text-decoration: none;"
+                   href="https://hideisland.pl">
+                    hideisland.pl
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a style="color: #fff; text-decoration: none;" href="mailto:biuro@hideisland.pl">
+                    biuro@hideisland.pl
+                </a>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
+</main>
+</body>`
+    }
+
+    transporter.sendMail(mailOptions, function(error, info){
+        if(error) {
+            console.log(error);
+            if(response) {
+                response.send({
+                    result: 0
+                })
+            }
+        }
+        else{
+            if(response) {
+                response.send({
+                    result: 1
+                })
+            }
+        }
+    });
 }
 
 con.connect(err => {
+    router.post("/send-order-info", (request, response) => {
+        const { orderId } = request.body;
+
+        const query = 'SELECT o.id, o.order_price, p.name, p.price, s.quantity, s.size, pm.name as payment_method, sm.name as shipping_method, sm.price as shipping_method_price, o.inpost_address, o.inpost_postal_code, o.inpost_city, o.nip, o.company_name, u.email, u.first_name, u.last_name, u.street, u.building, u.flat, u.city, u.postal_code FROM orders o JOIN users u ON u.id = o.user JOIN payment_methods pm ON pm.id = o.payment_method JOIN shipping_methods sm ON sm.id = o.shipping_method JOIN sells s ON s.order_id = o.id JOIN products p ON p.id = s.product_id WHERE o.id = ?';
+        const values = [orderId];
+        con.query(query, values, (err, res) => {
+            if(res) {
+               sendStatus1Email(res, response);
+           }
+           else {
+               response.send({
+                   result: 0
+               });
+           }
+        });
+    })
+
     /* GET ALL ORDERS */
     router.get("/get-orders", (request, response) => {
         const query = 'SELECT o.id as id, u.first_name, u.last_name, u.email, o.date, o.admin_comment, o.payment_status, o.order_status, o.order_comment, o.letter_number FROM orders o LEFT OUTER JOIN users u ON o.user = u.id';
@@ -282,7 +571,7 @@ con.connect(err => {
 
         /* ADD ORDER */
         router.post("/add", (request, response) => {
-            let {email, paymentMethod, shippingMethod, newsletter, city, street, building, flat, postalCode, sessionId, user, comment, companyName, nip, amount, inPostAddress, inPostCode, inPostCity} = request.body;
+            let {paymentMethod, shippingMethod, city, street, building, flat, postalCode, sessionId, user, comment, companyName, nip, amount, inPostAddress, inPostCode, inPostCity} = request.body;
             if (flat === "") flat = null;
 
             let paymentStatus = "nieopłacone";

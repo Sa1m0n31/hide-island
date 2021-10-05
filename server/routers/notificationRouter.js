@@ -9,12 +9,12 @@ con.connect(err => {
     /* Nodemailer */
     let transporter = nodemailer.createTransport(smtpTransport ({
         auth: {
-            user: 'test@skylo-test2.pl',
+            user: 'powiadomienia@skylo-pl.atthost24.pl',
             pass: 'SwinkaPeppa-31'
         },
         host: 'skylo-pl.atthost24.pl',
         secureConnection: true,
-        port: 587,
+        port: 465,
         tls: {
             rejectUnauthorized: false
         },
@@ -67,7 +67,7 @@ con.connect(err => {
         const productURL = convertToURL(productName);
 
         let mailOptions = {
-            from: 'test@skylo-test2.pl',
+            from: 'powiadomienia@skylo-pl.atthost24.pl',
             to: email,
             subject: 'Produkt, którego szukałeś, jest już dostępny w naszym sklepie!',
             html: `<main>
@@ -90,7 +90,7 @@ con.connect(err => {
                             <img style="width: 100%; display: block;" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/bluza-biala.jpg"/>
                         </figure>
                         <figure style="overflow: hidden; display: block; margin: 0;">
-                            <img style="width: 100%; display: block;" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/metka.jpg"/>
+                            <img style="max-width: 200%; min-width: 100%; min-height: 85%; display: block;" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/metka.jpg"/>
                         </figure>
                     </section>
                     <figure style="overflow: hidden; display: block; height: 300px; margin: 0; margin-top: 20px;">
@@ -102,16 +102,16 @@ con.connect(err => {
                     </h2>
 
                     <section>
-                        <a style="color: #313131; font-size: 13px; display: block;width: 49%;text-decoration: none;margin-bottom: 20px;" href="https://www.facebook.com/HideIslandwear">
+                        <a style="color: #313131; font-size: 13px; white-space: nowrap; display: block;width: 49%;text-decoration: none;margin-bottom: 20px;" href="https://www.facebook.com/HideIslandwear">
                             <img style=" width: 30px;height: auto;margin-right: 8px;vertical-align: middle;" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/fb.png" alt="facebook"/>
                             Hideislandwear
                         </a>
-                        <a style="color: #313131;font-size: 13px;display: block;width: 49%;text-decoration: none;margin-bottom: 20px;" href="http://hideisland.pl">
+                        <a style="color: #313131;font-size: 13px; white-space: nowrap; display: block;width: 49%;text-decoration: none;margin-bottom: 20px;" href="http://hideisland.pl">
                             <img style=" width: 30px;height: auto;margin-right: 8px;vertical-align: middle;" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/website.png" alt="strona-internetowa"/>
                             www.hideisland.pl
                         </a>
                     </section>
-                     <a style="color: #313131;font-size: 13px;display: block;width: 100%;text-decoration: none;margin-bottom: 20px;"
+                     <a style="color: #313131;font-size: 13px; white-space: nowrap; display: block;width: 100%;text-decoration: none;margin-bottom: 20px;"
                            href="https://www.instagram.com/HideIsland_wear/?fbclid=IwAR3Y8NLYGmXQ-_pvGE1UZLO1oR0iMfT0uNWYZgvrpKHv40N4fKvsfdC4UPc">
                             <img style=" width: 30px;height: auto;margin-right: 8px;vertical-align: middle;" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/insta.png" alt="instagram"/>
                             Hideislandwear
@@ -143,6 +143,8 @@ con.connect(err => {
                     const query2 = 'SELECT n.email, p.name FROM notifications n JOIN products p ON n.product_id = p.id WHERE product_id = ?';
 
                     con.query(query2, values2, (err, res) => {
+                        console.log(res);
+                        console.log(err);
                        if(res) {
                            if(res.length) {
                                res.forEach((item, index, array) => {

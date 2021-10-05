@@ -167,8 +167,13 @@ const ShippingForm = ({sum}) => {
                             firstName: formik.values.firstName,
                             lastName: formik.values.lastName,
                             email: formik.values.email,
-                            phoneNumber: formik.values.phoneNumber
-                        })
+                            phoneNumber: formik.values.phoneNumber,
+                            street: formik.values.street,
+                            building: formik.values.building,
+                            flat: formik.values.flat,
+                            city: formik.values.city,
+                            postalCode: formik.values.postalCode
+                           })
                             .then(res => {
                                 if(res.data.result === -1) {
                                     setAccountExistsError("Istnieje konto o podanym adresie email. Aby dokonać zakupu, zaloguj się.");
@@ -222,7 +227,7 @@ const ShippingForm = ({sum}) => {
                     if(orderId) {
                         /* Add sells */
                         const cart = JSON.parse(localStorage.getItem('hideisland-cart'));
-                        cart?.forEach((item, cartIndex) => {
+                        cart?.forEach((item, cartIndex, cartArray) => {
                             /* Add sells */
                             axios.post(`${settings.API_URL}/order/add-sell`, {
                                 orderId,
@@ -231,34 +236,41 @@ const ShippingForm = ({sum}) => {
                                 quantity: item.amount,
                                 paymentMethod: paymentMethod
                             })
-                                .then(res => { console.log(res.data) })
-                        });
-
-                        if(paymentMethod === 2) {
-                            /* Platnosc za pobraniem */
-                            localStorage.setItem('hideisland-ty', 'true');
-                            window.location = "/dziekujemy";
-
-                            /* Remove cart from local storage */
-                            localStorage.removeItem('hideisland-cart');
-                        }
-                        else {
-                            /* PAYMENT PROCESS */
-                            let paymentUri = "https://sandbox.przelewy24.pl/trnRequest/";
-
-                            axios.post(`${settings.API_URL}/payment/payment`, {
-                                sessionId,
-                                email: formik.values.email,
-                                amount: sum + shippingCost - discountInPLN
-                            })
                                 .then(res => {
-                                    /* Remove cart from local storage */
-                                    localStorage.removeItem('hideisland-cart');
+                                    if(cartIndex === cartArray.length-1) {
+                                        axios.post(`http://hideisland.skylo-test3.pl/order/send-order-info`, {
+                                            orderId
+                                        })
+                                            .then((res) => {
+                                                if(paymentMethod === 2) {
+                                                    /* Platnosc za pobraniem */
+                                                    localStorage.setItem('hideisland-ty', 'true');
+                                                    window.location = "/dziekujemy";
 
-                                    const token = res.data.result;
-                                    window.location.href = `${paymentUri}${token}`;
-                                });
-                        }
+                                                    /* Remove cart from local storage */
+                                                    localStorage.removeItem('hideisland-cart');
+                                                }
+                                                else {
+                                                    /* PAYMENT PROCESS */
+                                                    let paymentUri = "https://sandbox.przelewy24.pl/trnRequest/";
+
+                                                    axios.post(`${settings.API_URL}/payment/payment`, {
+                                                        sessionId,
+                                                        email: formik.values.email,
+                                                        amount: sum + shippingCost - discountInPLN
+                                                    })
+                                                        .then(res => {
+                                                            /* Remove cart from local storage */
+                                                            localStorage.removeItem('hideisland-cart');
+
+                                                            const token = res.data.result;
+                                                            window.location.href = `${paymentUri}${token}`;
+                                                        });
+                                                }
+                                            })
+                                    }
+                                })
+                        });
                     }
                     else {
                         window.location = "/";

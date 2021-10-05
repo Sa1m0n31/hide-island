@@ -69,7 +69,7 @@ const Footer = () => {
                     <a className="header__socialMedia__link" href="https://www.facebook.com/HideIslandwear">
                         <img className="header__socialMedia__link__img" src={facebookIcon} alt="facebook" />
                     </a>
-                    <a className="header__socialMedia__link" href="http://hideisland.skylo-test3.pl/image?url=/media/notification/insta.png">
+                    <a className="header__socialMedia__link" href="https://instagram.com/hideisland_wear">
                         <img className="header__socialMedia__link__img" src={instagramIcon} alt="instagram" />
                     </a>
                 </section>
