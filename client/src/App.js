@@ -46,6 +46,8 @@ import PanelStocks from "./admin/pages/PanelStocks";
 import AddStockPage from "./admin/pages/AddStockPage";
 import {getProductStock} from "./admin/helpers/stockFunctions";
 import przelewy24Methods from './static/img/metody-platnosci.png'
+import SubscriptionValidationPage from "./pages/SubscriptionValidationPage";
+import SubscriptionResignationPage from "./pages/SubscriptionResignationPage";
 
 /* Context */
 const CartContext = React.createContext(null);
@@ -232,6 +234,13 @@ function App() {
           </Route>
           <Route path="/dziekujemy">
               <TYPage />
+          </Route>
+
+          <Route path="/potwierdzenie-subskrypcji-newslettera">
+              <SubscriptionValidationPage />
+          </Route>
+          <Route path="/rezygnacja-z-subskrypcji">
+              <SubscriptionResignationPage />
           </Route>
 
             {/* Admin routes */}

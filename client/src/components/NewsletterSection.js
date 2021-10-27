@@ -62,7 +62,7 @@ const NewsletterSection = () => {
                     Zapisz się
                 </button>
             </> : <h4 className="newsletterResponse">
-                {newsletterResponse === 2 ? "Proszę podać poprawny adres e-mail" : newsletterResponse === 1 ? "Dziękujemy za zapisanie się do naszego newslettera" : "Podany adres e-mail jest już zapisany do naszego newslettera"}
+                {newsletterResponse === 2 ? "Proszę podać poprawny adres e-mail" : newsletterResponse === 1 ? "Dziękujemy za zapisanie się do naszego newslettera. Na podany adres mailowy wysłaliśmy link weryfikacyjny." : "Podany adres e-mail jest już zapisany do naszego newslettera"}
             </h4> }
         </section>
     </section>

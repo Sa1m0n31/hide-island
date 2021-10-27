@@ -219,19 +219,60 @@ const sendStatus2Email = (id, email, fullName, response = null) => {
 }
 
 const sendStatus1Email = (orderInfo, response = null) => {
-    console.log(orderInfo);
     let sells = ``;
     let sum = 0;
     for(let i=0; i<orderInfo.length; i++) {
-        sells += `<tr>
-            <td>
+        sells += `<span>
+            <tr style="padding-top: 10px;">
+            <td style="padding: 30px 0 20px; white-space: nowrap;">
+                <img style="width: 100px; margin: 0;" src="http://hideisland.skylo-test3.pl/image?url=/media/${orderInfo[i].file_path}" alt={${orderInfo[i].name}} />
+            </td>
+            <td style="white-space: nowrap; font-size: 21px; font-weight: 300; display: block; margin-left: -80%; margin-top: 30px;">
                 ${orderInfo[i].name}
             </td>
-            <td style="font-weight: 700; font-size: 15px; text-align: center; width: 110px;">${orderInfo[i].size}</td>
-            <td style="font-weight: 700; font-size: 15px; text-align: center; width: 110px;">${orderInfo[i].quantity}</td>
-            <td style="font-weight: 700; font-size: 15px; text-align: center; width: 110px;">${orderInfo[i].price} PLN</td>
-            <td style="font-weight: 700; font-size: 15px; text-align: center; width: 110px;">${orderInfo[i].price * orderInfo[i].quantity} PLN</td>
-        </tr>`;
+                <td></td>
+                <td></td>
+        </tr>
+        <tr>
+            <td style="white-space: nowrap; font-weight: 700; font-size: 15px; text-align: center; display: inline-block; width: 15%; margin-top: 15px;">
+                <span style="display: block; text-align: center; font-size: 13px; font-weight: 300; padding-bottom: 8px;">
+                    #${i+1}
+                </span>
+            </td>
+            <td style="white-space: nowrap; font-weight: 700; font-size: 15px; text-align: center;  width: 60%; display: inline-block;">
+                <span style="display: block; text-align: center; font-size: 13px; font-weight: 300; padding-bottom: 8px;">
+                    Rozmiar
+                </span>
+                <span style="font-weight: 400;">
+                    ${orderInfo[i].size}
+                </span>
+            </td>
+             <td style="font-weight: 700; white-space: nowrap; font-size: 15px; text-align: center; width: 15%;">
+                <span style="display: block; text-align: center; font-size: 13px; font-weight: 300; padding-bottom: 8px;">
+                    Ilość
+                </span>
+                <span style="font-weight: 400;">
+                    ${orderInfo[i].quantity}
+                </span>
+            </td>
+             <td style="font-weight: 700; font-size: 15px; white-space: nowrap; text-align: center;  width: 15%;">
+                <span style="display: block; text-align: center; font-size: 13px; font-weight: 300; padding-bottom: 8px;">
+                    Cena
+                </span>
+                <span style="font-weight: 400;">
+                    ${orderInfo[i].price} PLN
+                </span>
+            </td>
+             <td style="font-weight: 700; font-size: 15px; white-space: nowrap; text-align: center;  width: 15%;">
+                <span style="display: block; text-align: center; font-size: 13px; font-weight: 300; padding-bottom: 8px;">
+                    Wartość
+                </span>
+                <span style="font-weight: 400;">
+                    ${orderInfo[i].price * orderInfo[i].quantity} PLN
+                </span>
+            </td>
+        </tr>
+        </span>`;
 
         sum += parseInt(orderInfo[i].quantity) * parseInt(orderInfo[i].price);
     }
@@ -240,25 +281,32 @@ const sendStatus1Email = (orderInfo, response = null) => {
     const address = orderInfo[0].building.toString() + (orderInfo[0].flat ? "/" + orderInfo[0].flat : "");
     const vat = orderInfo[0].company_name ? `${orderInfo[0].companyName}<br/>${orderInfo[0].nip}` : "Nie dotyczy";
     const inPost = orderInfo[0].inpost_address ? `${orderInfo[0].inpost_address}<br/>${orderInfo[0].inpost_postal_code} ${orderInfo[0].inpost_city}` : "Nie dotyczy";
+    const comment = orderInfo[0].order_comment;
 
     /* status = ZŁOŻONE */
     let mailOptions = {
     from: 'powiadomienia@skylo-pl.atthost24.pl',
     to: orderInfo[0].email,
     subject: 'Dziękujemy za złożenie zamówienia w sklepie HideIsland',
+    attachments: [
+        {
+            filename: 'formularz-zwrotu-towaru-hideisland.pdf',
+            path: __dirname + '/formularz-zwrotu-towaru-hideisland.pdf'
+        }
+    ],
     html: `<head>
     <meta charSet="UTF-8">
-        <title>Title</title>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-            <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin>
-                <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;700;1,300&display=swap"
-                      rel="stylesheet">
+    <title>Title</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;700;1,300&display=swap"
+          rel="stylesheet">
 </head>
 <body>
 <main style="width: 100%;">
     <img style="max-width: 100%; width: 800px; margin: 0;" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/logo.jpg" alt="zamowienie-zostalo-zlozone"/>
     <table
-        style="display: block; padding: 20px; max-width: 100%; width: 800px; background: #59545A; margin-top: -5px; color: #fff; font-weight: 300; font-family: 'Open Sans', sans-serif;">
+            style="display: block; padding: 20px; max-width: 100%; width: 800px; background: #59545A; margin-top: -5px; color: #fff; font-weight: 300; font-family: 'Open Sans', sans-serif;">
         <thead style="display: block;">
         <tr style="display: block;">
             <th style="font-weight: 300; font-size: 21px; display: block; margin-top: 20px; text-align: center;">
@@ -291,34 +339,34 @@ const sendStatus1Email = (orderInfo, response = null) => {
         <tr></tr>
         <tr></tr>
         <tr style="display: block; margin-top: 15px;">
-            <td style="font-size: 14px; width: 150px;">
+            <td style="font-size: 14px; width: 150px; white-space: nowrap;">
                 Wartość produktów:
             </td>
-            <td style="font-size: 14px;">
+            <td style="font-size: 14px; white-space: nowrap;">
                 ${sum} PLN
             </td>
         </tr>
         <tr style="display: block; margin-top: 5px;">
-            <td style="font-size: 14px; width: 150px;">
+            <td style="font-size: 14px; width: 150px; white-space: nowrap;">
                 Rabat - kod rabatowy:
             </td>
-            <td style="font-size: 14px;">
+            <td style="font-size: 14px; white-space: nowrap;">
                 - ${discount} PLN
             </td>
         </tr>
         <tr style="display: block; margin-top: 5px;">
-            <td style="font-size: 14px; width: 150px;">
+            <td style="font-size: 14px; width: 150px; white-space: nowrap;">
                 Koszt dostawy:
             </td>
-            <td style="font-size: 14px;">
+            <td style="font-size: 14px; white-space: nowrap;">
                 ${orderInfo[0].shipping_method_price} PLN
             </td>
         </tr>
         <tr style="display: block; margin-top: 5px; border-bottom: 3px solid #fff; padding-bottom: 15px;">
-            <td style="font-weight: 700; font-size: 15px; width: 150px;">
+            <td style="font-weight: 700; font-size: 15px; width: 150px; white-space: nowrap;">
                 Razem
             </td>
-            <td style="font-weight: 700; font-size: 15px;">
+            <td style="font-weight: 700; font-size: 15px; white-space: nowrap;">
                 ${orderInfo[0].order_price} PLN
             </td>
         </tr>
@@ -385,6 +433,16 @@ const sendStatus1Email = (orderInfo, response = null) => {
         <tr></tr>
         <tr>
             <td style="font-size: 14px; font-weight: 700;">Uwagi do zamówienia:</td>
+        </tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr></tr>
+        <tr>
+            <td style="font-size: 14px;">
+                ${comment ? comment : "Brak"}
+            </td>
         </tr>
         <tr></tr>
         <tr></tr>
@@ -472,7 +530,8 @@ const sendStatus1Email = (orderInfo, response = null) => {
         </tfoot>
     </table>
 </main>
-</body>`
+</body>
+`
     }
 
     transporter.sendMail(mailOptions, function(error, info){
@@ -498,7 +557,7 @@ con.connect(err => {
     router.post("/send-order-info", (request, response) => {
         const { orderId } = request.body;
 
-        const query = 'SELECT o.id, o.order_price, p.name, p.price, s.quantity, s.size, pm.name as payment_method, sm.name as shipping_method, sm.price as shipping_method_price, o.inpost_address, o.inpost_postal_code, o.inpost_city, o.nip, o.company_name, u.email, u.first_name, u.last_name, u.street, u.building, u.flat, u.city, u.postal_code FROM orders o JOIN users u ON u.id = o.user JOIN payment_methods pm ON pm.id = o.payment_method JOIN shipping_methods sm ON sm.id = o.shipping_method JOIN sells s ON s.order_id = o.id JOIN products p ON p.id = s.product_id WHERE o.id = ?';
+        const query = 'SELECT o.id, o.order_price, o.order_comment, p.name, p.price, s.quantity, s.size, pm.name as payment_method, sm.name as shipping_method, sm.price as shipping_method_price, o.inpost_address, o.inpost_postal_code, o.inpost_city, o.nip, o.company_name, u.email, u.first_name, u.last_name, u.street, u.building, u.flat, u.city, u.postal_code, i.file_path FROM orders o JOIN users u ON u.id = o.user JOIN payment_methods pm ON pm.id = o.payment_method JOIN shipping_methods sm ON sm.id = o.shipping_method JOIN sells s ON s.order_id = o.id JOIN products p ON p.id = s.product_id JOIN images i ON i.id = p.main_image WHERE o.id = ?';
         const values = [orderId];
         con.query(query, values, (err, res) => {
             if(res) {
@@ -510,7 +569,7 @@ con.connect(err => {
                });
            }
         });
-    })
+    });
 
     /* GET ALL ORDERS */
     router.get("/get-orders", (request, response) => {
@@ -591,7 +650,6 @@ con.connect(err => {
 
             con.query(query, values, (err, res) => {
                 let result = 0;
-                console.log(err);
                 if (res) {
                     if (res.insertId) result = res.insertId;
                 }

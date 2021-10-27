@@ -225,10 +225,25 @@ button, a {
     transition: 1s all ease;
 }
 
+.hero__carousel {
+    position: relative;
+    width: 100%;
+    height: clamp(100px, 80vh, 600px) !important;
+}
+
 .hero__slider__img {
+    width: 100%;
     height: auto !important;
     cursor: pointer;
-    transition: .4s all ease-in-out;
+    transition: .8s all ease-in-out;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+}
+
+#slider-1 {
+    opacity: 1;
 }
 
 .hero__slider__controls {

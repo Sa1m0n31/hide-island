@@ -81,6 +81,12 @@ app.get("/reklamacje", (req, res) => {
 app.get("/zwroty", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
+app.get("/potwierdzenie-subskrypcji-newslettera", (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
+app.get("/rezygnacja-z-subskrypcji", (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
 
 /* Routers */
 const authRouter = require("./routers/authRouter");

@@ -202,6 +202,13 @@ const ShippingForm = ({sum}) => {
                 });
             }
 
+            /* Decrement coupon code times_to_use */
+            if(couponVerified === 1) {
+                axios.post(`${settings.API_URL}/coupon/decrement`, {
+                    couponContent: couponCode
+                });
+            }
+
             /* Add order */
             axios.post(`${settings.API_URL}/order/add`, {
                 paymentMethod: paymentMethod,
@@ -582,7 +589,7 @@ const ShippingForm = ({sum}) => {
                            value={checkbox}
                            onChange={() => { setCheckbox(!checkbox); }} />
 
-                    Zapoznałem/am się z <a href="/regulamin">Regulaminem</a> i <a href="/polityka-prywatnosci">Polityką prywatności</a>.
+                    Zapoznałem/am się z <a href="/regulamin">Regulaminem</a> i <a href="/polityka-prywatnosci">Polityką prywatności</a> *.
                 </label>
 
                 <label className="w-100 clientForm__label--checkbox clientForm__label--checkbox--marketing mb-4">

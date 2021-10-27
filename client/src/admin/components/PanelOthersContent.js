@@ -35,7 +35,7 @@ const PanelOthersContent = () => {
                         if(result) {
                             setTerms(result.terms_of_service);
                             setPolicy(result.privacy_policy);
-                            setComplaints(result.complaints_and_returns);
+                            setComplaints(result.complaints);
                             setReturns(result.returns);
                             setShippingAndPayment(result.shipping_and_payment);
                             setAboutUs(result.about_us);
