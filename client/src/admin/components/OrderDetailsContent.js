@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import {deleteOrderById, getOrderDetails, getRibbons} from "../helpers/orderFunctions";
+import {deleteOrderById, getOrderDetails, getRibbons, payOrder} from "../helpers/orderFunctions";
 
 import { useLocation } from "react-router";
 import x from '../static/img/close.png'
@@ -24,6 +24,7 @@ const OrderDetailsContent = () => {
     const [orderStatus, setOrderStatus] = useState("");
     const [orderUpdated, setOrderUpdated] = useState(-1);
     const [adminComment, setAdminComment] = useState("");
+    const [payClicked, setPayClicked] = useState(-1);
 
     useEffect(() => {
         /* Get order id from url string */
@@ -36,7 +37,6 @@ const OrderDetailsContent = () => {
         getOrderDetails(id)
             .then(res => {
                if(res?.data?.result?.length) {
-                   console.log(res.data.result);
                    setCart(res.data.result);
                    setOrderStatus(res.data.result[0].order_status);
                    setLetterNumber(res.data.result[0].letter_number);
@@ -213,7 +213,12 @@ const OrderDetailsContent = () => {
                     {cart?.length ? <section className="panelContent__orderStatus">
                         <h2 className="panelContent__orderStatus__header">
                             Opłacone:
-                            <img className="panelContent__orderStatus__img" src={cart[0].payment_status?.toLowerCase() === "opłacone" ? tick : x} alt="oplacone" />
+                            <img className="panelContent__orderStatus__img" src={(cart[0].payment_status?.toLowerCase() === "opłacone" && payClicked !== 0) || payClicked === 1 ? tick : x} alt="oplacone" />
+                            {(cart[0].payment_status?.toLowerCase() === "opłacone" && payClicked !== 0) || payClicked === 1 ? <button onClick={() => { payOrder(0, cart[0].id); setPayClicked(0); }}>
+                                Oznacz jako nieopłacone
+                            </button> : <button onClick={() => { payOrder(1, cart[0].id); setPayClicked(1); }}>
+                                Oznacz jako opłacone
+                            </button>}
                         </h2>
                         <h2 className="panelContent__orderStatus__header">
                             Faktura VAT:

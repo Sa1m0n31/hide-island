@@ -29,4 +29,10 @@ const getRibbons = (id) => {
     return axios.post(`${API_URL}/order/get-ribbons`, { id });
 }
 
-export { getAllOrders, getOrderDetails, calculateCartSum, deleteOrderById, getRibbons };
+const payOrder = (pay, id) => {
+    return axios.post(`${API_URL}/order/pay-order`, {
+       pay, id
+    });
+}
+
+export { getAllOrders, getOrderDetails, calculateCartSum, deleteOrderById, getRibbons, payOrder };

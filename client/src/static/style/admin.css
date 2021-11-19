@@ -1316,3 +1316,89 @@ select {
     justify-content: flex-start;
     align-items: center;
 }
+
+/* Update - 19.11.21 */
+.panelContent .clientForm__subheader {
+    text-align: left;
+    margin: 20px 0 30px;
+}
+
+.panelContent .clientForm__label {
+    justify-content: flex-start;
+}
+
+.panelContent .clientForm__label,
+.panelContent .clientForm__row {
+    width: clamp(100px, 600px, 100%);
+}
+
+.productList__item {
+    align-items: center;
+}
+
+.productList__item label {
+    margin-left: 50px;
+    font-size: 13px;
+    text-transform: uppercase;
+}
+
+.productList__item label select {
+    font-size: 16px;
+}
+
+.productList__item label select {
+    margin-left: 10px;
+}
+
+.productList__item__header {
+    font-size: 15px;
+    font-weight: 400;
+    text-transform: uppercase;
+    margin-top: 25px;
+}
+
+.productList__btn {
+    width: 200px;
+    height: 50px;
+    background: #707070;
+    color: #fff;
+    text-transform: uppercase;
+    margin-left: 30px;
+}
+
+.productList__icon {
+    filter: brightness(0) invert(1);
+    width: 20px;
+    margin: 0 20px;
+}
+
+.productList__productAdded {
+    font-size: 15px;
+    color: #fff;
+}
+
+.productList__productAddedWrapper {
+    display: flex;
+    align-items: center;
+}
+
+.panelContent--addOrder .shippingForm__products {
+    background: #272727;
+    padding: 40px;
+    margin-top: 25px;
+}
+
+.panelContent__orderStatus__header button {
+    padding: 5px 10px;
+    background: var(--black-primary);
+    color: #fff;
+    font-size: 15px;
+    text-transform: uppercase;
+    border: 1px solid #fff;
+    margin-left: 25px;
+}
+
+.panelContent--addOrder__header {
+    text-align: center;
+    margin-top: 20vh;
+}

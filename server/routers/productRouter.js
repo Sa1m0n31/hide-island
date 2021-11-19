@@ -568,6 +568,27 @@ con.connect(err => {
    router.post("/get-products-by-categories", (request, response) => {
 
    });
+
+   router.get("/get-product-sizes", (request, response) => {
+      const id = request.query.id;
+
+      console.log(id);
+
+      const query = 'SELECT ps.size_1_name, ps.size_1_stock, ps.size_2_name, ps.size_2_stock, ps.size_3_name, ps.size_3_stock, ps.size_4_name, ps.size_4_stock, ps.size_5_name, ps.size_5_stock FROM products_stock ps JOIN products p ON ps.id = p.stock_id WHERE p.id = ?';
+      const values = [id];
+      con.query(query, values, (err, res) => {
+         if(res) {
+            response.send({
+               result: res
+            });
+         }
+         else {
+            response.send({
+               result: 0
+            });
+         }
+      });
+   });
 });
 
 module.exports = router;

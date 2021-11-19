@@ -24,7 +24,7 @@ con.connect(err => {
         let mailOptions = {
             from: 'powiadomienia@skylo-pl.atthost24.pl',
             to: email,
-            subject: 'Potwierdź subskrypcję newslettera HideIsland',
+            subject: 'Potwierdź swój adres e-mail',
             html: `<head>
     <meta charSet="UTF-8">
     <title>Title</title>
@@ -138,7 +138,7 @@ con.connect(err => {
                let mailOptions = {
                    from: 'powiadomienia@skylo-pl.atthost24.pl',
                    to: email,
-                   subject: 'Kod rabatowy na Twoje pierwsze zakupy w HideIsland',
+                   subject: 'Cieszymy się, że jesteś z nami',
                    html: `<head>
     <meta charSet="UTF-8">
     <title>Title</title>

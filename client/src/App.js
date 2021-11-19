@@ -48,6 +48,7 @@ import {getProductStock} from "./admin/helpers/stockFunctions";
 import przelewy24Methods from './static/img/metody-platnosci.png'
 import SubscriptionValidationPage from "./pages/SubscriptionValidationPage";
 import SubscriptionResignationPage from "./pages/SubscriptionResignationPage";
+import AddOrderPage from "./admin/pages/AddOrderPage";
 
 /* Context */
 const CartContext = React.createContext(null);
@@ -285,6 +286,9 @@ function App() {
             </Route>
             <Route path="/panel/dodaj-stan-magazynowy">
                 <AddStockPage />
+            </Route>
+            <Route path="/panel/dodaj-zamowienie">
+                <AddOrderPage />
             </Route>
 
             {/* Add content pages */}

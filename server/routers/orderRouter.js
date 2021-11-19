@@ -25,7 +25,7 @@ const sendStatus3Email = (id, email, fullName, letterNumber, response = null) =>
     let mailOptions = {
         from: 'powiadomienia@skylo-pl.atthost24.pl',
         to: email,
-        subject: 'Twoje zamówienie zostało zrealizowane',
+        subject: `Zmiana statusu zamówienia #${id}: zamówienie zrealizowane`,
         html: `<head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -133,7 +133,7 @@ const sendStatus2Email = (id, email, fullName, response = null) => {
     let mailOptions = {
         from: 'powiadomienia@skylo-pl.atthost24.pl',
         to: email,
-        subject: 'Twoje zamówienie zostało przyjęte do realizacji',
+        subject: `Zmiana statusu zamówienia #${id}`,
         html: `<head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -280,14 +280,34 @@ const sendStatus1Email = (orderInfo, response = null) => {
     let discount = sum + parseInt(orderInfo[0].shipping_method_price) - parseInt(orderInfo[0].order_price);
     const address = orderInfo[0].building.toString() + (orderInfo[0].flat ? "/" + orderInfo[0].flat : "");
     const vat = orderInfo[0].company_name ? `${orderInfo[0].companyName}<br/>${orderInfo[0].nip}` : "Nie dotyczy";
-    const inPost = orderInfo[0].inpost_address ? `${orderInfo[0].inpost_address}<br/>${orderInfo[0].inpost_postal_code} ${orderInfo[0].inpost_city}` : "Nie dotyczy";
+    const inPost = orderInfo[0].shipping_method === 'Paczkomaty InPost' ? `${orderInfo[0].inpost_address}<br/>${orderInfo[0].inpost_postal_code} ${orderInfo[0].inpost_city}` : "Nie dotyczy";
     const comment = orderInfo[0].order_comment;
+
+    // got.get(`https://api-shipx-pl.easypack24.net/v1/organizations/43271/shipments?receiver_address=${orderInfo[0].street}&receiver_email=${orderInfo[0].email}`, {
+    //     responseType: 'json',
+    //     headers: {
+    //         'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJhcGktc2hpcHgtcGwuZWFzeXBhY2syNC5uZXQiLCJzdWIiOiJhcGktc2hpcHgtcGwuZWFzeXBhY2syNC5uZXQiLCJleHAiOjE2MzU4NTgyMzUsImlhdCI6MTYzNTg1ODIzNSwianRpIjoiNjg2NGU0YzAtOWU1Ni00MDRhLWI0MWItYzg5YTBjYzIwNDVkIn0.UU_1anY_1TBhPNo3LxsBxgxdPjS0XPWRMPzXxvRAgsvNxvjee-Q_Cj3qhKmWl7J9j6fLfinkif_GtpAZDJ3yOg' // tmp
+    //     }
+    // })
+    //     .then((res) => {
+    //         /* Change InPost tracking number */
+    //         if(res) {
+    //             if(res.body.items.length) {
+    //                 const trackingNumber = res.body.items[0].tracking_number;
+    //
+    //                 const query = 'UPDATE orders SET letter_number = ? WHERE id = ?';
+    //                 const values = [trackingNumber, orderInfo[0].id];
+    //
+    //                 con.query(query, values);
+    //             }
+    //         }
+    //     });
 
     /* status = ZŁOŻONE */
     let mailOptions = {
     from: 'powiadomienia@skylo-pl.atthost24.pl',
     to: orderInfo[0].email,
-    subject: 'Dziękujemy za złożenie zamówienia w sklepie HideIsland',
+    subject: 'Witaj, Dziękujemy za złożenie zamówienia w sklepie HideIsland.pl',
     attachments: [
         {
             filename: 'formularz-zwrotu-towaru-hideisland.pdf',
@@ -554,13 +574,150 @@ const sendStatus1Email = (orderInfo, response = null) => {
 }
 
 con.connect(err => {
+    const addInPostParcel = (firstName, lastName, email, phone, paczkomatId) => {
+        const postData = {
+            receiver: {
+                name: `${firstName} ${lastName}`,
+                first_name: `${firstName}`,
+                last_name: `${lastName}`,
+                email: `${email}`,
+                phone: `${phone}`
+            },
+            parcels:
+                {
+                    template: "large"
+                },
+            custom_attributes: {
+                sending_method: "dispatch_order",
+                target_point: `${paczkomatId}`
+            },
+            service: "inpost_locker_standard",
+            reference: `Przesyłka paczkomatowa dla Klienta: ${firstName} ${lastName}`
+        }
+
+        got.post("https://api-shipx-pl.easypack24.net/v1/organizations/43271/shipments", {
+            json: postData,
+            responseType: 'json',
+            headers: {
+                'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJhcGktc2hpcHgtcGwuZWFzeXBhY2syNC5uZXQiLCJzdWIiOiJhcGktc2hpcHgtcGwuZWFzeXBhY2syNC5uZXQiLCJleHAiOjE2MzU4NTgyMzUsImlhdCI6MTYzNTg1ODIzNSwianRpIjoiNjg2NGU0YzAtOWU1Ni00MDRhLWI0MWItYzg5YTBjYzIwNDVkIn0.UU_1anY_1TBhPNo3LxsBxgxdPjS0XPWRMPzXxvRAgsvNxvjee-Q_Cj3qhKmWl7J9j6fLfinkif_GtpAZDJ3yOg' // tmp
+            }
+        });
+    }
+
+    const addInPostCourier = (firstName, lastName, email, phone, street, building, city, postCode, cod) => {
+        let postData;
+        if(cod) {
+            postData = {
+                receiver: {
+                    name: `${firstName} ${lastName}`,
+                    first_name: `${firstName}`,
+                    last_name: `${lastName}`,
+                    email: `${email}`,
+                    phone: `${phone}`,
+                    address: {
+                        street: `${street}`,
+                        building_number: `${building}`,
+                        city: `${city}`,
+                        post_code: `${postCode}`,
+                        country_code: "PL"
+                    }
+                },
+                parcels: [
+                    {
+                        id: "small package",
+                        dimensions: {
+                            length: "390",
+                            width: "330",
+                            height: "6",
+                            unit: "mm"
+                        },
+                        weight: {
+                            amount: "25",
+                            unit: "kg"
+                        },
+                        is_non_standard: false
+                    }
+                ],
+                cod: {
+                    amount: `${cod}`,
+                    currency: "PLN"
+                },
+                insurance: {
+                    amount: `${parseFloat(cod)+1}`,
+                    currency: "PLN"
+                },
+                service: "inpost_courier_standard",
+                reference: `Przesyłka kurierska dla Klienta: ${firstName} ${lastName}`
+            }
+        }
+        else {
+            postData = {
+                receiver: {
+                    name: `${firstName} ${lastName}`,
+                    first_name: `${firstName}`,
+                    last_name: `${lastName}`,
+                    email: `${email}`,
+                    phone: `${phone}`,
+                    address: {
+                        street: `${street}`,
+                        building_number: `${building}`,
+                        city: `${city}`,
+                        post_code: `${postCode}`,
+                        country_code: "PL"
+                    }
+                },
+                parcels: [
+                    {
+                        id: "small package",
+                        dimensions: {
+                            length: "390",
+                            width: "330",
+                            height: "6",
+                            unit: "mm"
+                        },
+                        weight: {
+                            amount: "25",
+                            unit: "kg"
+                        },
+                        is_non_standard: false
+                    }
+                ],
+                service: "inpost_courier_standard",
+                reference: `Przesyłka kurierska dla Klienta: ${firstName} ${lastName}`
+            }
+        }
+
+        got.post("https://api-shipx-pl.easypack24.net/v1/organizations/43271/shipments", {
+            json: postData,
+            responseType: 'json',
+            headers: {
+                'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJhcGktc2hpcHgtcGwuZWFzeXBhY2syNC5uZXQiLCJzdWIiOiJhcGktc2hpcHgtcGwuZWFzeXBhY2syNC5uZXQiLCJleHAiOjE2MzU4NTgyMzUsImlhdCI6MTYzNTg1ODIzNSwianRpIjoiNjg2NGU0YzAtOWU1Ni00MDRhLWI0MWItYzg5YTBjYzIwNDVkIn0.UU_1anY_1TBhPNo3LxsBxgxdPjS0XPWRMPzXxvRAgsvNxvjee-Q_Cj3qhKmWl7J9j6fLfinkif_GtpAZDJ3yOg' // tmp
+            }
+        });
+    }
+
     router.post("/send-order-info", (request, response) => {
         const { orderId } = request.body;
 
-        const query = 'SELECT o.id, o.order_price, o.order_comment, p.name, p.price, s.quantity, s.size, pm.name as payment_method, sm.name as shipping_method, sm.price as shipping_method_price, o.inpost_address, o.inpost_postal_code, o.inpost_city, o.nip, o.company_name, u.email, u.first_name, u.last_name, u.street, u.building, u.flat, u.city, u.postal_code, i.file_path FROM orders o JOIN users u ON u.id = o.user JOIN payment_methods pm ON pm.id = o.payment_method JOIN shipping_methods sm ON sm.id = o.shipping_method JOIN sells s ON s.order_id = o.id JOIN products p ON p.id = s.product_id JOIN images i ON i.id = p.main_image WHERE o.id = ?';
+        const query = 'SELECT o.id, o.order_price, o.order_comment, p.name, p.price, s.quantity, s.size, pm.name as payment_method, sm.name as shipping_method, sm.price as shipping_method_price, o.inpost_id, o.inpost_address, o.inpost_postal_code, o.inpost_city, o.nip, o.company_name, u.email, u.first_name, u.last_name, u.phone_number, u.street, u.building, u.flat, u.city, u.postal_code, i.file_path FROM orders o JOIN users u ON u.id = o.user JOIN payment_methods pm ON pm.id = o.payment_method JOIN shipping_methods sm ON sm.id = o.shipping_method JOIN sells s ON s.order_id = o.id JOIN products p ON p.id = s.product_id JOIN images i ON i.id = p.main_image WHERE o.id = ?';
         const values = [orderId];
+
         con.query(query, values, (err, res) => {
-            if(res) {
+           if(res) {
+               if(res[0]) {
+                   const row = res[0];
+                   if(res[0].shipping_method === 'Paczkomaty InPost') {
+                       addInPostParcel(row.first_name, row.last_name, row.email, row.phone_number, row.inpost_id);
+                   }
+                   else {
+                       let building = "";
+                       if(row.flat) building = row.building + "/" + row.flat;
+                       else building = row.building;
+                       if(row.payment_method === 'Przelewy24') addInPostCourier(row.first_name, row.last_name, row.email, row.phone_number, row.street, building, row.city, row.postal_code, false);
+                       else addInPostCourier(row.first_name, row.last_name, row.email, row.phone_number, row.street, building, row.city, row.postal_code, row.order_price);
+                   }
+               }
+
                sendStatus1Email(res, response);
            }
            else {
@@ -630,7 +787,7 @@ con.connect(err => {
 
         /* ADD ORDER */
         router.post("/add", (request, response) => {
-            let {paymentMethod, shippingMethod, city, street, building, flat, postalCode, sessionId, user, comment, companyName, nip, amount, inPostAddress, inPostCode, inPostCity} = request.body;
+            let {paymentMethod, shippingMethod, city, street, building, flat, postalCode, sessionId, user, comment, companyName, nip, amount, inPostName, inPostAddress, inPostCode, inPostCity} = request.body;
             if (flat === "") flat = null;
 
             let paymentStatus = "nieopłacone";
@@ -640,8 +797,8 @@ con.connect(err => {
             }
 
             building = parseInt(building) || 0;
-            let values = [paymentMethod, shippingMethod, city, street, building, flat, postalCode, user, paymentStatus, comment, sessionId, companyName, nip, amount, inPostAddress, inPostCode, inPostCity];
-            const query = 'INSERT INTO orders VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, "złożone", CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?, NULL, NULL)';
+            let values = [paymentMethod, shippingMethod, city, street, building, flat, postalCode, user, paymentStatus, comment, sessionId, companyName, nip, amount, inPostName, inPostAddress, inPostCode, inPostCity];
+            const query = 'INSERT INTO orders VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, "złożone", CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, NULL)';
 
             values = values.map((item) => {
                 if (item === "") return null;
@@ -738,7 +895,7 @@ con.connect(err => {
         router.post("/get-order", (request, response) => {
             const {id} = request.body;
             const values = [id];
-            const query = 'SELECT o.id, o.admin_comment, o.payment_status, o.order_status, o.letter_number, o.order_comment, u.first_name, u.last_name, u.email, u.phone_number, u.city, u.street, u.building, u.postal_code, u.city, o.date, o.order_status, pm.name as payment, sm.name as shipping, o.order_comment, o.company_name, o.nip, s.size, s.quantity, p.price, p.name, o.inpost_address, o.inpost_postal_code, inpost_city FROM orders o ' +
+            const query = 'SELECT o.id, o.admin_comment, o.payment_status, o.order_status, o.letter_number, o.order_comment, u.first_name, u.last_name, u.email, u.phone_number, u.city, u.street, u.building, u.postal_code, u.city, o.date, o.order_status, pm.name as payment, sm.name as shipping, o.order_comment, o.company_name, o.nip, s.size, s.quantity, p.price, p.name, o.inpost_id, o.inpost_address, o.inpost_postal_code, inpost_city FROM orders o ' +
                 'JOIN sells s ON o.id = s.order_id ' +
                 'LEFT OUTER JOIN products p ON p.id = s.product_id ' +
                 'JOIN shipping_methods sm ON o.shipping_method = sm.id ' +
@@ -755,6 +912,34 @@ con.connect(err => {
                         result: null
                     });
                 }
+            });
+        });
+
+        router.post("/pay-order", (request, response) => {
+            const { pay, id } = request.body;
+
+            let query;
+            const values = [id];
+            console.log(pay);
+            if(pay === 1) {
+                query = `UPDATE orders SET payment_status = 'opłacone' WHERE id = ?`;
+            }
+            else {
+                query = `UPDATE orders SET payment_status = 'nieopłacone' WHERE id = ?`;
+            }
+            con.query(query, values, (err, res) => {
+                console.log(err);
+                console.log(res);
+               if(res) {
+                   response.send({
+                       result: 1
+                   });
+               }
+               else {
+                   response.send({
+                       result: 0
+                   });
+               }
             });
         });
 });

@@ -125,6 +125,12 @@ const PanelMenu = ({active, submenu}) => {
                         </a>
                     </li>
                     <li className="panelMenu__list__item">
+                        <a className="panelMenu__list__item__link" id={active === 12 ? "menuItem--active" : ""} href="/panel/dodaj-zamowienie">
+                            <img className="panelMenu__list__item__img" src={addImg} alt="zamowienia" />
+                            Nowe zamówienie
+                        </a>
+                    </li>
+                    <li className="panelMenu__list__item">
                         <a className="panelMenu__list__item__link" id={active === 4 ? "menuItem--active" : ""} href="/panel/kategorie">
                             <img className="panelMenu__list__item__img" src={list} alt="kategorie" />
                             Kategorie

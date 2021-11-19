@@ -53,6 +53,7 @@ const ShippingForm = ({sum}) => {
             if(document.querySelector(".cart")) {
                 const map = window.easyPack.mapWidget('paczkomatyMapa', function(point) {
                     /* Paczkomat zostal wybrany */
+                    sessionStorage.setItem('paczkomat-id', point.name);
                     sessionStorage.setItem('paczkomat-miasto', point.address_details.city);
                     sessionStorage.setItem('paczkomat-kod', point.address_details.post_code);
                     sessionStorage.setItem('paczkomat-adres', point.address_details.street + " " + point.address_details.building_number);
@@ -224,6 +225,7 @@ const ShippingForm = ({sum}) => {
                 companyName: formik.values.companyName,
                 nip: formik.values.nip,
                 amount: sum + shippingCost - discountInPLN,
+                inPostName: sessionStorage.getItem('paczkomat-id'),
                 inPostAddress: sessionStorage.getItem('paczkomat-adres'),
                 inPostCode: sessionStorage.getItem('paczkomat-kod'),
                 inPostCity: sessionStorage.getItem('paczkomat-miasto')
@@ -314,6 +316,11 @@ const ShippingForm = ({sum}) => {
                 }
             });
     }
+
+    useEffect(() => {
+        if(shippingMethod === 1 || shippingMethod === 3) setPaymentMethod(1);
+        else if(shippingMethod === 7) setPaymentMethod(2);
+    }, [shippingMethod]);
 
     useEffect(() => {
         if(couponVerified === 0) {
@@ -456,7 +463,7 @@ const ShippingForm = ({sum}) => {
                 <button className="formBtn" onClick={(e) => { e.preventDefault(); setVat(!vat); }}>
                     <span className={vat ? "formBtn--checked" : "d-none"}></span>
                 </button>
-                Chcę otrzymać fakturę VAT
+                Chcę otrzymać fakturę
             </label>
 
 
@@ -494,27 +501,29 @@ const ShippingForm = ({sum}) => {
                 </h4>
                 <section className="shippingMethods">
                     {shippingMethods.map((item, index) => {
-                        return <><label className="label--button mb-3">
-                            <button className="formBtn" onClick={(e) => { e.preventDefault();
-                            setShippingMethod(item.id);
-                            setShippingCost(item.price);
-                            if(index === 0) {
-                                /* Paczkomaty */
-                                document.querySelector(".bigModal").style.display = "block";
-                                document.querySelector(".bigModal").style.opacity = "1";
-                                document.querySelector("#easypack-search")?.setAttribute('autocomplete', 'off');
-                                setInPostModal(true);
-                            }
-                            }}>
-                                <span className={shippingMethod === item.id ? "formBtn--checked" : "d-none"}></span>
-                            </button>
-                            {item.name} ({item.price} PLN)
-                        </label>
-                            {index === 0 && shippingMethod === item.id ? <address className="inPostAddress">
-                                {inPostAddress} <br/>
-                                {inPostCode} {inPostCity}
-                            </address> : ""}
-                        </>
+                        if(item.id < 8) {
+                            return <><label className="label--button mb-3">
+                                <button className="formBtn" onClick={(e) => { e.preventDefault();
+                                    setShippingMethod(item.id);
+                                    setShippingCost(item.price);
+                                    if(index === 0) {
+                                        /* Paczkomaty */
+                                        document.querySelector(".bigModal").style.display = "block";
+                                        document.querySelector(".bigModal").style.opacity = "1";
+                                        document.querySelector("#easypack-search")?.setAttribute('autocomplete', 'off');
+                                        setInPostModal(true);
+                                    }
+                                }}>
+                                    <span className={shippingMethod === item.id ? "formBtn--checked" : "d-none"}></span>
+                                </button>
+                                {item.name} ({item.price} PLN)
+                            </label>
+                                {index === 0 && shippingMethod === item.id ? <address className="inPostAddress">
+                                    {inPostAddress} <br/>
+                                    {inPostCode} {inPostCity}
+                                </address> : ""}
+                            </>
+                        }
                     })}
                 </section>
 
@@ -523,13 +532,13 @@ const ShippingForm = ({sum}) => {
                 </h4>
                 <section className="paymentMethods">
                     <label className="label--button mb-3">
-                        <button className="formBtn" onClick={(e) => { e.preventDefault(); setPaymentMethod(1); }}>
+                        <button className="formBtn" onClick={(e) => { e.preventDefault(); }}>
                             <span className={paymentMethod === 1 ? "formBtn--checked" : "d-none"}></span>
                         </button>
                         Płatności internetowe (Przelewy24)
                     </label>
                     <label className="label--button mb-3">
-                        <button className="formBtn" onClick={(e) => { e.preventDefault(); setPaymentMethod(2); }}>
+                        <button className="formBtn" onClick={(e) => { e.preventDefault(); }}>
                             <span className={paymentMethod === 2 ? "formBtn--checked" : "d-none"}></span>
                         </button>
                         Płatność za pobraniem

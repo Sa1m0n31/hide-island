@@ -35,4 +35,12 @@ const deleteProduct = (id) => {
     return axios.post(`${API_URL}/product/delete`, { id });
 }
 
-export { getAllProducts, deleteProductById, getProductDetails, addAllergens, getNewId, getProductGallery, deleteProduct, getProductCategories };
+const getProductSizes = (id) => {
+    return axios.get(`${API_URL}/product/get-product-sizes`, {
+        params: {
+            id
+        }
+    });
+}
+
+export { getAllProducts, deleteProductById, getProductDetails, addAllergens, getNewId, getProductGallery, deleteProduct, getProductCategories, getProductSizes };
