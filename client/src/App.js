@@ -45,10 +45,15 @@ import { v4 as uuidv4 } from 'uuid';
 import PanelStocks from "./admin/pages/PanelStocks";
 import AddStockPage from "./admin/pages/AddStockPage";
 import {getProductStock} from "./admin/helpers/stockFunctions";
-import przelewy24Methods from './static/img/metody-platnosci.png'
+import przelewy24Methods from './static/img/przelewy24.png'
 import SubscriptionValidationPage from "./pages/SubscriptionValidationPage";
 import SubscriptionResignationPage from "./pages/SubscriptionResignationPage";
 import AddOrderPage from "./admin/pages/AddOrderPage";
+import axios from "axios";
+import credentials from "./helpers/credentials";
+require('dotenv').config();
+
+axios.defaults.headers.common['Authorization'] = credentials.AUTH_HEADER;
 
 /* Context */
 const CartContext = React.createContext(null);
@@ -219,6 +224,11 @@ function App() {
                     content={shippingAndPayment}
                     extra={przelewy24Methods}
                 />
+            </Route>
+            <Route path="/konkurs">
+                <Page
+                    title="Konkurs"
+                    content={null} />
             </Route>
 
           <Route path="/zaloguj-sie">

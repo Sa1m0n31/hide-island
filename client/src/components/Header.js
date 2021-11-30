@@ -109,7 +109,7 @@ const Header = () => {
                             }
                         })}
                         <li className="header__menu__list__item">
-                            <a className="header__menu__list__link" href="http://hideisland.skylo-test3.pl#o-nas">
+                            <a className="header__menu__list__link" href="https://hideisland.pl#o-nas">
                                 O nas
                             </a>
                         </li>
@@ -162,7 +162,7 @@ const Header = () => {
                             })}
                         </ul>
                         <li className="header__menu__list__item text-center pb-2">
-                            <a className="header__menu__list__link" href="http://hideisland.skylo-test3.pl#o-nas">
+                            <a className="header__menu__list__link" href="https://hideisland.pl#o-nas">
                                 O nas
                             </a>
                         </li>

@@ -42,9 +42,8 @@ const SingleProductContent = () => {
                         .then(res => {
                            const galleryResult = res.data?.result;
                            if(galleryResult) {
-                               setGallery(galleryResult.filter(item => {
-                                   return item.file_path;
-                               }));
+                               console.log(galleryResult);
+                               setGallery(galleryResult);
                            }
 
                            /* Get product categories */

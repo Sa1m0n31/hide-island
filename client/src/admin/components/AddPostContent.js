@@ -64,7 +64,7 @@ const AddPostContent = () => {
             {addMsg === "" ? <form className="addProduct__form addProduct__form--addPost"
                                    encType="multipart/form-data"
                                    onSubmit={(e) => { handleSubmit(e) }}
-                                   action={update ? "http://hideisland.skylo-test3.pl/blog/update" : "http://hideisland.skylo-test3.pl/blog/add"}
+                                   action={update ? "https://hideisland.pl/blog/update" : "https://hideisland.pl/blog/add"}
                                    method="POST"
             >
                 <input className="invisibleInput"

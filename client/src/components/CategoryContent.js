@@ -67,7 +67,7 @@ const CategoryContent = () => {
                                     setLoaded(true);
 
                                     if(urlPathArray.length === 4) {
-                                        axios.post("http://hideisland.skylo-test3.pl/category/get-category-by-slug", { slug: urlPathArray[urlPathArray.length-2] })
+                                        axios.post("https://hideisland.pl/category/get-category-by-slug", { slug: urlPathArray[urlPathArray.length-2] })
                                             .then(res => {
                                                if(res.data?.result) {
                                                    setCurrentParentCategory(res.data.result[0]?.name);
@@ -242,7 +242,7 @@ const CategoryContent = () => {
             {productsFiltered.map((item, index) => {
                 if((!item.hidden)&&(loaded)) {
                     console.log(item);
-                    return <a className="recom__item" key={index} href={`http://hideisland.skylo-test3.pl/produkt/${convertToURL(item.name)}`}>
+                    return <a className="recom__item" key={index} href={`https://hideisland.pl/produkt/${convertToURL(item.name)}`}>
                         <figure className="recom__item__imgWrapper overflow-hidden">
                             <img className="recom__item__img" src={settings.API_URL + "/image?url=/media/" + item.image} />
                         </figure>

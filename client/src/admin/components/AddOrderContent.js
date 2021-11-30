@@ -231,7 +231,8 @@ const AddOrderContent = () => {
                         building: formik.values.building,
                         flat: formik.values.flat,
                         city: formik.values.city,
-                        postalCode: formik.values.postalCode
+                        postalCode: formik.values.postalCode,
+                        newsletter: false
                     })
                         .then(res => {
                             if(res.data.result === -1) {
@@ -653,7 +654,7 @@ const AddOrderContent = () => {
                         Produkt 3.
                     </h5>
                     <section className="productList__item d-flex">
-                        <select value={product3 + '-' + product1Price} onChange={(e) => { setProduct3(e.target.value.split('-')[0]); setProduct3Price(e.target.value.split('-')[1]); }}>
+                        <select value={product3 + '-' + product3Price} onChange={(e) => { setProduct3(e.target.value.split('-')[0]); setProduct3Price(e.target.value.split('-')[1]); }}>
                             {!product3 ? <option>
                                 Wybierz produkt
                             </option> : ""}

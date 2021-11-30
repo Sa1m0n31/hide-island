@@ -81,6 +81,11 @@ const Footer = () => {
                 </h4>
                 <ul className="footer__menu__list">
                     <li className="footer__menu__item">
+                        <a className="footer__menu__link" href="/konkurs">
+                            Konkurs
+                        </a>
+                    </li>
+                    <li className="footer__menu__item">
                         <a className="footer__menu__link" href="/regulamin">
                             Regulamin
                         </a>
@@ -162,7 +167,7 @@ const Footer = () => {
         <section className="footer__row d-flex justify-content-between align-items-start">
             <section className="footer__newsletter">
                 <h3 className="footer__newsletter__header">
-                    Zapisz się do newslettera i zgarnij <b>10% zniżki</b>!
+                    Zapisz się do newslettera i zgarnij <b>5% zniżki</b>!
                 </h3>
                 <section className="footer__newsletter__form">
                     {!newsletterResponse ? <>

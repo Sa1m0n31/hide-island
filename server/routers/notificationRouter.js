@@ -9,10 +9,10 @@ con.connect(err => {
     /* Nodemailer */
     let transporter = nodemailer.createTransport(smtpTransport ({
         auth: {
-            user: 'powiadomienia@skylo-pl.atthost24.pl',
-            pass: 'SwinkaPeppa-31'
+            user: process.env.MAIL,
+            pass: process.env.PASSWORD
         },
-        host: 'skylo-pl.atthost24.pl',
+        host: process.env.HOST,
         secureConnection: true,
         port: 465,
         tls: {
@@ -67,34 +67,34 @@ con.connect(err => {
         const productURL = convertToURL(productName);
 
         let mailOptions = {
-            from: 'powiadomienia@skylo-pl.atthost24.pl',
+            from: process.env.MAIL,
             to: email,
             subject: 'Produkt, którego szukałeś, jest już dostępny w naszym sklepie!',
             html: `<main>
                 <header style="max-width: 900px; box-sizing: border-box;">
                     <img style="width: 100%;
-    transform: scaleY(1.03);" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/logo.jpg" alt="hideisland-logo"/>
+    transform: scaleY(1.03);" src="https://hideisland.pl/image?url=/media/notification/logo.jpg" alt="hideisland-logo"/>
                 </header>
                 <section style="background: #D9D9D9; padding: 30px; max-width: 900px; box-sizing: border-box;">
                     <h1 class="notification__header" style="margin: 0 0 20px; font-weight: 900; font-size: 1.5rem; color: #313131;">
                         Twój ulubiony produkt już na Ciebie czeka!
                     </h1>
 
-                    <a style="display: inline-block; text-decoration: none;font-size: 21px; font-weight: 700; color: #313131; margin: 20px 0;" href="http://hideisland.skylo-test3.pl/sklep">
+                    <a style="display: inline-block; text-decoration: none;font-size: 21px; font-weight: 700; color: #313131; margin: 20px 0;" href="https://hideisland.pl/sklep">
                         Kliknij tutaj, aby przejść do sklepu
-                        <img style=" width: 50px; height: auto; margin-left: 20px; vertical-align: middle;" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/right-arrow.png" alt="przejdz-do-sklepu"/>
+                        <img style=" width: 50px; height: auto; margin-left: 20px; vertical-align: middle;" src="https://hideisland.pl/image?url=/media/notification/right-arrow.png" alt="przejdz-do-sklepu"/>
                     </a>
 
                     <section style="display: flex; height: 260px; overflow: hidden; margin: 30px auto;">
                         <figure style="overflow: hidden; display: block; margin: 0; margin-right: 15px;">
-                            <img style="width: 100%; display: block;" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/bluza-biala.jpg"/>
+                            <img style="width: 100%; display: block;" src="https://hideisland.pl/image?url=/media/notification/bluza-biala.jpg"/>
                         </figure>
                         <figure style="overflow: hidden; display: block; margin: 0;">
-                            <img style="max-width: 200%; min-width: 100%; min-height: 85%; display: block;" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/metka.jpg"/>
+                            <img style="max-width: 200%; min-width: 100%; min-height: 85%; display: block;" src="https://hideisland.pl/image?url=/media/notification/metka.jpg"/>
                         </figure>
                     </section>
                     <figure style="overflow: hidden; display: block; height: 300px; margin: 0; margin-top: 20px;">
-                        <img style="width: 100%; display: block;" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/wieszak.jpg"/>
+                        <img style="width: 100%; display: block;" src="https://hideisland.pl/image?url=/media/notification/wieszak.jpg"/>
                     </figure>
 
                     <h2 class="notification__secondHeader" style="color: #313131; font-size: 1.2rem; font-weight: 700; margin: 20px 0;">
@@ -103,17 +103,17 @@ con.connect(err => {
 
                     <section>
                         <a style="color: #313131; font-size: 13px; white-space: nowrap; display: block;width: 49%;text-decoration: none;margin-bottom: 20px;" href="https://www.facebook.com/HideIslandwear">
-                            <img style=" width: 30px;height: auto;margin-right: 8px;vertical-align: middle;" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/fb.png" alt="facebook"/>
+                            <img style=" width: 30px;height: auto;margin-right: 8px;vertical-align: middle;" src="https://hideisland.pl/image?url=/media/notification/fb.png" alt="facebook"/>
                             Hideislandwear
                         </a>
-                        <a style="color: #313131;font-size: 13px; white-space: nowrap; display: block;width: 49%;text-decoration: none;margin-bottom: 20px;" href="http://hideisland.pl">
-                            <img style=" width: 30px;height: auto;margin-right: 8px;vertical-align: middle;" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/website.png" alt="strona-internetowa"/>
+                        <a style="color: #313131;font-size: 13px; white-space: nowrap; display: block;width: 49%;text-decoration: none;margin-bottom: 20px;" href="https://hideisland.pl">
+                            <img style=" width: 30px;height: auto;margin-right: 8px;vertical-align: middle;" src="https://hideisland.pl/image?url=/media/notification/website.png" alt="strona-internetowa"/>
                             www.hideisland.pl
                         </a>
                     </section>
                      <a style="color: #313131;font-size: 13px; white-space: nowrap; display: block;width: 100%;text-decoration: none;margin-bottom: 20px;"
                            href="https://www.instagram.com/HideIsland_wear/?fbclid=IwAR3Y8NLYGmXQ-_pvGE1UZLO1oR0iMfT0uNWYZgvrpKHv40N4fKvsfdC4UPc">
-                            <img style=" width: 30px;height: auto;margin-right: 8px;vertical-align: middle;" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/insta.png" alt="instagram"/>
+                            <img style=" width: 30px;height: auto;margin-right: 8px;vertical-align: middle;" src="https://hideisland.pl/image?url=/media/notification/insta.png" alt="instagram"/>
                             Hideislandwear
                     </a>
                 </section>

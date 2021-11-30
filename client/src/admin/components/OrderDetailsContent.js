@@ -25,6 +25,7 @@ const OrderDetailsContent = () => {
     const [orderUpdated, setOrderUpdated] = useState(-1);
     const [adminComment, setAdminComment] = useState("");
     const [payClicked, setPayClicked] = useState(-1);
+    const [orderPrice, setOrderPrice] = useState(null);
 
     useEffect(() => {
         /* Get order id from url string */
@@ -42,6 +43,10 @@ const OrderDetailsContent = () => {
                    setLetterNumber(res.data.result[0].letter_number);
                    setComment(res.data.result[0].order_comment);
                    setAdminComment(res.data.result[0].admin_comment);
+                   setOrderPrice(res.data.result[0].order_price);
+                   setSum(res.data.result.reduce((prev, item) => {
+                       return prev + item.price;
+                   }, 0));
                }
                //setSum(calculateCartSum(res.data.result));
                calculateCartSum();
@@ -178,9 +183,18 @@ const OrderDetailsContent = () => {
                             <section className="panelContent__cart__column">
                                 <span>{item.size ? `Rozmiar: ${item.size}` : ""}</span>
                             </section>
+                            <section className="panelContent__cart__column">
+                                <span>Cena: {item.price} PLN</span>
+                            </section>
                         </section>
                     })}
                 </main>
+                <h4 className="panelContent__cart__summary">
+                    <span>Rabat:</span> {sum - cart[0].order_price} PLN
+                </h4>
+                <h4 className="panelContent__cart__summary">
+                    <span>Cena zamówienia:</span> {cart[0].order_price} PLN
+                </h4>
 
             </section>
 

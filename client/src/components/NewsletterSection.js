@@ -44,7 +44,7 @@ const NewsletterSection = () => {
         </h2>
 
         <p className="newsletterText m-4 text-center" data-aos="fade-up">
-            Zapisz się do <b>newslettera</b> i zgarnij <b>10% zniżki</b>!
+            Zapisz się do <b>newslettera</b> i zgarnij <b>5% zniżki</b>!
         </p>
 
         <section className="footer__newsletter__form footer__newsletter__form--section">

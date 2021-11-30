@@ -13,6 +13,9 @@ const Page = ({title, content, extra}) => {
         else if(title === "Reklamacje") {
             setFilename("formularz-reklamacji-towaru.pdf");
         }
+        else if(title === "Konkurs") {
+            setFilename("regulamin-konkursu.pdf");
+        }
     }, []);
 
     return <>
@@ -21,14 +24,14 @@ const Page = ({title, content, extra}) => {
             <h1 className="cart__header">
                 {title}
             </h1>
-            {title !== 'Zwroty' && title !== 'Reklamacje' ? <article className="page__content" dangerouslySetInnerHTML={{__html: content}}>
+            {title !== 'Zwroty' && title !== 'Reklamacje' && title !== 'Konkurs' ? <article className="page__content" dangerouslySetInnerHTML={{__html: content}}>
 
             </article> : <main className="page__linkWrapper">
                 <article className="page__content" dangerouslySetInnerHTML={{__html: content}}>
 
                 </article>
                 <a target="_blank" href={`${settings.API_URL}/image?url=/media/forms/${filename}`} download={filename} className="button button--downloadLink">
-                    {title === "Reklamacje" ? "Pobierz formularz reklamacji" : "Pobierz formularz zwrotu"}
+                    {title === "Reklamacje" ? "Pobierz formularz reklamacji" : (title === 'Konkurs' ? "Pobierz regulamin konkursu" : "Pobierz formularz zwrotu")}
                 </a>
             </main>}
 

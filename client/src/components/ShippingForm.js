@@ -247,7 +247,7 @@ const ShippingForm = ({sum}) => {
                             })
                                 .then(res => {
                                     if(cartIndex === cartArray.length-1) {
-                                        axios.post(`http://hideisland.skylo-test3.pl/order/send-order-info`, {
+                                        axios.post(`https://hideisland.pl/order/send-order-info`, {
                                             orderId
                                         })
                                             .then((res) => {

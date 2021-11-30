@@ -49,10 +49,10 @@ con.connect(err => {
                 const query = 'UPDATE homepage SET slider_image_1 = ?, slider_link_1 = ?';
                 con.query(query, values, (err, res) => {
                     if(res) {
-                        response.redirect("http://hideisland.skylo-test3.pl/panel/zdjecia?add=1");
+                        response.redirect("https://hideisland.pl/panel/zdjecia?add=1");
                     }
                     else {
-                        response.redirect("http://hideisland.skylo-test3.pl/panel/zdjecia?add=0");
+                        response.redirect("https://hideisland.pl/panel/zdjecia?add=0");
                     }
                 });
             }
@@ -61,10 +61,10 @@ con.connect(err => {
                 const query = 'UPDATE homepage SET slider_link_1 = ?';
                 con.query(query, values, (err, res) => {
                     if(res) {
-                        response.redirect("http://hideisland.skylo-test3.pl/panel/zdjecia?add=1");
+                        response.redirect("https://hideisland.pl/panel/zdjecia?add=1");
                     }
                     else {
-                        response.redirect("http://hideisland.skylo-test3.pl/panel/zdjecia?add=0");
+                        response.redirect("https://hideisland.pl/panel/zdjecia?add=0");
                     }
                 });
             }
@@ -97,10 +97,10 @@ con.connect(err => {
                 const query = 'UPDATE homepage SET slider_image_2 = ?, slider_link_2 = ?';
                 con.query(query, values, (err, res) => {
                     if(res) {
-                        response.redirect("http://hideisland.skylo-test3.pl/panel/zdjecia?add=1");
+                        response.redirect("https://hideisland.pl/panel/zdjecia?add=1");
                     }
                     else {
-                        response.redirect("http://hideisland.skylo-test3.pl/panel/zdjecia?add=0");
+                        response.redirect("https://hideisland.pl/panel/zdjecia?add=0");
                     }
                 });
             }
@@ -109,10 +109,10 @@ con.connect(err => {
                 const query = 'UPDATE homepage SET slider_link_2 = ?';
                 con.query(query, values, (err, res) => {
                     if(res) {
-                        response.redirect("http://hideisland.skylo-test3.pl/panel/zdjecia?add=1");
+                        response.redirect("https://hideisland.pl/panel/zdjecia?add=1");
                     }
                     else {
-                        response.redirect("http://hideisland.skylo-test3.pl/panel/zdjecia?add=0");
+                        response.redirect("https://hideisland.pl/panel/zdjecia?add=0");
                     }
                 });
             }
@@ -145,10 +145,10 @@ con.connect(err => {
                 const query = 'UPDATE homepage SET slider_image_3 = ?, slider_link_3 = ?';
                 con.query(query, values, (err, res) => {
                     if(res) {
-                        response.redirect("http://hideisland.skylo-test3.pl/panel/zdjecia?add=1");
+                        response.redirect("https://hideisland.pl/panel/zdjecia?add=1");
                     }
                     else {
-                        response.redirect("http://hideisland.skylo-test3.pl/panel/zdjecia?add=0");
+                        response.redirect("https://hideisland.pl/panel/zdjecia?add=0");
                     }
                 });
             }
@@ -157,10 +157,10 @@ con.connect(err => {
                 const query = 'UPDATE homepage SET slider_link_3 = ?';
                 con.query(query, values, (err, res) => {
                     if(res) {
-                        response.redirect("http://hideisland.skylo-test3.pl/panel/zdjecia?add=1");
+                        response.redirect("https://hideisland.pl/panel/zdjecia?add=1");
                     }
                     else {
-                        response.redirect("http://hideisland.skylo-test3.pl/panel/zdjecia?add=0");
+                        response.redirect("https://hideisland.pl/panel/zdjecia?add=0");
                     }
                 });
             }
@@ -193,10 +193,10 @@ con.connect(err => {
                 const query = 'UPDATE homepage SET section_image_1 = ?, section_link_1 = ?';
                 con.query(query, values, (err, res) => {
                     if(res) {
-                        response.redirect("http://hideisland.skylo-test3.pl/panel/zdjecia?add=1");
+                        response.redirect("https://hideisland.pl/panel/zdjecia?add=1");
                     }
                     else {
-                        response.redirect("http://hideisland.skylo-test3.pl/panel/zdjecia?add=0");
+                        response.redirect("https://hideisland.pl/panel/zdjecia?add=0");
                     }
                 });
             }
@@ -205,10 +205,10 @@ con.connect(err => {
                 const query = 'UPDATE homepage SET section_link_1 = ?';
                 con.query(query, values, (err, res) => {
                     if(res) {
-                        response.redirect("http://hideisland.skylo-test3.pl/panel/zdjecia?add=1");
+                        response.redirect("https://hideisland.pl/panel/zdjecia?add=1");
                     }
                     else {
-                        response.redirect("http://hideisland.skylo-test3.pl/panel/zdjecia?add=0");
+                        response.redirect("https://hideisland.pl/panel/zdjecia?add=0");
                     }
                 });
             }
@@ -241,10 +241,10 @@ con.connect(err => {
                 const query = 'UPDATE homepage SET section_image_2 = ?, section_link_2 = ?';
                 con.query(query, values, (err, res) => {
                     if(res) {
-                        response.redirect("http://hideisland.skylo-test3.pl/panel/zdjecia?add=1");
+                        response.redirect("https://hideisland.pl/panel/zdjecia?add=1");
                     }
                     else {
-                        response.redirect("http://hideisland.skylo-test3.pl/panel/zdjecia?add=0");
+                        response.redirect("https://hideisland.pl/panel/zdjecia?add=0");
                     }
                 });
             }
@@ -253,10 +253,10 @@ con.connect(err => {
                 const query = 'UPDATE homepage SET section_link_2 = ?';
                 con.query(query, values, (err, res) => {
                     if(res) {
-                        response.redirect("http://hideisland.skylo-test3.pl/panel/zdjecia?add=1");
+                        response.redirect("https://hideisland.pl/panel/zdjecia?add=1");
                     }
                     else {
-                        response.redirect("http://hideisland.skylo-test3.pl/panel/zdjecia?add=0");
+                        response.redirect("https://hideisland.pl/panel/zdjecia?add=0");
                     }
                 });
             }
@@ -289,10 +289,10 @@ con.connect(err => {
                 const query = 'UPDATE homepage SET section_image_3 = ?, section_link_3 = ?';
                 con.query(query, values, (err, res) => {
                     if(res) {
-                        response.redirect("http://hideisland.skylo-test3.pl/panel/zdjecia?add=1");
+                        response.redirect("https://hideisland.pl/panel/zdjecia?add=1");
                     }
                     else {
-                        response.redirect("http://hideisland.skylo-test3.pl/panel/zdjecia?add=0");
+                        response.redirect("https://hideisland.pl/panel/zdjecia?add=0");
                     }
                 });
             }
@@ -301,10 +301,10 @@ con.connect(err => {
                 const query = 'UPDATE homepage SET section_link_3 = ?';
                 con.query(query, values, (err, res) => {
                     if(res) {
-                        response.redirect("http://hideisland.skylo-test3.pl/panel/zdjecia?add=1");
+                        response.redirect("https://hideisland.pl/panel/zdjecia?add=1");
                     }
                     else {
-                        response.redirect("http://hideisland.skylo-test3.pl/panel/zdjecia?add=0");
+                        response.redirect("https://hideisland.pl/panel/zdjecia?add=0");
                     }
                 });
             }
@@ -337,10 +337,10 @@ con.connect(err => {
                 const query = 'UPDATE homepage SET section_image_4 = ?, section_link_4 = ?';
                 con.query(query, values, (err, res) => {
                     if(res) {
-                        response.redirect("http://hideisland.skylo-test3.pl/panel/zdjecia?add=1");
+                        response.redirect("https://hideisland.pl/panel/zdjecia?add=1");
                     }
                     else {
-                        response.redirect("http://hideisland.skylo-test3.pl/panel/zdjecia?add=0");
+                        response.redirect("https://hideisland.pl/panel/zdjecia?add=0");
                     }
                 });
             }
@@ -349,10 +349,10 @@ con.connect(err => {
                 const query = 'UPDATE homepage SET section_link_4 = ?';
                 con.query(query, values, (err, res) => {
                     if(res) {
-                        response.redirect("http://hideisland.skylo-test3.pl/panel/zdjecia?add=1");
+                        response.redirect("https://hideisland.pl/panel/zdjecia?add=1");
                     }
                     else {
-                        response.redirect("http://hideisland.skylo-test3.pl/panel/zdjecia?add=0");
+                        response.redirect("https://hideisland.pl/panel/zdjecia?add=0");
                     }
                 });
             }
@@ -366,10 +366,10 @@ con.connect(err => {
        const query = 'UPDATE homepage SET section_header = ?' ;
        con.query(query, values, (err, res) => {
            if(res) {
-               response.redirect("http://hideisland.skylo-test3.pl/panel/zdjecia?add=1");
+               response.redirect("https://hideisland.pl/panel/zdjecia?add=1");
            }
            else {
-               response.redirect("http://hideisland.skylo-test3.pl/panel/zdjecia?add=0");
+               response.redirect("https://hideisland.pl/panel/zdjecia?add=0");
            }
        });
     });

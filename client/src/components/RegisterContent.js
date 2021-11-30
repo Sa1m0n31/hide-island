@@ -47,11 +47,11 @@ const RegisterContent = () => {
         onSubmit: ({email, password, firstName, lastName, phoneNumber, postalCode, city, street, building, flat, marketing}) => {
             console.log("submit");
             console.log(marketing);
-            axios.post(`http://hideisland.skylo-test3.pl/auth/add-user`, {
+            axios.post(`https://hideisland.pl/auth/add-user`, {
                 email, password,
                 firstName, lastName, phoneNumber,
                 postalCode, city, street, building, flat,
-                dupa: marketing
+                newsletter: marketing
             })
                 .then(res => {
                     if(res.data?.result === 1) {

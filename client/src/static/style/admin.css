@@ -849,6 +849,10 @@ input[type=file] {
     flex: 1;
 }
 
+.panelContent__cart__column:last-of-type {
+    flex: 2;
+}
+
 .panelContent__cart__item span {
     font-size: 15px;
     font-weight: 700;
@@ -861,6 +865,18 @@ input[type=file] {
     transform: translateX(0);
 }
 
+.panelContent__cart__summary {
+    text-align: right;
+    font-size: 18px;
+    max-width: 1000px;
+    margin-left: 20px;
+}
+
+.panelContent__cart__summary span {
+    font-size: 15px;
+    font-weight: 400;
+}
+
 .panelContent__cart__column {
     text-align: right;
 }
@@ -869,7 +885,7 @@ input[type=file] {
     display: flex;
     justify-content: flex-start;
     align-self: flex-start;
-    margin-top: 200px;
+    margin-top: 120px;
 }
 
 .panelContent__clientData {

@@ -9,7 +9,7 @@ In the project directory, you can run:
 ### `npm start`
 
 Runs the app in the development mode.\
-Open [http://hideisland.skylo-test3.pl](http://hideisland.skylo-test3.pl) to view it in the browser.
+Open [https://hideisland.pl](https://hideisland.pl) to view it in the browser.
 
 The page will reload if you make edits.\
 You will also see any lint errors in the console.

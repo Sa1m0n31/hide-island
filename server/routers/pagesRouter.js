@@ -11,8 +11,8 @@ con.connect((err) => {
        const query = 'UPDATE pages SET terms_of_service = ?, privacy_policy = ?, complaints = ?, returns = ?, shipping_and_payment = ?, about_us = ? WHERE id = 1';
 
        con.query(query, values, (err, res) => {
-              if(res) response.redirect("http://hideisland.skylo-test3.pl/panel/pozostale?add=1");
-              else response.redirect("http://hideisland.skylo-test3.pl/panel/pozostale?add=0");
+              if(res) response.redirect("https://hideisland.pl/panel/pozostale?add=1");
+              else response.redirect("https://hideisland.pl/panel/pozostale?add=0");
        });
 
     });

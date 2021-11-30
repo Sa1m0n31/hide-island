@@ -98,7 +98,7 @@ con.connect(err => {
                             const query = 'UPDATE products SET stock_id = ? WHERE id = ?';
                             con.query(query, values);
                             /* Check if need to send notification */
-                            got.post("http://hideisland.skylo-test3.pl/notification/check-notifications", {
+                            got.post("https://hideisland.pl/notification/check-notifications", {
                                 json: { productId: item },
                                 responseType: "json"
                             });

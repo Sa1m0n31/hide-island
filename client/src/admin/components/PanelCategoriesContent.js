@@ -145,7 +145,7 @@ const PanelCategoriesContent = () => {
 
                 {addedMsg === "" ? <form className="panelContent__frame__form categoriesForm"
                                          method="POST"
-                                         action={update ? "http://hideisland.skylo-test3.pl/category/update" : "http://hideisland.skylo-test3.pl/category/add"}
+                                         action={update ? "https://hideisland.pl/category/update" : "https://hideisland.pl/category/add"}
                                          onSubmit={(e) => { handleSubmit(e) }}
                 >
                     <input className="invisibleInput"

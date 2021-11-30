@@ -8,10 +8,10 @@ const smtpTransport = require('nodemailer-smtp-transport');
 /* Nodemailer */
 let transporter = nodemailer.createTransport(smtpTransport ({
     auth: {
-        user: 'powiadomienia@skylo-pl.atthost24.pl',
-        pass: 'SwinkaPeppa-31'
+        user: process.env.MAIL,
+        pass: process.env.PASSWORD
     },
-    host: 'skylo-pl.atthost24.pl',
+    host: process.env.HOST,
     secureConnection: true,
     port: 465,
     tls: {
@@ -22,7 +22,7 @@ let transporter = nodemailer.createTransport(smtpTransport ({
 con.connect(err => {
     const sendVerificationMail = (email, token, response) => {
         let mailOptions = {
-            from: 'powiadomienia@skylo-pl.atthost24.pl',
+            from: process.env.MAIL,
             to: email,
             subject: 'Potwierdź swój adres e-mail',
             html: `<head>
@@ -46,7 +46,7 @@ con.connect(err => {
 </head>
 <body>
 <main style="width: 100%; max-width: 600px;">
-    <img style="max-width: 100%; width: 800px; margin: 0;" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/logo.jpg" alt="zamowienie-zostalo-zlozone"/>
+    <img style="max-width: 100%; width: 800px; margin: 0;" src="https://hideisland.pl/image?url=/media/notification/logo.jpg" alt="zamowienie-zostalo-zlozone"/>
     <table
             style="display: block; padding: 20px; max-width: 100%; width: 800px; background: #59545A; margin-top: -5px; color: #fff; font-weight: 300; font-family: 'Open Sans', sans-serif;">
         <thead style="display: block;">
@@ -66,7 +66,7 @@ con.connect(err => {
         <tr></tr>
         <tr style="display: block;">
             <td style="display: block; width: 100%; max-width: 350px; height: 60px; background: #000; margin: 40px auto;">
-                <a style="display: block; height: 100%; background: #000; text-decoration: none; color: #fff; font-weight: 700; line-height: 60px; font-size: 24px; text-align: center; vertical-align: middle; cursor: pointer;" target="_blank" href="http://hideisland.skylo-test3.pl/potwierdzenie-subskrypcji-newslettera?token=${token}">
+                <a style="display: block; height: 100%; background: #000; text-decoration: none; color: #fff; font-weight: 700; line-height: 60px; font-size: 24px; text-align: center; vertical-align: middle; cursor: pointer;" target="_blank" href="https://hideisland.pl/potwierdzenie-subskrypcji-newslettera?token=${token}">
                     Potwierdź adres email
                 </a>
             </td>
@@ -81,17 +81,17 @@ con.connect(err => {
         <tr style="display: block; position: relative; padding-left: 70%; margin-top: 20px;">
             <td style="display: inline-block; margin-right: 20px;">
                 <a href="https://www.facebook.com/HideIslandwear" target="_blank">
-                    <img style="width: 40px; height: 40px; display: block;" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/facebook-color.png" alt="facebook" />
+                    <img style="width: 40px; height: 40px; display: block;" src="https://hideisland.pl/image?url=/media/notification/facebook-color.png" alt="facebook" />
                 </a>
             </td>
             <td style="display: inline-block; margin-right: 20px;">
                 <a href="https://www.instagram.com/HideIsland_wear/?fbclid=IwAR3Y8NLYGmXQ-_pvGE1UZLO1oR0iMfT0uNWYZgvrpKHv40N4fKvsfdC4UPc" target="_blank">
-                    <img style="width: 40px; height: 40px; display: block;" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/instagram-color.png" alt="instagram" />
+                    <img style="width: 40px; height: 40px; display: block;" src="https://hideisland.pl/image?url=/media/notification/instagram-color.png" alt="instagram" />
                 </a>
             </td>
             <td style="display: inline-block;">
-                <a href="http://hideisland.skylo-test3.pl" target="_blank">
-                    <img style="width: 40px; height: 40px; display: block;" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/world-wide-web-color.png" alt="hideisland" />
+                <a href="https://hideisland.pl" target="_blank">
+                    <img style="width: 40px; height: 40px; display: block;" src="https://hideisland.pl/image?url=/media/notification/world-wide-web-color.png" alt="hideisland" />
                 </a>
             </td>
         </tr>
@@ -130,13 +130,13 @@ con.connect(err => {
         /* Create discount code */
         const discountCode = Math.floor(100000 + Math.random() * 900000);
 
-        const query = 'INSERT INTO coupons VALUES (NULL, ?, NOW() - INTERVAL 3 DAY, NOW() + INTERVAL 365 DAY, 10, NULL, 1)';
+        const query = 'INSERT INTO coupons VALUES (NULL, ?, NOW() - INTERVAL 3 DAY, NOW() + INTERVAL 365 DAY, 5, NULL, 1)';
         const values = [discountCode];
 
         con.query(query, values, (err, res) => {
            if(res) {
                let mailOptions = {
-                   from: 'powiadomienia@skylo-pl.atthost24.pl',
+                   from: process.env.MAIL,
                    to: email,
                    subject: 'Cieszymy się, że jesteś z nami',
                    html: `<head>
@@ -149,7 +149,7 @@ con.connect(err => {
 </head>
 <body>
 <main style="width: 100%; max-width: 600px;">
-    <img style="max-width: 100%; width: 800px; margin: 0;" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/logo.jpg" alt="zamowienie-zostalo-zlozone"/>
+    <img style="max-width: 100%; width: 800px; margin: 0;" src="https://hideisland.pl/image?url=/media/notification/logo.jpg" alt="zamowienie-zostalo-zlozone"/>
     <table
             style="display: block; padding: 20px; max-width: 100%; width: 800px; background: #59545A; margin-top: -5px; color: #fff; font-weight: 300; font-family: 'Open Sans', sans-serif;">
         <thead style="display: block;">
@@ -178,7 +178,7 @@ con.connect(err => {
         <tr></tr>
         <tr style="display: block; margin: 20px auto;">
             <td style="display: block; width: 80px; margin: auto; text-align: center; font-weight: 400; font-size: 28px; border-bottom: 1px solid #fff; padding-bottom: 10px;">
-                - 10%
+                - 5%
             </td>
         </tr>
         <tr></tr>
@@ -197,9 +197,9 @@ con.connect(err => {
         <tr></tr>
         <tr style="display: block;">
             <td style="display: block; margin: 20px auto; width: 400px;">
-                <a style="color: #fff; text-decoration: none; font-size: 21px; text-align: center; max-width: 95%;" target="_blank" href="http://hideisland.skylo-test3.pl">
+                <a style="color: #fff; text-decoration: none; font-size: 21px; text-align: center; max-width: 95%;" target="_blank" href="https://hideisland.pl">
                     Kliknij tutaj aby przejść do sklepu
-                    <img style="vertical-align: middle; width: 50px; height: auto; margin-left: 20px;" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/arrow-right-long.png" alt="przejdz-do-sklepu" />
+                    <img style="vertical-align: middle; width: 50px; height: auto; margin-left: 20px;" src="https://hideisland.pl/image?url=/media/notification/arrow-right-long.png" alt="przejdz-do-sklepu" />
                 </a>
             </td>
         </tr>
@@ -210,12 +210,12 @@ con.connect(err => {
         <tr style="display: block; position: relative; margin-top: 20px; padding-left: 70%;">
             <td style="display: inline-block; margin-right: 20px;">
                 <a href="https://www.facebook.com/HideIslandwear" target="_blank">
-                    <img style="width: 40px; height: 40px; display: block;" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/facebook-color.png" alt="facebook" />
+                    <img style="width: 40px; height: 40px; display: block;" src="https://hideisland.pl/image?url=/media/notification/facebook-color.png" alt="facebook" />
                 </a>
             </td>
             <td style="display: inline-block; margin-right: 20px;">
                 <a href="https://www.instagram.com/HideIsland_wear/?fbclid=IwAR3Y8NLYGmXQ-_pvGE1UZLO1oR0iMfT0uNWYZgvrpKHv40N4fKvsfdC4UPc" target="_blank">
-                    <img style="width: 40px; height: 40px; display: block;" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/instagram-color.png" alt="instagram" />
+                    <img style="width: 40px; height: 40px; display: block;" src="https://hideisland.pl/image?url=/media/notification/instagram-color.png" alt="instagram" />
                 </a>
             </td>
         </tr>
@@ -228,7 +228,7 @@ con.connect(err => {
         </tr>
         <tr style="display: block;">
             <td style="font-size: 12px; margin-top: 15px; display: block; text-align: center">
-                Nie chcesz otrzymywać od nas żadnych e-maili? W każdej chwili możesz <a style="color: #fff; text-decoration: underline;" href="http://hideisland.skylo-test3.pl/rezygnacja-z-subskrypcji?token=${resignToken}">zrezygnować z subskrypcji</a> wszystkich komercyjnych wiadomości przesyłanych przez Hideisland.pl
+                Nie chcesz otrzymywać od nas żadnych e-maili? W każdej chwili możesz <a style="color: #fff; text-decoration: underline;" href="https://hideisland.pl/rezygnacja-z-subskrypcji?token=${resignToken}">zrezygnować z subskrypcji</a> wszystkich komercyjnych wiadomości przesyłanych przez Hideisland.pl
             </td>
         </tr>
         <tr style="display: block;">

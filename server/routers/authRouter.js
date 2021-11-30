@@ -23,7 +23,7 @@ con.connect(function(err) {
 
     /* ADD USER */
     router.post("/add-user", (request, response) => {
-       const { firstName, lastName, email, phoneNumber, password, postalCode, city, street, building, flat, dupa } = request.body;
+       const { firstName, lastName, email, phoneNumber, password, postalCode, city, street, building, flat, newsletter } = request.body;
 
        let hash = null;
        if(password) hash = crypto.createHash('md5').update(password).digest('hex');
@@ -32,7 +32,6 @@ con.connect(function(err) {
        const query = 'INSERT INTO users VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
        con.query(query, values, (err, res) => {
           if(err) {
-              console.log(err);
               if(err.errno === 1062) {
                   /* User already exists */
 
@@ -53,23 +52,26 @@ con.connect(function(err) {
                               const values = [firstName, lastName, city, street, building, flat, postalCode, phoneNumber, email];
                               const query = 'UPDATE users SET first_name = ?, last_name = ?, city = ?, street = ?, building = ?, flat = ?, postal_code = ?, phone_number = ? WHERE email = ?';
                               con.query(query, values, (err, res) => {
-                                  got.post("http://hideisland.skylo-test3.pl/newsletter/add", {
-                                      json: {
-                                          email: email
-                                      },
-                                      responseType: 'json',
-                                  })
-                                      .then(res => {
-                                          console.log('res');
-                                          response.send({
-                                              result: 1,
-                                              userId
+                                  if(newsletter) {
+                                      got.post("https://hideisland.pl/newsletter/add", {
+                                          json: {
+                                              email: email
+                                          },
+                                          responseType: 'json',
+                                      })
+                                          .then(res => {
+                                              response.send({
+                                                  result: 1,
+                                                  userId
+                                              });
                                           });
+                                  }
+                                  else {
+                                      response.send({
+                                          result: 1,
+                                          userId
                                       });
-                                  // response.send({
-                                  //     result: 1,
-                                  //     userId
-                                  // });
+                                  }
                               });
                           }
                       }
@@ -89,8 +91,8 @@ con.connect(function(err) {
           else {
               const userId = res.insertId;
               /* Add user to newsletter */
-              if(dupa) {
-                  got.post("http://hideisland.skylo-test3.pl/newsletter/add", {
+              if(newsletter) {
+                  got.post("https://hideisland.pl/newsletter/add", {
                       json: {
                           email: email
                       },

@@ -9,9 +9,10 @@ import {
 } from "../helpers/productFunctions";
 import { useLocation } from "react-router";
 import {getAllCategories} from "../helpers/categoriesFunctions";
-
+import Dropzone from "react-dropzone-uploader";
 import JoditEditor from 'jodit-react';
 import settings from "../helpers/settings";
+import axios from "axios";
 
 const AddProductContent = () => {
     const editorR = useRef(null);
@@ -19,38 +20,23 @@ const AddProductContent = () => {
     const [update, setUpdate] = useState(false);
     const [name, setName] = useState("");
     const [id, setId] = useState(0);
-    const [categoryId, setCategoryId] = useState(1); // 1 - Oferta indywidualna, 2 - Menu grupowe, 3 - Menu bankietowe
     const [product, setProduct] = useState([]);
     const [categories, setCategories] = useState([]);
     const [hidden, setHidden] = useState(false);
     const [recommendation, setRecommendation] = useState(false);
     const [choosenCategories, setChoosenCategories] = useState([]);
     const [gallery, setGallery] = useState([]);
-    const [mainImageIndex, setMainImageIndex] = useState(0);
-    const [mainImageId, setMainImageId] = useState(0);
 
-    /* Sizes and stocks */
-    const [size1, setSize1] = useState("");
-    const [size2, setSize2] = useState("");
-    const [size3, setSize3] = useState("");
-    const [size4, setSize4] = useState("");
-    const [size5, setSize5] = useState("");
+    const [imagesChanged, setImagesChanged] = useState([false, false, false, false, false]);
 
-    const [stock1, setStock1] = useState(0);
-    const [stock2, setStock2] = useState(0);
-    const [stock3, setStock3] = useState(0);
-    const [stock4, setStock4] = useState(0);
-    const [stock5, setStock5] = useState(0);
+    const [img1, setImg1] = useState(null);
+    const [img2, setImg2] = useState(null);
 
     /* Prices */
     const [price, setPrice] = useState(0);
 
     /* Descriptions */
     const [shortDescription, setShortDescription] = useState("");
-
-    /* Options */
-    const [sizeM, setSizeM] = useState(true);
-    const [sizeL, setSizeL] = useState(false);
 
     const [addMsg, setAddMsg] = useState("");
 
@@ -104,7 +90,6 @@ const AddProductContent = () => {
 
             getProductDetails(param)
                 .then(async res => {
-                    console.log(res.data.result[0]);
                     await setProduct(res.data.result[0]);
                     await setInitialValues(res.data.result[0]);
                 });
@@ -134,18 +119,6 @@ const AddProductContent = () => {
 
         setPrice(productData.price);
 
-        setSize1(productData.size_1_name);
-        setSize2(productData.size_2_name);
-        setSize3(productData.size_3_name);
-        setSize4(productData.size_4_name);
-        setSize5(productData.size_5_name);
-        setStock1(productData.size_1_stock);
-        setStock2(productData.size_2_stock);
-        setStock3(productData.size_3_stock);
-        setStock4(productData.size_4_stock);
-        setStock5(productData.size_5_stock);
-
-        setCategoryId(productData.category_id);
         setHidden(productData.hidden);
         setRecommendation(productData.recommendation);
 
@@ -178,36 +151,21 @@ const AddProductContent = () => {
         }).length > 0;
     }
 
-    const changeMainImage = (e) => {
-        e.preventDefault();
-        const newMainImageIndex = parseInt(e.target.getAttribute("id").split("-")[1]);
-        const allGalleryImages = document.querySelectorAll(".galleryProductImage");
-        setMainImageIndex(newMainImageIndex);
-        Array.prototype.forEach.call(allGalleryImages, (item, index) => {
-            console.log("hello: " + index + " and " + newMainImageIndex);
-            if(index === newMainImageIndex) {
-                console.log("change style");
-                console.log(item);
-                item.style.border = "4px solid #fff";
-                item.style.filter = "greyscale(.7)";
-            }
-            else {
-                item.style.border = "none";
-                item.style.filter = "none";
-            }
-        });
-    }
+    const addNewGalleryImage = (e, n) => {
+        const galleryWrapper = document.querySelector(`.galleryWrapper--${n}`);
+        const input = document.querySelector(`.galleryImageInput--${n}`);
 
-    const addNewGalleryImage = (e) => {
-        const galleryWrapper = document.querySelector(".galleryWrapper");
-        const input = document.querySelector(".galleryImageInput");
-
-        const temporaryImages = document.querySelectorAll(".galleryProductImage");
+        const temporaryImages = document.querySelectorAll(`.galleryWrapper--${n}>.galleryProductImage`);
         temporaryImages.forEach(item => {
             item.parentElement.removeChild(item);
         });
 
         let i = 0;
+
+        setImagesChanged(imagesChanged.map((item, index) => {
+            if(index === n) return true;
+            else return item;
+        }));
 
         Array.prototype.forEach.call(input.files, async (file) => {
             const reader = new FileReader();
@@ -215,41 +173,13 @@ const AddProductContent = () => {
 
             reader.onload = (e) => {
                 const newImg = document.createElement("img");
-                console.log(e.target);
                 newImg.setAttribute("src", e.target.result);
                 newImg.setAttribute("class", "galleryProductImage");
                 newImg.setAttribute("alt", "zdjecie-galerii");
-                newImg.setAttribute("id", `galleryImage-${i}`);
-                newImg.addEventListener("click", (e) => {
-                    e.preventDefault();
-                    changeMainImage(e);
-                });
-                if(i === 0) {
-                    newImg.style.border = "4px solid #fff";
-                    newImg.style.filter = "greyscale(.7)";
-                }
                 galleryWrapper.appendChild(newImg);
                 i++;
             }
         });
-    }
-
-    const changeMainImageId = (e) => {
-        const id = parseInt(e.target.getAttribute("id").split("-")[2]);
-        const allGalleryImages = document.querySelectorAll(".galleryProductImage");
-        Array.prototype.forEach.call(allGalleryImages, (item, index) => {
-            if(id === parseInt(item.id.split("-")[2])) {
-                console.log("change style");
-                console.log(item);
-                item.style.border = "4px solid #fff";
-                item.style.filter = "greyscale(.7)";
-            }
-            else {
-                item.style.border = "none";
-                item.style.filter = "none";
-            }
-        });
-        setMainImageId(id);
     }
 
     return <main className="panelContent addProduct">
@@ -260,13 +190,29 @@ const AddProductContent = () => {
         </header>
         {addMsg === "" ? <form className="addProduct__form addProduct__form--addProduct"
                                encType="multipart/form-data"
-                               action={update ? "http://hideisland.skylo-test3.pl/product/update-product" : "http://hideisland.skylo-test3.pl/product/add-product"}
                                method="POST"
+                               action={update ? 'https://hideisland.pl/product/update-product' : 'https://hideisland.pl/product/add-product'}
         >
             <section className="addProduct__form__section">
                 <input className="invisibleInput"
                        name="id"
                        value={id} />
+                <input className="invisibleInput"
+                       name="img1Changed"
+                       value={imagesChanged[0]} />
+                <input className="invisibleInput"
+                       name="img2Changed"
+                       value={imagesChanged[1]} />
+                <input className="invisibleInput"
+                       name="img3Changed"
+                       value={imagesChanged[2]} />
+                <input className="invisibleInput"
+                       name="img4Changed"
+                       value={imagesChanged[3]} />
+                <input className="invisibleInput"
+                       name="img5Changed"
+                       value={imagesChanged[4]} />
+
 
                 <label className="addProduct__label">
                     <input className="addProduct__input"
@@ -336,114 +282,70 @@ const AddProductContent = () => {
 
             <section className="addProduct__form__section">
                 <section className="addProduct__form__subsection addProduct__form__subsection--marginLeft marginTop30">
-
                     <label className="fileInputLabel fileInputLabel--gallery">
-                        <span>Galeria zdjęć</span>
+                        <span>Zdjęcie główne</span>
                         <input type="file"
-                               onChange={(e) => { addNewGalleryImage(e); }}
-                               multiple={true}
-                               className="product__fileInput galleryImageInput"
-                               name="gallery" />
-                        <section className="galleryWrapper" onClick={e => { e.preventDefault(); }}>
-                            {gallery?.map((item, index) => {
-                                //if(index === 0) setMainImageId(item.id);
-                                return <img className="galleryProductImage" onClick={(e) => {update ? changeMainImageId(e) : changeMainImage(e)}} src={`${settings.API_URL}/image?url=/media/${item.file_path}`} id={`gallery-${index}-${item.id}`} alt="zdjecie-produktu" />
-                            })}
+                               onChange={(e) => { addNewGalleryImage(e, 0); }}
+                               multiple={false}
+                               className="product__fileInput galleryImageInput--0"
+                               name="gallery1" />
+                        <section className="galleryWrapper--0" onClick={e => { e.preventDefault(); }}>
+                            {gallery.length > 0 ? <img className="galleryProductImage" src={`${settings.API_URL}/image?url=/media/${gallery[0].file_path}`} alt="zdjecie-produktu" /> : ""}
                         </section>
                     </label>
-
-                    {/* Sizes and stocks */}
-                    {/*<h4 className="addProduct__form__subsection__header">*/}
-                    {/*    Dostępne rozmiary*/}
-                    {/*</h4>*/}
-                    {/*<label className="addProduct__label d-flex justify-content-between align-items-center">*/}
-                    {/*    <input className="addProduct__input"*/}
-                    {/*           name="size1"*/}
-                    {/*           type="text"*/}
-                    {/*           value={size1}*/}
-                    {/*           onChange={(e) => { setSize1(e.target.value) }}*/}
-                    {/*           placeholder="Pierwszy rozmiar" />*/}
-                    {/*    <input className="addProduct__input"*/}
-                    {/*           name="size1Stock"*/}
-                    {/*           type="number"*/}
-                    {/*           value={stock1}*/}
-                    {/*           onChange={(e) => { setStock1(e.target.value) }}*/}
-                    {/*           placeholder="Na stanie" />*/}
-                    {/*</label>*/}
-                    {/*<label className="addProduct__label d-flex justify-content-between align-items-center">*/}
-                    {/*    <input className="addProduct__input"*/}
-                    {/*           name="size2"*/}
-                    {/*           type="text"*/}
-                    {/*           value={size2}*/}
-                    {/*           onChange={(e) => { setSize2(e.target.value) }}*/}
-                    {/*           placeholder="Drugi rozmiar" />*/}
-                    {/*    <input className="addProduct__input"*/}
-                    {/*           name="size2Stock"*/}
-                    {/*           type="number"*/}
-                    {/*           value={stock2}*/}
-                    {/*           onChange={(e) => { setStock2(e.target.value) }}*/}
-                    {/*           placeholder="Na stanie" />*/}
-                    {/*</label>*/}
-                    {/*<label className="addProduct__label d-flex justify-content-between align-items-center">*/}
-                    {/*    <input className="addProduct__input"*/}
-                    {/*           name="size3"*/}
-                    {/*           type="text"*/}
-                    {/*           value={size3}*/}
-                    {/*           onChange={(e) => { setSize3(e.target.value) }}*/}
-                    {/*           placeholder="Trzeci rozmiar" />*/}
-                    {/*    <input className="addProduct__input"*/}
-                    {/*           name="size3Stock"*/}
-                    {/*           type="number"*/}
-                    {/*           value={stock3}*/}
-                    {/*           onChange={(e) => { setStock3(e.target.value) }}*/}
-                    {/*           placeholder="Na stanie" />*/}
-                    {/*</label>*/}
-                    {/*<label className="addProduct__label d-flex justify-content-between align-items-center">*/}
-                    {/*    <input className="addProduct__input"*/}
-                    {/*           name="size4"*/}
-                    {/*           type="text"*/}
-                    {/*           value={size4}*/}
-                    {/*           onChange={(e) => { setSize4(e.target.value) }}*/}
-                    {/*           placeholder="Czwarty rozmiar" />*/}
-                    {/*    <input className="addProduct__input"*/}
-                    {/*           name="size4Stock"*/}
-                    {/*           type="number"*/}
-                    {/*           value={stock4}*/}
-                    {/*           onChange={(e) => { setStock4(e.target.value) }}*/}
-                    {/*           placeholder="Na stanie" />*/}
-                    {/*</label>*/}
-                    {/*<label className="addProduct__label d-flex justify-content-between align-items-center">*/}
-                    {/*    <input className="addProduct__input"*/}
-                    {/*           name="size5"*/}
-                    {/*           type="text"*/}
-                    {/*           value={size5}*/}
-                    {/*           onChange={(e) => { setSize5(e.target.value) }}*/}
-                    {/*           placeholder="Piąty rozmiar" />*/}
-                    {/*    <input className="addProduct__input"*/}
-                    {/*           name="size5Stock"*/}
-                    {/*           type="number"*/}
-                    {/*           value={stock5}*/}
-                    {/*           onChange={(e) => { setStock5(e.target.value) }}*/}
-                    {/*           placeholder="Na stanie" />*/}
-                    {/*</label>*/}
                 </section>
-
-
-                {/* Hidden inputs */}
-                <input className="input--hidden"
-                       name="m"
-                       value={sizeM} />
-                <input className="input--hidden"
-                       name="l"
-                       value={sizeL} />
-                <input className="input--hidden"
-                       type="number"
-                       name="mainImageIndex"
-                       value={mainImageIndex} />
-                <input className="input--hidden"
-                       type="number"
-                       name="mainImageId"
-                       value={mainImageId} />
+                <section className="addProduct__form__subsection addProduct__form__subsection--marginLeft marginTop30">
+                    <label className="fileInputLabel fileInputLabel--gallery">
+                        <span>Zdjęcie 1.</span>
+                        <input type="file"
+                               onChange={(e) => { addNewGalleryImage(e, 1); }}
+                               multiple={false}
+                               className="product__fileInput galleryImageInput--1"
+                               name="gallery2" />
+                        <section className="galleryWrapper--1" onClick={e => { e.preventDefault(); }}>
+                            {gallery.length > 1 ? <img className="galleryProductImage" src={`${settings.API_URL}/image?url=/media/${gallery[1].file_path}`} alt="zdjecie-produktu" /> : ""}
+                        </section>
+                    </label>
+                </section>
+                <section className="addProduct__form__subsection addProduct__form__subsection--marginLeft marginTop30">
+                    <label className="fileInputLabel fileInputLabel--gallery">
+                        <span>Zdjęcie 2.</span>
+                        <input type="file"
+                               onChange={(e) => { addNewGalleryImage(e, 2); }}
+                               multiple={false}
+                               className="product__fileInput galleryImageInput--2"
+                               name="gallery3" />
+                        <section className="galleryWrapper--2" onClick={e => { e.preventDefault(); }}>
+                            {gallery.length > 2 ? <img className="galleryProductImage" src={`${settings.API_URL}/image?url=/media/${gallery[2].file_path}`} alt="zdjecie-produktu" /> : ""}
+                        </section>
+                    </label>
+                </section>
+                <section className="addProduct__form__subsection addProduct__form__subsection--marginLeft marginTop30">
+                    <label className="fileInputLabel fileInputLabel--gallery">
+                        <span>Zdjęcie 3.</span>
+                        <input type="file"
+                               onChange={(e) => { addNewGalleryImage(e, 3); }}
+                               multiple={false}
+                               className="product__fileInput galleryImageInput--3"
+                               name="gallery4" />
+                        <section className="galleryWrapper--3" onClick={e => { e.preventDefault(); }}>
+                            {gallery.length > 3 ? <img className="galleryProductImage" src={`${settings.API_URL}/image?url=/media/${gallery[3].file_path}`} alt="zdjecie-produktu" /> : ""}
+                        </section>
+                    </label>
+                </section>
+                <section className="addProduct__form__subsection addProduct__form__subsection--marginLeft marginTop30">
+                    <label className="fileInputLabel fileInputLabel--gallery">
+                        <span>Zdjęcie 4.</span>
+                        <input type="file"
+                               onChange={(e) => { addNewGalleryImage(e, 4); }}
+                               multiple={false}
+                               className="product__fileInput galleryImageInput--4"
+                               name="gallery5" />
+                        <section className="galleryWrapper--4" onClick={e => { e.preventDefault(); }}>
+                            {gallery.length > 4 ? <img className="galleryProductImage" src={`${settings.API_URL}/image?url=/media/${gallery[4].file_path}`} alt="zdjecie-produktu" /> : ""}
+                        </section>
+                    </label>
+                </section>
 
                 <label className="panelContent__filters__label__label panelContent__filters__label__label--category">
                     <button className="panelContent__filters__btn" onClick={(e) => { e.preventDefault(); setHidden(!hidden); }}>

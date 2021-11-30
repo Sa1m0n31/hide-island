@@ -9,10 +9,10 @@ const smtpTransport = require('nodemailer-smtp-transport');
 /* Nodemailer */
 let transporter = nodemailer.createTransport(smtpTransport ({
     auth: {
-        user: 'powiadomienia@skylo-pl.atthost24.pl',
-        pass: 'SwinkaPeppa-31'
+        user: process.env.MAIL,
+        pass: process.env.PASSWORD
     },
-    host: 'skylo-pl.atthost24.pl',
+    host: process.env.HOST,
     secureConnection: true,
     port: 465,
     tls: {
@@ -23,7 +23,7 @@ let transporter = nodemailer.createTransport(smtpTransport ({
 const sendStatus3Email = (id, email, fullName, letterNumber, response = null) => {
     /* status = ZREALIZOWANE */
     let mailOptions = {
-        from: 'powiadomienia@skylo-pl.atthost24.pl',
+        from: process.env.MAIL,
         to: email,
         subject: `Zmiana statusu zamówienia #${id}: zamówienie zrealizowane`,
         html: `<head>
@@ -35,7 +35,7 @@ const sendStatus3Email = (id, email, fullName, letterNumber, response = null) =>
 </head>
 <body>
 <main style="width: 100%;">
-    <img style="max-width: 100%; width: 800px; margin: 0;" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/logo.jpg" alt="zamowienie-zostalo-zrealizowane" />
+    <img style="max-width: 100%; width: 800px; margin: 0;" src="https://hideisland.pl/image?url=/media/notification/logo.jpg" alt="zamowienie-zostalo-zrealizowane" />
     <table style="display: block; padding: 20px; max-width: 100%; width: 800px; background: #59545A; margin-top: -5px; color: #fff; font-weight: 300; font-family: 'Open Sans', sans-serif;">
         <thead>
             <tr>
@@ -131,7 +131,7 @@ const sendStatus3Email = (id, email, fullName, letterNumber, response = null) =>
 const sendStatus2Email = (id, email, fullName, response = null) => {
     /* status = PRZYJĘTE DO REALIZACJI */
     let mailOptions = {
-        from: 'powiadomienia@skylo-pl.atthost24.pl',
+        from: process.env.MAIL,
         to: email,
         subject: `Zmiana statusu zamówienia #${id}`,
         html: `<head>
@@ -143,7 +143,7 @@ const sendStatus2Email = (id, email, fullName, response = null) => {
 </head>
 <body>
 <main style="width: 100%;">
-    <img style="max-width: 100%; width: 800px; margin: 0;" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/logo.jpg" alt="zamowienie-zostalo-zrealizowane" />
+    <img style="max-width: 100%; width: 800px; margin: 0;" src="https://hideisland.pl/image?url=/media/notification/logo.jpg" alt="zamowienie-zostalo-zrealizowane" />
     <table style="display: block; padding: 20px; max-width: 100%; width: 800px; background: #59545A; margin-top: -5px; color: #fff; font-weight: 300; font-family: 'Open Sans', sans-serif;">
         <thead>
             <tr>
@@ -225,7 +225,7 @@ const sendStatus1Email = (orderInfo, response = null) => {
         sells += `<span>
             <tr style="padding-top: 10px;">
             <td style="padding: 30px 0 20px; white-space: nowrap;">
-                <img style="width: 100px; margin: 0;" src="http://hideisland.skylo-test3.pl/image?url=/media/${orderInfo[i].file_path}" alt={${orderInfo[i].name}} />
+                <img style="width: 100px; margin: 0;" src="https://hideisland.pl/image?url=/media/${orderInfo[i].file_path}" alt={${orderInfo[i].name}} />
             </td>
             <td style="white-space: nowrap; font-size: 21px; font-weight: 300; display: block; margin-left: -80%; margin-top: 30px;">
                 ${orderInfo[i].name}
@@ -305,7 +305,7 @@ const sendStatus1Email = (orderInfo, response = null) => {
 
     /* status = ZŁOŻONE */
     let mailOptions = {
-    from: 'powiadomienia@skylo-pl.atthost24.pl',
+    from: process.env.MAIL,
     to: orderInfo[0].email,
     subject: 'Witaj, Dziękujemy za złożenie zamówienia w sklepie HideIsland.pl',
     attachments: [
@@ -324,7 +324,7 @@ const sendStatus1Email = (orderInfo, response = null) => {
 </head>
 <body>
 <main style="width: 100%;">
-    <img style="max-width: 100%; width: 800px; margin: 0;" src="http://hideisland.skylo-test3.pl/image?url=/media/notification/logo.jpg" alt="zamowienie-zostalo-zlozone"/>
+    <img style="max-width: 100%; width: 800px; margin: 0;" src="https://hideisland.pl/image?url=/media/notification/logo.jpg" alt="zamowienie-zostalo-zlozone"/>
     <table
             style="display: block; padding: 20px; max-width: 100%; width: 800px; background: #59545A; margin-top: -5px; color: #fff; font-weight: 300; font-family: 'Open Sans', sans-serif;">
         <thead style="display: block;">
@@ -766,7 +766,7 @@ con.connect(err => {
             const values = [orderId, productId, quantity, size];
             const query = 'INSERT INTO sells VALUES (NULL, ?, ?, ?, ?)';
 
-            if(paymentMethod === 2) {
+            if(paymentMethod === 2 || paymentMethod === 3 || paymentMethod === 4) {
                 /* Jesli za pobraniem - dekrementuj stan magazynowy */
                 decrementStock(productId, size, quantity);
             }
@@ -777,7 +777,6 @@ con.connect(err => {
                         result: res.insertId
                     });
                 } else {
-                    console.log(err);
                     response.send({
                         result: null
                     });
@@ -895,7 +894,7 @@ con.connect(err => {
         router.post("/get-order", (request, response) => {
             const {id} = request.body;
             const values = [id];
-            const query = 'SELECT o.id, o.admin_comment, o.payment_status, o.order_status, o.letter_number, o.order_comment, u.first_name, u.last_name, u.email, u.phone_number, u.city, u.street, u.building, u.postal_code, u.city, o.date, o.order_status, pm.name as payment, sm.name as shipping, o.order_comment, o.company_name, o.nip, s.size, s.quantity, p.price, p.name, o.inpost_id, o.inpost_address, o.inpost_postal_code, inpost_city FROM orders o ' +
+            const query = 'SELECT o.id, o.admin_comment, o.order_price, o.payment_status, o.order_status, o.letter_number, o.order_comment, u.first_name, u.last_name, u.email, u.phone_number, u.city, u.street, u.building, u.postal_code, u.city, o.date, o.order_status, pm.name as payment, sm.name as shipping, o.order_comment, o.company_name, o.nip, s.size, s.quantity, p.price, p.name, o.inpost_id, o.inpost_address, o.inpost_postal_code, inpost_city FROM orders o ' +
                 'JOIN sells s ON o.id = s.order_id ' +
                 'LEFT OUTER JOIN products p ON p.id = s.product_id ' +
                 'JOIN shipping_methods sm ON o.shipping_method = sm.id ' +
