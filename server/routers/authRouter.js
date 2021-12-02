@@ -28,9 +28,10 @@ con.connect(function(err) {
        let hash = null;
        if(password) hash = crypto.createHash('md5').update(password).digest('hex');
 
-       const values = [firstName, lastName, email, hash, city, street, building, flat, postalCode, phoneNumber];
+       const values = [firstName, lastName, email, hash, city, street, building, flat ? flat : null, postalCode, phoneNumber];
        const query = 'INSERT INTO users VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
        con.query(query, values, (err, res) => {
+           console.log(err);
           if(err) {
               if(err.errno === 1062) {
                   /* User already exists */

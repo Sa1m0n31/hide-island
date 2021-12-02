@@ -219,6 +219,7 @@ const sendStatus2Email = (id, email, fullName, response = null) => {
 }
 
 const sendStatus1Email = (orderInfo, response = null) => {
+    console.log(orderInfo);
     let sells = ``;
     let sum = 0;
     for(let i=0; i<orderInfo.length; i++) {
@@ -282,26 +283,6 @@ const sendStatus1Email = (orderInfo, response = null) => {
     const vat = orderInfo[0].company_name ? `${orderInfo[0].companyName}<br/>${orderInfo[0].nip}` : "Nie dotyczy";
     const inPost = orderInfo[0].shipping_method === 'Paczkomaty InPost' ? `${orderInfo[0].inpost_address}<br/>${orderInfo[0].inpost_postal_code} ${orderInfo[0].inpost_city}` : "Nie dotyczy";
     const comment = orderInfo[0].order_comment;
-
-    // got.get(`https://api-shipx-pl.easypack24.net/v1/organizations/43271/shipments?receiver_address=${orderInfo[0].street}&receiver_email=${orderInfo[0].email}`, {
-    //     responseType: 'json',
-    //     headers: {
-    //         'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJhcGktc2hpcHgtcGwuZWFzeXBhY2syNC5uZXQiLCJzdWIiOiJhcGktc2hpcHgtcGwuZWFzeXBhY2syNC5uZXQiLCJleHAiOjE2MzU4NTgyMzUsImlhdCI6MTYzNTg1ODIzNSwianRpIjoiNjg2NGU0YzAtOWU1Ni00MDRhLWI0MWItYzg5YTBjYzIwNDVkIn0.UU_1anY_1TBhPNo3LxsBxgxdPjS0XPWRMPzXxvRAgsvNxvjee-Q_Cj3qhKmWl7J9j6fLfinkif_GtpAZDJ3yOg' // tmp
-    //     }
-    // })
-    //     .then((res) => {
-    //         /* Change InPost tracking number */
-    //         if(res) {
-    //             if(res.body.items.length) {
-    //                 const trackingNumber = res.body.items[0].tracking_number;
-    //
-    //                 const query = 'UPDATE orders SET letter_number = ? WHERE id = ?';
-    //                 const values = [trackingNumber, orderInfo[0].id];
-    //
-    //                 con.query(query, values);
-    //             }
-    //         }
-    //     });
 
     /* status = ZŁOŻONE */
     let mailOptions = {
@@ -772,6 +753,8 @@ con.connect(err => {
             }
 
             con.query(query, values, (err, res) => {
+                console.log("Add sell");
+                console.log(err);
                 if (res) {
                     response.send({
                         result: res.insertId
@@ -790,7 +773,7 @@ con.connect(err => {
             if (flat === "") flat = null;
 
             let paymentStatus = "nieopłacone";
-            if(paymentMethod === 1) {
+            if(paymentMethod !== 1) {
                 /* Payment method - za pobraniem */
                 paymentStatus = "za pobraniem";
             }

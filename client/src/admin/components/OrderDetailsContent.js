@@ -190,10 +190,7 @@ const OrderDetailsContent = () => {
                     })}
                 </main>
                 <h4 className="panelContent__cart__summary">
-                    <span>Rabat:</span> {sum - cart[0].order_price} PLN
-                </h4>
-                <h4 className="panelContent__cart__summary">
-                    <span>Cena zamówienia:</span> {cart[0].order_price} PLN
+                    <span>Cena zamówienia (po rabacie):</span> {cart[0].order_price} PLN
                 </h4>
 
             </section>

@@ -44,7 +44,6 @@ con.connect(err => {
     /* PAYMENT */
     router.post("/payment", cors(), async (request, response) => {
         /* Add order to database */
-        console.log("/payment");
         const { sessionId } = request.body;
 
         /* Generate SHA-384 checksum */
@@ -52,6 +51,9 @@ con.connect(err => {
         con.query(query, (err, res) => {
             let crc = res[0].crc;
             let marchantId = res[0].marchant_id;
+
+            console.log(crc);
+            console.log(marchantId);
 
             let hash, data, gen_hash;
             hash = crypto.createHash('sha384');
@@ -78,11 +80,11 @@ con.connect(err => {
             let responseToClient;
 
             /* FIRST STEP - REGISTER */
-            got.post("https://sandbox.przelewy24.pl/api/v1/transaction/register", {
+            got.post("https://secure.przelewy24.pl/api/v1/transaction/register", {
                 json: postData,
                 responseType: 'json',
                 headers: {
-                    'Authorization': 'Basic MTM4MzU0OjU0Nzg2ZGJiOWZmYTY2MzgwOGZmNGExNWRiMzI3MTNm' // tmp
+                    'Authorization': 'Basic MTUyMTE1Ojk5NDQyZmQ3MmQyNzQ3MjE0MDcxNmQwYTlhNDlkMDcw'
                 }
             })
                 .then(res => {
@@ -127,7 +129,7 @@ con.connect(err => {
             data = hash.update(`{"sessionId":"${sessionId}","orderId":${orderId},"amount":${amount},"currency":"PLN","crc":"${crc}"}`, 'utf-8');
             gen_hash= data.digest('hex');
 
-            got.put("https://sandbox.przelewy24.pl/api/v1/transaction/verify", {
+            got.put("https://secure.przelewy24.pl/api/v1/transaction/verify", {
                 json: {
                     merchantId,
                     posId,
@@ -139,7 +141,7 @@ con.connect(err => {
                 },
                 responseType: 'json',
                 headers: {
-                    'Authorization': 'Basic MTM4MzU0OjU0Nzg2ZGJiOWZmYTY2MzgwOGZmNGExNWRiMzI3MTNm' // tmp
+                    'Authorization': 'Basic MTUyMTE1Ojk5NDQyZmQ3MmQyNzQ3MjE0MDcxNmQwYTlhNDlkMDcw' // tmp
                 }
             })
                 .then(res => {

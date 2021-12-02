@@ -374,8 +374,8 @@ button, a {
 }
 
 .gallerySection__img {
-    width: auto;
-    height: 100%;
+    width: 100%;
+    height: auto;
 }
 
 .gallerySection__imgWrapper .gallerySection__img:hover {
@@ -385,7 +385,6 @@ button, a {
 .gallerySection__imgWrapper .img-3 {
     width: 100%;
     height: auto;
-    margin-top: -100px;
 }
 
 /* Recommendations */
@@ -409,6 +408,8 @@ button, a {
 }
 
 .recom__content {
+    width: var(--siteWidth);
+    margin: auto;
     padding: 50px 0;
 }
 
@@ -460,7 +461,8 @@ button, a {
 .aboutUs__icons {
     background: var(--black-secondary);
     padding: 40px;
-    margin: 30px 0;
+    margin: 30px auto;
+    width: var(--siteWidth);
 }
 
 .aboutUs__icons__item {
@@ -485,6 +487,11 @@ button, a {
 .aboutUs__header {
     margin-top: 40px;
     font-size: 24px;
+}
+
+.aboutUs__content {
+    width: var(--siteWidth);
+    margin: auto;
 }
 
 .aboutUs__content__text {
@@ -513,6 +520,11 @@ button, a {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+}
+
+.footer__row, .footer__bottom {
+    width: var(--siteWidth);
+    margin: auto;
 }
 
 .footer__menu__img {
@@ -1929,4 +1941,17 @@ button:disabled .addToCartBtn__img {
 .clientForm__label--checkbox--marketing {
     margin-bottom: 30px !important;
     margin-top: 0 !important;
+}
+
+@media(-webkit-min-device-pixel-ratio: 1.05) {
+    .gallerySection__content {
+        width: var(--siteWidth);
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .header__header, .header__menu {
+        width: var(--siteWidth);
+        margin: auto;
+    }
 }

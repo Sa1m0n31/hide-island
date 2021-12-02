@@ -5,6 +5,8 @@ const con = require("../databaseConnection");
 const path = require("path");
 
 con.connect(err => {
+    console.log("connect");
+
     /* GET */
     router.get("/get-all", (request, response) => {
         const query = 'SELECT * FROM homepage';

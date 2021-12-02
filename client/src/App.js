@@ -179,6 +179,7 @@ function App() {
   return (<CartContext.Provider value={{cartContent, addToCart, editCart, removeFromCart}}>
       <Helmet>
           <title>HideIsland - ubrania dla Ciebie</title>
+          <link rel="icon" type="image/png" href="./static/img/favicon.ico" sizes="16x16" />
       </Helmet>
       <div className="App">
         <Router>
