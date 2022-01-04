@@ -219,7 +219,6 @@ const sendStatus2Email = (id, email, fullName, response = null) => {
 }
 
 const sendStatus1Email = (orderInfo, response = null) => {
-    console.log(orderInfo);
     let sells = ``;
     let sum = 0;
     for(let i=0; i<orderInfo.length; i++) {
@@ -280,7 +279,7 @@ const sendStatus1Email = (orderInfo, response = null) => {
 
     let discount = sum + parseInt(orderInfo[0].shipping_method_price) - parseInt(orderInfo[0].order_price);
     const address = orderInfo[0].building.toString() + (orderInfo[0].flat ? "/" + orderInfo[0].flat : "");
-    const vat = orderInfo[0].company_name ? `${orderInfo[0].companyName}<br/>${orderInfo[0].nip}` : "Nie dotyczy";
+    const vat = orderInfo[0].company_name ? `${orderInfo[0].company_name}<br/>${orderInfo[0].nip}` : "Nie dotyczy";
     const inPost = orderInfo[0].shipping_method === 'Paczkomaty InPost' ? `${orderInfo[0].inpost_address}<br/>${orderInfo[0].inpost_postal_code} ${orderInfo[0].inpost_city}` : "Nie dotyczy";
     const comment = orderInfo[0].order_comment;
 

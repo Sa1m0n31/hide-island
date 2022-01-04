@@ -24,7 +24,6 @@ const SingleProductCrossSells = ({productGender}) => {
         if(productGender === 0) {
             axios.get(`${settings.API_URL}/product/get-women-recommendations`)
                 .then(res => {
-                    console.log(res.data.result);
                     if(res?.data?.result) {
                         setRecoms(res.data.result);
                     }

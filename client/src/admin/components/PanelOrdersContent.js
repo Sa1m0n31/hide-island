@@ -21,10 +21,16 @@ const PanelOrdersContent = () => {
     const [filterOplacone, setFilterOplacone] = useState(true);
     const [filterNieoplacone, setFilterNieoplacone] = useState(true);
 
+    Date.prototype.addHours = function(h) {
+        this.setTime(this.getTime() + (h*60*60*1000));
+        return this;
+    }
+
     useEffect(() => {
         getAllOrders()
             .then(res => {
                 const result = res.data.result;
+                console.log(result);
                 setOrders(result?.reverse());
                 sessionStorage.setItem('skylo-e-commerce-orders', JSON.stringify(result));
             });
@@ -149,7 +155,7 @@ const PanelOrdersContent = () => {
                                 { getDate(item.date) }
                             </span>
                                     <span className="dateTime">
-                                    { getTime(item.date) }
+                                    { getTime(new Date(item.date).toString().substring(5, 1000)) }
                             </span>
                                 </h3>
                             </section>

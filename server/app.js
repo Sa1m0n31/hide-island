@@ -96,6 +96,9 @@ app.get("/potwierdzenie-subskrypcji-newslettera", (req, res) => {
 app.get("/rezygnacja-z-subskrypcji", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
+app.get("/konkurs", (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
 
 /* Routers */
 const authRouter = require("./routers/authRouter");

@@ -42,7 +42,6 @@ const SingleProductContent = () => {
                         .then(res => {
                            const galleryResult = res.data?.result;
                            if(galleryResult) {
-                               console.log(galleryResult);
                                setGallery(galleryResult);
                            }
 
@@ -54,6 +53,7 @@ const SingleProductContent = () => {
                                        result.forEach(item => {
                                            getCategoryById(item.category_id)
                                                .then(res => {
+                                                   console.log(res?.data?.result);
                                                   if(res?.data?.result?.name?.toLowerCase() === "damskie") {
                                                       setProductGender(0);
                                                   }

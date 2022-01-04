@@ -81,11 +81,6 @@ const Footer = () => {
                 </h4>
                 <ul className="footer__menu__list">
                     <li className="footer__menu__item">
-                        <a className="footer__menu__link" href="/konkurs">
-                            Konkurs
-                        </a>
-                    </li>
-                    <li className="footer__menu__item">
                         <a className="footer__menu__link" href="/regulamin">
                             Regulamin
                         </a>

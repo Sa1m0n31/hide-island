@@ -285,7 +285,7 @@ con.connect(err => {
 
    /* GET MEN RECOMMENDATIONS */
    router.get("/get-men-recommendations", (request, response) => {
-         const query = 'SELECT p.name, i.file_path, p.price FROM products p JOIN images i ON p.main_image = i.id JOIN product_categories pc ON pc.product_id = p.id JOIN categories c ON c.id = pc.category_id WHERE recommendation = 1 AND LOWER(c.name) != "damskie" LIMIT 3;'
+         const query = 'SELECT p.name, i.file_path, p.price FROM products p JOIN images i ON p.main_image = i.id JOIN product_categories pc ON pc.product_id = p.id JOIN categories c ON c.id = pc.category_id WHERE recommendation = 1 AND LOWER(c.name) != "damskie" AND c.parent_id IS NULL LIMIT 3;'
          con.query(query, (err, res) => {
             if(res) {
                response.send({
@@ -302,7 +302,7 @@ con.connect(err => {
 
    /* GET Women RECOMMENDATIONS */
    router.get("/get-women-recommendations", (request, response) => {
-      const query = 'SELECT p.name, i.file_path, p.price FROM products p JOIN images i ON p.main_image = i.id JOIN product_categories pc ON pc.product_id = p.id JOIN categories c ON c.id = pc.category_id WHERE recommendation = 1 AND LOWER(c.name) != "męskie" LIMIT 3;'
+      const query = 'SELECT p.name, i.file_path, p.price FROM products p JOIN images i ON p.main_image = i.id JOIN product_categories pc ON pc.product_id = p.id JOIN categories c ON c.id = pc.category_id WHERE recommendation = 1 AND LOWER(c.name) != "męskie" AND c.parent_id IS NULL LIMIT 3;'
       con.query(query, (err, res) => {
          if(res) {
             response.send({

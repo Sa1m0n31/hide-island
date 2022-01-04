@@ -45,7 +45,7 @@ import { v4 as uuidv4 } from 'uuid';
 import PanelStocks from "./admin/pages/PanelStocks";
 import AddStockPage from "./admin/pages/AddStockPage";
 import {getProductStock} from "./admin/helpers/stockFunctions";
-import przelewy24Methods from './static/img/przelewy24.png'
+import przelewy24Methods from './static/img/metody-platnosci.png'
 import SubscriptionValidationPage from "./pages/SubscriptionValidationPage";
 import SubscriptionResignationPage from "./pages/SubscriptionResignationPage";
 import AddOrderPage from "./admin/pages/AddOrderPage";
