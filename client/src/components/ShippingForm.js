@@ -161,7 +161,6 @@ const ShippingForm = ({sum}) => {
         onSubmit: (values) => {
             if((shippingMethod !== -1)&&(paymentMethod !== -1)) {
                     const sessionId = uuidv4();
-                    console.log("start");
 
                     /* Add user */
                     if(!isAuth) {
@@ -192,7 +191,6 @@ const ShippingForm = ({sum}) => {
     }});
 
     const addOrder = (res, sessionId) => {
-        console.log("orderId start");
         let insertedUserId = null;
 
         if(res) insertedUserId = res.data.userId;
@@ -230,7 +228,8 @@ const ShippingForm = ({sum}) => {
                 inPostName: sessionStorage.getItem('paczkomat-id'),
                 inPostAddress: sessionStorage.getItem('paczkomat-adres'),
                 inPostCode: sessionStorage.getItem('paczkomat-kod'),
-                inPostCity: sessionStorage.getItem('paczkomat-miasto')
+                inPostCity: sessionStorage.getItem('paczkomat-miasto'),
+                amountBeforeDiscount: sum + shippingCost
             })
                 .then(res => {
                     const orderId = res.data.result;
@@ -511,7 +510,7 @@ const ShippingForm = ({sum}) => {
                             return <><label className="label--button mb-3">
                                 <button className="formBtn" onClick={(e) => { e.preventDefault();
                                     setShippingMethod(item.id);
-                                    setShippingCost(item.price);
+                                    setShippingCost(sum >= 250 ? 0 : item.price);
                                     if(index === 0) {
                                         /* Paczkomaty */
                                         document.querySelector(".bigModal").style.display = "block";
@@ -522,7 +521,7 @@ const ShippingForm = ({sum}) => {
                                 }}>
                                     <span className={shippingMethod === item.id ? "formBtn--checked" : "d-none"}></span>
                                 </button>
-                                {item.name} ({item.price} PLN)
+                                {item.name} ({sum < 250 ? item.price : 0} PLN)
                             </label>
                                 {index === 0 && shippingMethod === item.id ? <address className="inPostAddress">
                                     {inPostAddress} <br/>

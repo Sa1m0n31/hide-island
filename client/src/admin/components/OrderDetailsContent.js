@@ -190,9 +190,14 @@ const OrderDetailsContent = () => {
                     })}
                 </main>
                 <h4 className="panelContent__cart__summary">
+                    <span>Koszt wysyłki:</span> {cart[0].shipping_price} PLN
+                </h4>
+                <h4 className="panelContent__cart__summary">
+                    <span>Wartość zamówienia (bez rabatu):</span> {cart[0].order_price_before_discount ? cart[0].order_price_before_discount + ' PLN' : 'Brak danych'}
+                </h4>
+                <h4 className="panelContent__cart__summary">
                     <span>Cena zamówienia (po rabacie):</span> {cart[0].order_price} PLN
                 </h4>
-
             </section>
 
             <section className="panelContent__orderDetails">

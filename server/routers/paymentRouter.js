@@ -71,8 +71,8 @@ con.connect(err => {
                 email: request.body.email,
                 country: "PL",
                 language: "pl",
-                urlReturn: "https://hideisland.pl/dziekujemy",
-                urlStatus: "https://hideisland.pl/payment/verify",
+                urlReturn: `${process.env.API_URL}/dziekujemy`,
+                urlStatus: `${process.env.API_URL}/payment/verify`,
                 sign: gen_hash
             };
 
@@ -89,15 +89,6 @@ con.connect(err => {
             })
                 .then(res => {
                     responseToClient = res.body.data.token;
-                    // if(res.body.data.token) {
-                        /* TMP */
-                        // const query = 'UPDATE orders SET payment_status = "opłacone" WHERE id = (SELECT id FROM orders ORDER BY date DESC LIMIT 1)';
-                        // con.query(query, (err, res) => {
-                        //     console.log("UPDATING PAYMENT STATUS");
-                        //     console.log(err);
-                        // });
-                    // }
-
                     response.send({
                         result: responseToClient
                     });
@@ -159,9 +150,7 @@ con.connect(err => {
                         con.query(queryStock, values, (err, res) => {
                             if(res) {
                                 if(res) {
-                                    JSON.parse(JSON.stringify(res)).forEach(item => {
-                                         decrementStock(item.product_id, item.size, item.quantity);
-                                    });
+
                                 }
                             }
                         });
@@ -169,10 +158,7 @@ con.connect(err => {
                     else {
                         const values = [sessionId];
                         const query = 'UPDATE orders SET payment_status = "niepowodzenie" WHERE przelewy24_id = ?';
-                        con.query(query, values, (err, res) => {
-                            console.log("UPDATING PAYMENT STATUS");
-                            console.log(err);
-                        });
+                        con.query(query, values);
                     }
                 })
 
@@ -181,21 +167,6 @@ con.connect(err => {
             });
         });
     });
-
-    const decrementStock = (productId, size, quantity) => {
-        const values = [quantity, productId, size];
-        const query1 = 'UPDATE products_stock ps JOIN products p ON ps.id = p.stock_id SET ps.size_1_stock = ps.size_1_stock - ? WHERE p.id = ? AND size_1_name = ?'
-        const query2 = 'UPDATE products_stock ps JOIN products p ON ps.id = p.stock_id SET ps.size_2_stock = ps.size_2_stock - ? WHERE p.id = ? AND size_2_name = ?'
-        const query3 = 'UPDATE products_stock ps JOIN products p ON ps.id = p.stock_id SET ps.size_3_stock = ps.size_3_stock - ? WHERE p.id = ? AND size_3_name = ?'
-        const query4 = 'UPDATE products_stock ps JOIN products p ON ps.id = p.stock_id SET ps.size_4_stock = ps.size_4_stock - ? WHERE p.id = ? AND size_4_name = ?'
-        const query5 = 'UPDATE products_stock ps JOIN products p ON ps.id = p.stock_id SET ps.size_5_stock = ps.size_5_stock - ? WHERE p.id = ? AND size_5_name = ?'
-
-        con.query(query1, values);
-        con.query(query2, values);
-        con.query(query3, values);
-        con.query(query4, values);
-        con.query(query5, values);
-    }
 });
 
 module.exports = router;

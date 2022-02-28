@@ -26,6 +26,7 @@ const AddProductContent = () => {
     const [recommendation, setRecommendation] = useState(false);
     const [choosenCategories, setChoosenCategories] = useState([]);
     const [gallery, setGallery] = useState([]);
+    const [priceBeforeDiscount, setPriceBeforeDiscount] = useState(null);
 
     const [imagesChanged, setImagesChanged] = useState([false, false, false, false, false]);
 
@@ -118,6 +119,7 @@ const AddProductContent = () => {
         setName(productData.name);
 
         setPrice(productData.price);
+        setPriceBeforeDiscount(productData.price_before_discount);
 
         setHidden(productData.hidden);
         setRecommendation(productData.recommendation);
@@ -223,6 +225,15 @@ const AddProductContent = () => {
                 </label>
 
                 {/* PRICES */}
+                <label className="addProduct__label">
+                    <input className="addProduct__input"
+                           name="priceBeforeDiscount"
+                           type="number"
+                           step={0.01}
+                           value={priceBeforeDiscount}
+                           onChange={(e) => { setPriceBeforeDiscount(e.target.value) }}
+                           placeholder="Cena przed promocją" />
+                </label>
                 <label className="addProduct__label">
                     <input className="addProduct__input"
                            name="price"

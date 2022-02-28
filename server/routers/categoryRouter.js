@@ -10,18 +10,21 @@ con.connect(err => {
 
         if(parentId === "0") parentId = null;
 
-        if(name === "") {
-            response.redirect("https://hideisland.pl/panel/kategorie?added=0");
-            return 0;
-        }
-
         const values = [name, parentId, permalink, hidden];
         const query = 'INSERT INTO categories VALUES (NULL, ?, ?, ?, ?)';
 
         con.query(query, values, (err, res) => {
             console.log(err);
-            if(!err) response.redirect("https://hideisland.pl/panel/kategorie?added=1");
-            else response.redirect("https://hideisland.pl/panel/kategorie?added=-1")
+            if(!err) {
+                response.send({
+                    result: 1
+                });
+            }
+            else {
+                response.send({
+                    result: 0
+                });
+            }
         });
     });
 
@@ -64,8 +67,10 @@ con.connect(err => {
 
     /* GET ALL CATEGORIES */
     router.get("/get-all", (request, response) => {
+        console.log('get all');
         con.query('SELECT c1.name as parent_name, c2.id, c2.name as name, c2.parent_id, c2.permalink, c2.hidden FROM categories c1 RIGHT OUTER JOIN categories c2 ON c1.id = c2.parent_id', (err, res) => {
-           response.send({
+           console.log('test');
+            response.send({
                result: res
            });
         });
@@ -138,18 +143,26 @@ con.connect(err => {
 
     /* UPDATE CATEGORY */
     router.post("/update", (request, response) => {
-    let { id, name, parentId, permalink, hidden } = request.body;
-    hidden = hidden === "hidden";
-    id = parseInt(id);
-    parentId = parseInt(parentId);
-    if(!parentId) parentId = null;
-    const values = [name, parentId, permalink, hidden, id];
-    const query = 'UPDATE categories SET name = ?, parent_id = ?, permalink = ?, hidden = ? WHERE id = ?';
+        let { id, name, parentId, permalink, hidden } = request.body;
+        hidden = hidden === "hidden";
+        id = parseInt(id);
+        parentId = parseInt(parentId);
+        if(!parentId) parentId = null;
+        const values = [name, parentId, permalink, hidden, id];
+        const query = 'UPDATE categories SET name = ?, parent_id = ?, permalink = ?, hidden = ? WHERE id = ?';
 
-    con.query(query, values, (err, res) => {
-        if(!err) response.redirect("https://hideisland.pl/panel/kategorie?added=2");
-        else response.redirect("https://hideisland.pl/panel/kategorie?added=-1")
-    });
+        con.query(query, values, (err, res) => {
+            if(!err) {
+                response.send({
+                    result: 2
+                });
+            }
+            else {
+                response.send({
+                    result: -1
+                });
+            }
+        });
     });
 
     /* GET ALL PARENT CATEGORIES */

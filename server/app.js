@@ -9,10 +9,10 @@ const app = express();
 const basicAuth = new auth().basicAuth;
 
 /* HTTPS redirection */
-app.enable('trust proxy')
-app.use((req, res, next) => {
-    req.secure ? next() : res.redirect('https://' + req.headers.host + req.url)
-});
+// app.enable('trust proxy')
+// app.use((req, res, next) => {
+//     req.secure ? next() : res.redirect('https://' + req.headers.host + req.url)
+// });
 
 /* Middleware */
 app.use(cors());

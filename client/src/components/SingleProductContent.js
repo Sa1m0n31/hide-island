@@ -75,6 +75,7 @@ const SingleProductContent = () => {
             title={product.name}
             description={product.description}
             price={product.price}
+            priceBeforeDiscount={product.price_before_discount}
             img={product.file_path}
             gallery={gallery}
             sizes={sizes} />

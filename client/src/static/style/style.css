@@ -1955,3 +1955,45 @@ button:disabled .addToCartBtn__img {
         margin: auto;
     }
 }
+
+.recom__item__price--crossed {
+    text-decoration: line-through;
+    color: #6A6A6A;
+    font-weight: 500;
+    font-size: 20px;
+    margin-left: 10%;
+}
+
+.prices {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.discountPercent {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    padding: 3px 10px;
+    background: #9D2C2C;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.priceBeforeDiscount {
+    margin-left: 20px;
+    display: inline-block;
+    text-decoration: line-through;
+    color: #6A6A6A;
+}
+
+.header__top {
+    text-align: center;
+    color: #fff;
+}
+
+.header__top h4 {
+    font-size: 15px;
+    font-weight: 400;
+}

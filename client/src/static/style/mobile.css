@@ -434,6 +434,10 @@
         padding-bottom: 20px !important;
     }
 
+    .header__top h4 {
+        font-size: 12px;
+    }
+
     .aboutUs__header {
         font-size: 17px;
     }

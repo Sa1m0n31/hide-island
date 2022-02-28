@@ -51,6 +51,7 @@ import SubscriptionResignationPage from "./pages/SubscriptionResignationPage";
 import AddOrderPage from "./admin/pages/AddOrderPage";
 import axios from "axios";
 import credentials from "./helpers/credentials";
+import {getAllCategories} from "./helpers/categoryFunctions";
 require('dotenv').config();
 
 axios.defaults.headers.common['Authorization'] = credentials.AUTH_HEADER;
@@ -60,6 +61,14 @@ const CartContext = React.createContext(null);
 
 function App() {
     const [cartContent, setCartContent] = useState(localStorage.getItem('hideisland-cart') ? JSON.parse(localStorage.getItem('hideisland-cart')) : []);
+
+    useEffect(() => {
+        getAllCategories()
+            .then((res) => {
+                console.log(res);
+                console.log('test1');
+            })
+    }, []);
 
     const addToCart = (id, title, amount, img, size, price) => {
         const uuid = uuidv4();

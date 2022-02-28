@@ -25,13 +25,21 @@ const Recommendations = () => {
                 return <a className="recom__item" href={`/produkt/${convertToURL(item.name)}`} data-aos="fade-up" data-aos-delay={400}>
                     <figure className="recom__item__imgWrapper overflow-hidden">
                         <img className="recom__item__img" src={`${settings.API_URL}/image?url=/media/${item.file_path}`} />
+                        {item.price_before_discount ? <span className="discountPercent">
+                                -{Math.round(parseFloat((item.price_before_discount - item.price)) / parseFloat(item.price_before_discount) * 100)}%
+                            </span> : ""}
                     </figure>
                     <h3 className="recom__item__title text-center mt-3">
                         {item.name}
                     </h3>
-                    <h4 className="recom__item__price text-center">
-                        {item.price} PLN
-                    </h4>
+                    <div className="prices">
+                        <h4 className="recom__item__price recom__item__price--category text-center">
+                            {item.price} PLN
+                        </h4>
+                        {item.price_before_discount ? <h4 className="recom__item__price recom__item__price--crossed">
+                            {item.price_before_discount} PLN
+                        </h4> : ""}
+                    </div>
                 </a>
             })}
         </main>

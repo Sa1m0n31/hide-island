@@ -277,7 +277,8 @@ const AddOrderContent = () => {
                 inPostName: sessionStorage.getItem('paczkomat-id'),
                 inPostAddress: sessionStorage.getItem('paczkomat-adres'),
                 inPostCode: sessionStorage.getItem('paczkomat-kod'),
-                inPostCity: sessionStorage.getItem('paczkomat-miasto')
+                inPostCity: sessionStorage.getItem('paczkomat-miasto'),
+                amountBeforeDiscount: sum + shippingCost
             })
                 .then(res => {
                     const orderId = res.data.result;

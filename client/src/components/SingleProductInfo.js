@@ -11,7 +11,7 @@ import ReactSiema from 'react-siema'
 import sliderArrow from "../static/img/slider-arrow.png";
 import axios from "axios";
 
-const SingleProductInfo = ({id, title, description, img, price, sizes, gallery}) => {
+const SingleProductInfo = ({id, title, description, img, price, priceBeforeDiscount, sizes, gallery}) => {
     const [size, setSize] = useState("S");
     const [amount, setAmount] = useState(1);
     const [modal, setModal] = useState(false);
@@ -173,37 +173,41 @@ const SingleProductInfo = ({id, title, description, img, price, sizes, gallery})
                 </h1>
                 <h2 className="singleProductInfo__price text-center">
                     {price} PLN
+                    {priceBeforeDiscount ? <span className="priceBeforeDiscount">
+                        {priceBeforeDiscount} PLN
+                    </span> : ""}
                 </h2>
 
                 {/* USER INPUT */}
                 <section className="singleProductInfo__row flex-wrap d-flex align-items-start align-items-md-end justify-content-between mt-4">
-                    <section className="singleProductInfo__sizes">
-                        {isProductAvailable() ? <>
-                            <h3 className="singleProductInfo__sizes__header">
-                                Wybierz rozmiar:
-                            </h3>
-                            <section className="singleProductInfo__sizes__buttons">
+                    {isProductAvailable() && sizes?.filter((item) => {
+                        return item.name;
+                    }).length > 1 ? <section className="singleProductInfo__sizes">
+                                <h3 className="singleProductInfo__sizes__header">
+                                    Wybierz rozmiar:
+                                </h3>
+                                <section className="singleProductInfo__sizes__buttons">
 
-                                {sizes?.map((item, index) => {
-                                    if(item.name) {
-                                        return <button className="singleProductInfo__sizes__btn"
-                                                       key={index}
-                                                       value={item.name}
-                                                       disabled={item.stock <= 0}
-                                                       onClick={() => { setSize(item.name); }}
-                                                       id={size === item.name ? "sizeSelected" : ""}
-                                        >
-                                            {item.name}
-                                        </button>
-                                    }
-                                })}
-                            </section>
-                        </> : <>
-                            <h3 className="singleProductInfo__sizes__header">
-                                Produkt aktualnie niedostępny
-                            </h3>
-                        </>}
-                    </section>
+                                    {sizes?.map((item, index) => {
+                                        if(item.name) {
+                                            return <button className="singleProductInfo__sizes__btn"
+                                                           key={index}
+                                                           value={item.name}
+                                                           disabled={item.stock <= 0}
+                                                           onClick={() => { setSize(item.name); }}
+                                                           id={size === item.name ? "sizeSelected" : ""}
+                                            >
+                                                {item.name}
+                                            </button>
+                                        }
+                                    })}
+                                </section>
+                        </section> :
+                            (!isProductAvailable() ? <section>
+                                <h3 className="singleProductInfo__sizes__header">
+                                    Produkt aktualnie niedostępny
+                                </h3>
+                            </section>: "")}
 
                     {isProductAvailable() ? <section className="singleProductInfo__amount mt-4 mt-md-0">
                         <label className="singleProductInfo__label">

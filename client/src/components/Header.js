@@ -23,6 +23,7 @@ const Header = () => {
         getAllCategories()
             .then((res) => {
                 if(res?.data?.result) {
+                    console.log(res?.data);
                     setMenu(res.data.result);
                 }
             });
@@ -42,6 +43,11 @@ const Header = () => {
     }
 
     return <header className="header">
+                <aside className="header__top">
+                    <h4>
+                        Darmowa dostawa już od 250 zł!
+                    </h4>
+                </aside>
                 <header className="header__header d-flex">
                     <section className="header__header__section">
                         <section className="header__socialMedia d-none d-md-flex">

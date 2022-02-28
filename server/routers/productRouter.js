@@ -61,7 +61,7 @@ con.connect(err => {
          if (err) throw err;
 
          /* Prepare */
-         let { id, name, price, shortDescription, recommendation, hidden } = request.body;
+         let { id, name, price, priceBeforeDiscount, shortDescription, recommendation, hidden } = request.body;
          hidden = hidden === "hidden";
          recommendation = recommendation === "true";
 
@@ -77,8 +77,8 @@ con.connect(err => {
          if(!categories.length) categories.push(0);
 
          /* 1 - ADD PRODUCT TO PRODUCTS TABLE */
-         const values = [id, name, price, shortDescription, null, recommendation, hidden];
-         const query = 'INSERT INTO products VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, NULL)';
+         const values = [id, name, price, priceBeforeDiscount, shortDescription, null, recommendation, hidden];
+         const query = 'INSERT INTO products VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, NULL)';
          con.query(query, values, (err, res) => {
             if(res) {
                /* 2nd - ADD CATEGORIES */
@@ -212,7 +212,7 @@ con.connect(err => {
       const images = request.files;
 
       /* Prepare */
-      let { id, name, price, shortDescription, recommendation, hidden } = request.body;
+      let { id, name, price, priceBeforeDiscount, shortDescription, recommendation, hidden } = request.body;
       hidden = hidden === "hidden";
       recommendation = recommendation === "true";
       filenames.reverse();
@@ -229,8 +229,11 @@ con.connect(err => {
       if(!categories.length) categories.push(0);
 
       /* 1 - ADD PRODUCT TO PRODUCTS TABLE */
-      const values = [name, price, shortDescription, recommendation, hidden, id];
-      const query = 'UPDATE products SET name = ?, price = ?, description = ?, recommendation = ?, hidden = ? WHERE id = ?';
+      let beforeDiscount;
+      if(priceBeforeDiscount) beforeDiscount = priceBeforeDiscount;
+      else beforeDiscount = null;
+      const values = [name, price, beforeDiscount, shortDescription, recommendation, hidden, id];
+      const query = 'UPDATE products SET name = ?, price = ?, price_before_discount = ?, description = ?, recommendation = ?, hidden = ? WHERE id = ?';
       con.query(query, values, (err, res) => {
          if(res) {
             /* 2 - ADD CATEGORIES */
@@ -283,40 +286,6 @@ con.connect(err => {
       })
    });
 
-   /* GET MEN RECOMMENDATIONS */
-   router.get("/get-men-recommendations", (request, response) => {
-         const query = 'SELECT p.name, i.file_path, p.price FROM products p JOIN images i ON p.main_image = i.id JOIN product_categories pc ON pc.product_id = p.id JOIN categories c ON c.id = pc.category_id WHERE recommendation = 1 AND LOWER(c.name) != "damskie" AND c.parent_id IS NULL LIMIT 3;'
-         con.query(query, (err, res) => {
-            if(res) {
-               response.send({
-                  result: res
-               });
-            }
-            else {
-               response.send({
-                  result: 0
-               });
-            }
-         });
-   });
-
-   /* GET Women RECOMMENDATIONS */
-   router.get("/get-women-recommendations", (request, response) => {
-      const query = 'SELECT p.name, i.file_path, p.price FROM products p JOIN images i ON p.main_image = i.id JOIN product_categories pc ON pc.product_id = p.id JOIN categories c ON c.id = pc.category_id WHERE recommendation = 1 AND LOWER(c.name) != "męskie" AND c.parent_id IS NULL LIMIT 3;'
-      con.query(query, (err, res) => {
-         if(res) {
-            response.send({
-               result: res
-            });
-         }
-         else {
-            response.send({
-               result: 0
-            });
-         }
-      });
-   });
-
    /* REMOVE PRODUCT */
    router.post("/delete", (request, response) => {
       const { id } = request.body;
@@ -333,16 +302,9 @@ con.connect(err => {
       });
    });
 
-   /* REMOVE CURRENT CROSS-SELLS */
-   const deleteCrossSellsForProduct = (productId) => {
-      const values = [productId];
-      const query = 'DELETE FROM cross-sells WHERE product1 = ?';
-      con.query(query, values);
-   }
-
    /* GET ALL PRODUCTS */
    router.get("/get-all-products", (request, response) => {
-      const query = 'SELECT p.id, p.name, i.file_path as image, p.price, p.date, p.stock_id, COALESCE(c.name, "Brak") as category_name, p.hidden FROM products p ' +
+      const query = 'SELECT p.id, p.name, i.file_path as image, p.price, p.price_before_discount, p.date, p.stock_id, COALESCE(c.name, "Brak") as category_name, p.hidden FROM products p ' +
       'LEFT OUTER JOIN product_categories pc ON pc.product_id = p.id ' +
           'LEFT OUTER JOIN categories c ON c.id = pc.category_id ' +
       'LEFT OUTER JOIN images i ON p.main_image = i.id GROUP BY p.id ORDER BY p.date DESC';
@@ -385,7 +347,7 @@ con.connect(err => {
       const { name } = request.body;
       const values = [name];
       /* Query uses custom MySQL function - SPLIT_STR */
-      const query = 'SELECT p.id as id, p.name, p.price, ' +
+      const query = 'SELECT p.id as id, p.name, p.price, p.price_before_discount, ' +
           'p.description, p.date, i.file_path as file_path, ' +
           's.size_1_name, s.size_2_name, s.size_3_name, s.size_4_name, s.size_5_name, ' +
           's.size_1_stock, s.size_2_stock, s.size_3_stock, s.size_4_stock, s.size_5_stock ' +
@@ -443,7 +405,7 @@ con.connect(err => {
    router.post("/single-product", (request, response) => {
       const { id } = request.body;
       const values = [id];
-      const query = 'SELECT p.id as id, p.name, p.price, ' +
+      const query = 'SELECT p.id as id, p.name, p.price, p.price_before_discount, ' +
           'p.description, p.date, p.recommendation, p.hidden, ' +
           'i.file_path as file_path, s.size_1_name, s.size_1_stock, s.size_2_name, s.size_2_stock, s.size_3_name, s.size_3_stock, s.size_4_name, s.size_4_stock, s.size_5_name, s.size_5_stock ' +
           'FROM products p ' +

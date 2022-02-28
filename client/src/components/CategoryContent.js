@@ -245,13 +245,21 @@ const CategoryContent = () => {
                     return <a className="recom__item" key={index} href={`https://hideisland.pl/produkt/${convertToURL(item.name)}`}>
                         <figure className="recom__item__imgWrapper overflow-hidden">
                             <img className="recom__item__img" src={settings.API_URL + "/image?url=/media/" + item.image} />
+                            {item.price_before_discount ? <span className="discountPercent discountPercent--single">
+                                -{Math.round(parseFloat((item.price_before_discount - item.price)) / parseFloat(item.price_before_discount) * 100)}%
+                            </span> : ""}
                         </figure>
                         <h3 className="recom__item__title recom__item__title--category text-center mt-3">
                             {item.name}
                         </h3>
-                        <h4 className="recom__item__price recom__item__price--category text-center">
-                            {item.price} PLN
-                        </h4>
+                        <div className="prices">
+                            <h4 className="recom__item__price recom__item__price--category text-center">
+                                {item.price} PLN
+                            </h4>
+                            {item.price_before_discount ? <h4 className="recom__item__price recom__item__price--crossed">
+                                {item.price_before_discount} PLN
+                            </h4> : ""}
+                        </div>
                         <button className="addToCartBtn addToCartBtn--category">
                             Zobacz więcej
                             <img className="addToCartBtn__img" src={arrowLong} alt="dodaj" />

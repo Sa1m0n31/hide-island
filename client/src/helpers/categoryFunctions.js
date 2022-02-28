@@ -4,6 +4,8 @@ import settings from "./settings";
 const { API_URL } = settings;
 
 const getAllCategories = () => {
+    console.log('getAllCategories');
+    console.log(`${API_URL}/category/get-all`);
     return axios.get(`${API_URL}/category/get-all`);
 }
 
