@@ -771,8 +771,6 @@ con.connect(err => {
             let {paymentMethod, shippingMethod, city, street, building, flat, postalCode, sessionId, user, comment, companyName, nip, amount, inPostName, inPostAddress, inPostCode, inPostCity, amountBeforeDiscount} = request.body;
             if (flat === "") flat = null;
 
-            console.log('/add-order!!!');
-
             let paymentStatus = "nieopłacone";
             if(paymentMethod !== 1) {
                 /* Payment method - za pobraniem */
@@ -793,8 +791,6 @@ con.connect(err => {
             });
 
             con.query(query, values, (err, res) => {
-                console.log('query!!!');
-                console.log(err);
                 let result = 0;
                 if (res) {
                     if (res.insertId) result = res.insertId;

@@ -279,9 +279,8 @@ const ShippingForm = ({sum}) => {
                                             orderId
                                         })
                                             .then((res) => {
-                                                console.log("order info sended");
 
-                                            })
+                                            });
                                     }
                                 })
                         });

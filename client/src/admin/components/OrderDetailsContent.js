@@ -26,6 +26,8 @@ const OrderDetailsContent = () => {
     const [adminComment, setAdminComment] = useState("");
     const [payClicked, setPayClicked] = useState(-1);
     const [orderPrice, setOrderPrice] = useState(null);
+    const [discount, setDiscount] = useState(0);
+    const [numberOfProducts, setNumberOfProducts] = useState(1);
 
     useEffect(() => {
         /* Get order id from url string */
@@ -39,11 +41,11 @@ const OrderDetailsContent = () => {
             .then(res => {
                if(res?.data?.result?.length) {
                    setCart(res.data.result);
+                   setDiscount(Math.max(res.data.result[0]?.order_price_before_discount - res.data.result[0]?.order_price, 0));
                    setOrderStatus(res.data.result[0].order_status);
                    setLetterNumber(res.data.result[0].letter_number);
                    setComment(res.data.result[0].order_comment);
                    setAdminComment(res.data.result[0].admin_comment);
-                   setOrderPrice(res.data.result[0].order_price);
                    setSum(res.data.result.reduce((prev, item) => {
                        return prev + item.price;
                    }, 0));
@@ -113,6 +115,16 @@ const OrderDetailsContent = () => {
         }
     }, [orderUpdated]);
 
+    useEffect(() => {
+        const tmpNum = cart?.reduce((prev, current, index) => {
+            return prev + current.quantity;
+        }, 0);
+        setNumberOfProducts(tmpNum);
+        setOrderPrice(cart?.reduce((prev, current) => {
+            return prev + Math.round(current.price - (discount / tmpNum)) * current.quantity;
+        }, 0));
+    }, [cart, discount]);
+
     return <main className="panelContent">
 
         <Modal
@@ -170,23 +182,30 @@ const OrderDetailsContent = () => {
                 </header>
                 <main className="panelContent__cart__content">
                     {cart?.map((item, index) => {
-                        return <section key={index} className="panelContent__cart__item">
-                            <section className="panelContent__cart__column">
-                                <span>{item.name}</span>
+                        return <>
+                            <section key={index} className="panelContent__cart__item">
+                                <section className="panelContent__cart__column">
+                                    <span>{item.name}</span>
+                                </section>
+                                <section className="panelContent__cart__column panelQuantity">
+                                    <span>Ilość: {item.quantity}</span>
+                                </section>
+                                <section className="panelContent__cart__column">
+                                    <span>{item.option}</span>
+                                </section>
+                                <section className="panelContent__cart__column">
+                                    <span>{item.size ? `Rozmiar: ${item.size}` : ""}</span>
+                                </section>
+                                <section className="panelContent__cart__column">
+                                    <span>Cena: {item.price} PLN</span>
+                                </section>
                             </section>
-                            <section className="panelContent__cart__column panelQuantity">
-                                <span>Ilość: {item.quantity}</span>
+                            <section className="panelContent__cart__item__priceWithDiscount">
+                                <section className="panelContent__cart__column">
+                                    <span>Cena po rabacie: <b>{Math.round(item.price - (discount / numberOfProducts))} PLN</b></span>
+                                </section>
                             </section>
-                            <section className="panelContent__cart__column">
-                                <span>{item.option}</span>
-                            </section>
-                            <section className="panelContent__cart__column">
-                                <span>{item.size ? `Rozmiar: ${item.size}` : ""}</span>
-                            </section>
-                            <section className="panelContent__cart__column">
-                                <span>Cena: {item.price} PLN</span>
-                            </section>
-                        </section>
+                        </>
                     })}
                 </main>
                 <h4 className="panelContent__cart__summary">
@@ -196,7 +215,7 @@ const OrderDetailsContent = () => {
                     <span>Wartość zamówienia (bez rabatu):</span> {cart[0].order_price_before_discount ? cart[0].order_price_before_discount + ' PLN' : 'Brak danych'}
                 </h4>
                 <h4 className="panelContent__cart__summary">
-                    <span>Cena zamówienia (po rabacie):</span> {cart[0].order_price} PLN
+                    <span>Cena zamówienia (po rabacie):</span> {orderPrice} PLN
                 </h4>
             </section>
 

@@ -297,7 +297,14 @@ const AddOrderContent = () => {
                                 .then(res => {
                                     if(cartIndex === cartArray.length-1) {
                                         /* PO DODANIU ZAMÓWIENIA */
-                                        if(res?.data?.result) setSuccess(1);
+                                        if(res?.data?.result) {
+                                            axios.post(`https://hideisland.pl/order/send-order-info`, {
+                                                orderId
+                                            })
+                                                .then((res) => {
+                                                    setSuccess(1);
+                                                });
+                                        }
                                         else setSuccess(0);
                                         window.scrollTo(0, 0);
                                     }
