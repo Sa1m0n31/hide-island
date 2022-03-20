@@ -771,6 +771,8 @@ con.connect(err => {
             let {paymentMethod, shippingMethod, city, street, building, flat, postalCode, sessionId, user, comment, companyName, nip, amount, inPostName, inPostAddress, inPostCode, inPostCity, amountBeforeDiscount} = request.body;
             if (flat === "") flat = null;
 
+            console.log('/add-order!!!');
+
             let paymentStatus = "nieopłacone";
             if(paymentMethod !== 1) {
                 /* Payment method - za pobraniem */
@@ -791,6 +793,8 @@ con.connect(err => {
             });
 
             con.query(query, values, (err, res) => {
+                console.log('query!!!');
+                console.log(err);
                 let result = 0;
                 if (res) {
                     if (res.insertId) result = res.insertId;
@@ -880,7 +884,7 @@ con.connect(err => {
         router.post("/get-order", (request, response) => {
             const {id} = request.body;
             const values = [id];
-            const query = 'SELECT o.id, o.admin_comment, o.order_price, o.payment_status, o.order_status, o.letter_number, o.order_comment, u.first_name, u.last_name, u.email, u.phone_number, u.city, u.street, u.building, u.postal_code, u.city, o.date, o.order_status, pm.name as payment, sm.name as shipping, sm.price as shipping_price, o.order_comment, o.company_name, o.nip, s.size, s.quantity, p.price, p.name, o.inpost_id, o.inpost_address, o.inpost_postal_code, inpost_city FROM orders o ' +
+            const query = 'SELECT o.id, o.admin_comment, o.order_price, o.payment_status, o.order_status, o.letter_number, o.order_comment, u.first_name, u.last_name, u.email, u.phone_number, u.city, u.street, u.building, u.postal_code, u.city, o.date, o.order_status, pm.name as payment, sm.name as shipping, sm.price as shipping_price, o.order_comment, o.company_name, o.nip, s.size, s.quantity, p.price, p.name, o.inpost_id, o.inpost_address, o.inpost_postal_code, inpost_city, o.order_price_before_discount FROM orders o ' +
                 'JOIN sells s ON o.id = s.order_id ' +
                 'LEFT OUTER JOIN products p ON p.id = s.product_id ' +
                 'JOIN shipping_methods sm ON o.shipping_method = sm.id ' +
