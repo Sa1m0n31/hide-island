@@ -10,6 +10,7 @@ import GeolocationWidget from "./GeolocationWidget";
 import Modal from "react-modal";
 import closeImg from "../static/img/close.png";
 import tickIcon from '../static/img/tick-sign.svg'
+import ReactGA from "react-ga4";
 
 const ShippingForm = ({sum}) => {
     const [vat, setVat] = useState(false);
@@ -250,6 +251,20 @@ const ShippingForm = ({sum}) => {
                                 .then(res => {
                                     if(cartIndex === cartArray.length-1) {
                                         if(paymentMethod === 2) {
+                                            ReactGA.event('purchase', {
+                                                currency: "PLN",
+                                                transaction_id: orderId,
+                                                value: sum + shippingCost - discountInPLN,
+                                                items: cart?.map((item) => {
+                                                    return {
+                                                        item_id: item?.id?.toString(),
+                                                        item_name: item?.title,
+                                                        price: item?.price,
+                                                        quantity: item?.amount
+                                                    }
+                                                })
+                                            });
+
                                             /* Platnosc za pobraniem */
                                             localStorage.setItem('hideisland-ty', 'true');
                                             window.location = "/dziekujemy";
@@ -269,6 +284,20 @@ const ShippingForm = ({sum}) => {
                                                 .then(res => {
                                                     /* Remove cart from local storage */
                                                     localStorage.removeItem('hideisland-cart');
+
+                                                    ReactGA.event('purchase', {
+                                                        currency: "PLN",
+                                                        transaction_id: orderId,
+                                                        value: sum + shippingCost - discountInPLN,
+                                                        items: cart?.map((item) => {
+                                                            return {
+                                                                item_id: item?.id?.toString(),
+                                                                item_name: item?.title,
+                                                                price: item?.price,
+                                                                quantity: item?.amount
+                                                            }
+                                                        })
+                                                    });
 
                                                     const token = res.data.result;
                                                     window.location.href = `${paymentUri}${token}`;

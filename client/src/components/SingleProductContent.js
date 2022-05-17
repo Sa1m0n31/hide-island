@@ -10,6 +10,7 @@ import axios from "axios";
 import settings from "../helpers/settings";
 import {getProductCategories} from "../admin/helpers/productFunctions";
 import {getCategoryById} from "../helpers/categoryFunctions";
+import ReactGA from "react-ga4";
 
 const SingleProductContent = () => {
     const [product, setProduct] = useState({});
@@ -17,7 +18,21 @@ const SingleProductContent = () => {
     const [gallery, setGallery] = useState([]);
     const [productGender, setProductGender] = useState(-1);
 
-    const location = useLocation();
+    useEffect(() => {
+        if(product) {
+            ReactGA.event('view_item', {
+                currency: "PLN",
+                value: product.price,
+                items: [
+                    {
+                        item_id: product.id,
+                        item_name: product.name,
+                        price: product.price
+                    }
+                ]
+            });
+        }
+    }, [product]);
 
     useEffect(() => {
         /* Get product info */

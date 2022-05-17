@@ -52,9 +52,11 @@ import AddOrderPage from "./admin/pages/AddOrderPage";
 import axios from "axios";
 import credentials from "./helpers/credentials";
 import {getAllCategories} from "./helpers/categoryFunctions";
+import ReactGA from "react-ga4";
 require('dotenv').config();
 
 axios.defaults.headers.common['Authorization'] = credentials.AUTH_HEADER;
+ReactGA.initialize("G-G9DGWQQ5B9");
 
 /* Context */
 const CartContext = React.createContext(null);
@@ -72,6 +74,19 @@ function App() {
 
     const addToCart = (id, title, amount, img, size, price) => {
         const uuid = uuidv4();
+
+        ReactGA.event('add_to_cart', {
+            currency: "PLN",
+            value: amount * price,
+            items: [
+                {
+                    item_id: id,
+                    item_name: title,
+                    price: price,
+                    quantity: amount
+                }
+            ]
+        });
 
         let existedUuid, existedAmount = 0;
 

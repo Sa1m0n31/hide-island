@@ -14,18 +14,15 @@ import settings from "../admin/helpers/settings";
 import axios from "axios";
 import convertToURL from "../helpers/convertToURL";
 import {productSearchForUser} from "../admin/helpers/search";
+import ReactGA from "react-ga4";
 
 const CategoryContent = () => {
     const filters = [
         'do 100 zł', 'do 200 zł', 'do 300 zł', 'do 500 zł', 'bez ograniczeń'
     ];
 
-    const location = useLocation();
-
-    const { cartContent, addToCart } = useContext(CartContext);
-
     const [search, setSearch] = useState("");
-    const [products, setProducts] = useState([1, 2, 3, 4, 5, 6]);
+    const [products, setProducts] = useState([]);
     const [productsFiltered, setProductsFiltered] = useState([]);
     const [categories, setCategories] = useState([]);
     const [sizes, setSizes] = useState([
@@ -39,6 +36,20 @@ const CategoryContent = () => {
     const [currentCategory, setCurrentCategory] = useState("");
     const [currentParentCategory, setCurrentParentCategory] = useState("");
     const [loaded, setLoaded] = useState(false);
+
+    useEffect(() => {
+        if(products?.length) {
+            ReactGA.event('view_item_list', {
+                items: products?.map((item) => {
+                    return {
+                        item_id: item.id,
+                        item_name: item.name,
+                        price: item.price
+                    }
+                })
+            });
+        }
+    }, [products]);
 
     useEffect(() => {
         /* Get categories */
